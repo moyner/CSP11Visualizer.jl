@@ -2,11 +2,13 @@ using Documenter, DocumenterVitepress
 using CSP11Visualizer, Literate
 
 
-caseb = []
+caseb = [
+    "Animation example" => "animation_b_example.md",
+]
 pagetree = [
         "Home" => "index.md",
         "Case B" => caseb
-    ]
+]
 
 base_dir = realpath(joinpath(@__DIR__, ".."))
 example_path(pth) = joinpath(base_dir, "scripts", "$pth.jl")

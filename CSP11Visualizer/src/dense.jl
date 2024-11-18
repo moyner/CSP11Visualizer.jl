@@ -15,7 +15,7 @@ function parse_dense_timesteps(group, result, case = "b";
     return results
 end 
 
-function plot_movie(results, k, t = k)
+function make_movie(results, k, t = k; filename = "sg.mp4")
     x = results[1]["_x_m"]
     z = results[1]["z_m"]
     fig = Figure(size = (1200, 600))
@@ -26,12 +26,12 @@ function plot_movie(results, k, t = k)
     plt = heatmap!(ax, vec(x), vec(z), values, colormap = default_colormap())
     Colorbar(fig[1, 2], plt)
     framerate = 24
-    record(fig, "$k.mp4", eachindex(results);
+    filename = "$k.mp4"
+    record(fig, filename, eachindex(results);
         framerate = framerate) do t
         ix[] = t
     end
-
-    return fig
+    return filename
 end
 
 function plot_snapshot(result, k, t = k)

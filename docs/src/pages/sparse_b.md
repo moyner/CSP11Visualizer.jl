@@ -13,8 +13,11 @@ nothing #hide
 ````@example sparse_b
 set_default_plot_size(30cm, 20cm) # hide
 function myplot(k; xlabel = "Time (years)", ylabel = "$k", title = "")
-    Gadfly.plot(results, x=:time, y=k, Geom.line, color = :groupresult,
-    Guide.xlabel(xlabel), Guide.ylabel(ylabel), Guide.title(title)
+    Gadfly.plot(results, x=:time, y=k, Geom.line,
+        color = :groupresult,
+        Guide.xlabel(xlabel),
+        Guide.ylabel(ylabel),
+        Guide.title(title)
     )
 end; # hide
 nothing #hide
@@ -29,7 +32,22 @@ myplot(:P1, ylabel = "Pascal", title = "Pressure at P1") # hide
 ````
 
 ### Pressure observation point 2
-We can say something nice about this point, too.
+We can say something nice about this point, too. We can also do some unrelated math to appear fancy:
+The Brooks-Corey model is a simple model that can be used to generate relative
+permeabilities. The model is defined in the mobile region as:
+
+``k_{rw} = k_{max,w} \bar{S}_w``
+
+``k_{ro} = k_{max,o} \bar{S}_o``
+
+where $k_{max,w}$ is the maximum relative permeability, $\bar{S}_w$
+is the normalized saturation for the water phase,
+
+`` \bar{S}_w = \frac{S_w - S_{wi}}{1 - S_{wi} - S_{ro}}``
+
+and, similarly, for the oil phase:
+
+``\bar{S}_o = \frac{S_o - S_{ro}}{1 - S_{wi} - S_{ro}}``
 
 ````@example sparse_b
 myplot(:P2, ylabel = "Pascal", title = "Pressure at P2") # hide

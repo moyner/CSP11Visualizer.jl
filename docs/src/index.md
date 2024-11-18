@@ -1,3 +1,3 @@
 # SPE11 plots
 
-Hello SPE11 world.
+Attempt at making SPE11 data accessible. Check sidebar for examples.
