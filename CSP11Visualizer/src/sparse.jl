@@ -58,7 +58,7 @@ function parse_all_sparse(pth = realpath(joinpath(@__DIR__, "..", "..", "data"))
         gdata = Dict{Int, Any}()
         casepath = joinpath(pth, group, "spe11$case")
         for dir in readdir(casepath)
-            @info "Reading $group: $dir"
+            println("$group: Reading $dir")
             result_id = parse(Int64, dir[end])
             spth = joinpath(casepath, dir, "spe11$(case)_time_series.csv")
             gdata[result_id] = read_file(spth, group, result_id, case)

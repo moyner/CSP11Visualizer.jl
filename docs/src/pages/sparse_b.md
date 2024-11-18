@@ -12,20 +12,91 @@ nothing #hide
 
 ````@example sparse_b
 set_default_plot_size(30cm, 20cm) # hide
+myplot(k) = plot(results, x=:time, y=k, Geom.line, color = :groupresult); # hide
+nothing #hide
 ````
 
+## Pressure observation points
 ### Pressure observation point 1
 We can say something nice about this point.
 
 ````@example sparse_b
-plot(results, x=:time, y=:P1, Geom.line, color = :groupresult) # hide
+myplot(:P1) # hide
 ````
 
 ### Pressure observation point 2
 We can say something nice about this point, too.
 
 ````@example sparse_b
-plot(results, x=:time, y=:P2, Geom.line, color = :groupresult) # hide
+myplot(:P2) # hide
+````
+
+## Mobile CO₂
+
+### Mobile CO₂ in region A
+
+````@example sparse_b
+myplot(:mobA) # hide
+````
+
+### Mobile CO₂ in region B
+
+````@example sparse_b
+myplot(:mobB) # hide
+````
+
+## Dissolved CO₂
+### Dissolved CO₂ in region A
+
+````@example sparse_b
+myplot(:dissA) # hide
+````
+
+### Dissolved CO₂ in region B
+
+````@example sparse_b
+myplot(:dissB) # hide
+````
+
+## Immobile CO₂
+
+### Immobile CO₂ in region A
+
+````@example sparse_b
+myplot(:immA) # hide
+````
+
+### Immobile CO₂ in region B
+
+````@example sparse_b
+myplot(:immB) # hide
+````
+
+## CO₂ in seal
+
+### CO₂ in seal in region A
+
+````@example sparse_b
+myplot(:sealA) # hide
+````
+
+### CO₂ in seal in region B
+
+````@example sparse_b
+myplot(:sealB) # hide
+````
+
+## CO₂ in bound
+### CO₂ in bound in total
+
+````@example sparse_b
+myplot(:boundTot) # hide
+````
+
+## CO₂ in seal
+
+````@example sparse_b
+myplot(:sealTot) # hide
 ````
 
 ---
