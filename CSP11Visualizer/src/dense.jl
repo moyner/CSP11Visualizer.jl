@@ -1,0 +1,63 @@
+default_colormap() = :seaborn_icefire_gradient
+
+function parse_dense_timesteps(group, result, case = "b";
+        path = default_data_path(),
+        steps = 0:5:1000,
+        verbose = true
+    )
+    results = []
+    for (i, year) in enumerate(steps)
+        if verbose
+            println("Reading step $i/$(length(steps)) at $year years")
+        end
+        push!(results, parse_dense_data(group, result, year, case, path))
+    end
+    return results
+end 
+
+function plot_snapshot(result, k, t = k)
+    x = result["_x_m"]
+    z = result["z_m"]
+    fig = Figure(size = (1200, 600))
+    ax = Axis(fig[1, 1], title = t)
+    plt = heatmap!(ax, vec(x), vec(z), vec(result[k]), colormap = default_colormap())
+    Colorbar(fig[1, 2], plt)
+    return fig
+end
+
+function parse_dense_data(group, result, year, case = "b", path = default_data_path())
+    subpth = joinpath(path, group, "spe11$case", "result$result", "spe11$(case)_spatial_map_$(year)y.csv")
+    if case == "b"
+        dims = [840, 120]
+    else
+        @assert case == "c"
+        dims = [168, 100, 120]
+    end
+    df = CSV.read(subpth, DataFrame, normalizenames=true)
+    x = df[:, "_x_m_"]
+    if case == "c"
+        # TODO: Check this
+        y = df[:, "_y_m_"]
+    else
+        y = zeros(length(x))
+    end
+    z  = df[:, "z_m_"]
+    Lx = maximum(x)
+    Ly = maximum(y)
+    Lz = maximum(z)
+    function sortfunction(i)
+        xi = x[i]
+        yi = y[i]
+        zi = z[i]
+        # return i
+        return zi*(Lx*Ly) + yi*Lx + xi
+    end
+    ix = sort(eachindex(z), by = sortfunction)
+    out = Dict{String, AbstractArray{Float64}}()
+    for name in names(df)
+        val = df[:, name]
+        val = reshape(val[ix], dims...)
+        out[rstrip(name, '_')] = val
+    end
+    return out
+end

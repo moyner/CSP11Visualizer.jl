@@ -2,7 +2,10 @@ using CSP11Visualizer, Gadfly # hide
 results = CSP11Visualizer.parse_all_sparse(); # hide
 # ## Pressure in observation points
 set_default_plot_size(30cm, 20cm) # hide
-myplot(k) = plot(results, x=:time, y=k, Geom.line, color = :groupresult); # hide
+function myplot(k)
+    plot(results, x=:time, y=k, Geom.line, color = :groupresult)
+    # Guide.xlabel("Stimulus"), Guide.ylabel("Response"), Guide.title("Dog Training")
+end; # hide
 # ## Pressure observation points
 # ### Pressure observation point 1
 # We can say something nice about this point.

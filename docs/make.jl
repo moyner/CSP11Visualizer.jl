@@ -49,8 +49,12 @@ makedocs(;
     pages = pagetree,
     warnonly = true,
 )
-
+##
 deploydocs(;
     repo="github.com/moyner/spe11-plot-test",
     push_preview=true,
 )
+##
+tmp = read(joinpath(@__DIR__, "build", "index.html"), String)
+tmp = replace(tmp, "Search docs (Ctrl + /)" => "Search site")
+write(joinpath(@__DIR__, "build", "index.html"), tmp)

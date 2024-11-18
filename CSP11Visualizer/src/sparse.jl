@@ -51,7 +51,7 @@ function read_file(pth, group, result, case; resample = false)
         )
 end
 
-function parse_all_sparse(pth = realpath(joinpath(@__DIR__, "..", "..", "data")); case = "b", merge = true)
+function parse_all_sparse(pth = default_data_path(); case = "b", merge = true)
     groups = readdir(pth)
     results = Dict{String, Any}()
     for group in groups
