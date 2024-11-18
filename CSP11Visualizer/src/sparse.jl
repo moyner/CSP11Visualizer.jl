@@ -13,7 +13,7 @@ function resample_table(t, vals)
     return (t_i, new_vals)
 end
 
-function read_file(pth; resample = false)
+function read_file(pth, group, result, case; resample = false)
     df = CSV.read(pth, DataFrame)
 
     time = df[:, 1]
@@ -39,14 +39,19 @@ function read_file(pth; resample = false)
         p1, p2, mobA, immA, dissA, sealA, mobB, immB, dissB, sealB, M, sealTot, boundTot = new_tab
     end
     uyear = 365.0*3600*24.0
-    return (t = time/uyear,
-            p1 = p1, p2 = p2,
-                A = (mob = mobA, imm=immA, diss=dissA, seal=sealA),
-                B = (mob = mobB, imm=immB, diss=dissB, seal=sealB),
-            M = M, sealTot = sealTot, boundTot = boundTot)
+    return DataFrame(time = time/uyear,
+            P1 = p1, P2 = p2,
+            mobA = mobA, immA=immA, dissA=dissA, sealA=sealA,
+            mobB = mobB, immB=immB, dissB=dissB, sealB=sealB,
+            M = M, sealTot = sealTot, boundTot = boundTot,
+            group = group,
+            result = result,
+            case = case,
+            groupresult = "$group$result",
+        )
 end
 
-function parse_all_sparse(pth = realpath(joinpath(@__DIR__, "..", "..", "data")); case = "b")
+function parse_all_sparse(pth = realpath(joinpath(@__DIR__, "..", "..", "data")); case = "b", merge = true)
     groups = readdir(pth)
     results = Dict{String, Any}()
     for group in groups
@@ -54,11 +59,22 @@ function parse_all_sparse(pth = realpath(joinpath(@__DIR__, "..", "..", "data"))
         casepath = joinpath(pth, group, "spe11$case")
         for dir in readdir(casepath)
             @info "Reading $group: $dir"
-            gdata[parse(Int64, dir[end])] = read_file(joinpath(casepath, dir, "spe11$(case)_time_series.csv"))
+            result_id = parse(Int64, dir[end])
+            spth = joinpath(casepath, dir, "spe11$(case)_time_series.csv")
+            gdata[result_id] = read_file(spth, group, result_id, case)
         end
         if length(keys(gdata)) > 0
             results[group] = gdata
         end
+    end
+    if merge
+        new_results = DataFrame()
+        for (group, data) in results
+            for (key, val) in data
+                new_results = vcat(new_results, val)
+            end
+        end
+        results = new_results
     end
     return results
 end

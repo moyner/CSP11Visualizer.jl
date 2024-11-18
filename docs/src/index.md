@@ -1,7 +1,3 @@
-# YourPackage.jl
+# SPE11 plots
 
-Documentation for `YourPackage.jl`.
-
-```@autodocs
-Modules=[YourPackage]
-```
+Hello SPE11 world.
