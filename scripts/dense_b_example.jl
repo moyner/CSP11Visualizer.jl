@@ -1,3 +1,4 @@
+# Example of visualizing dense values
 using CSP11Visualizer, GLMakie # hide
 steps = 0:5:50
 steps = 0:5:1000

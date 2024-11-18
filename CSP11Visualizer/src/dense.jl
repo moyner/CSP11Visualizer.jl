@@ -15,6 +15,25 @@ function parse_dense_timesteps(group, result, case = "b";
     return results
 end 
 
+function plot_movie(results, k, t = k)
+    x = results[1]["_x_m"]
+    z = results[1]["z_m"]
+    fig = Figure(size = (1200, 600))
+    ax = Axis(fig[1, 1], title = t)
+    ix = Observable(1)
+    getresult(i) = vec(results[i][k])
+    values = @lift getresult($ix)
+    plt = heatmap!(ax, vec(x), vec(z), values, colormap = default_colormap())
+    Colorbar(fig[1, 2], plt)
+    framerate = 24
+    record(fig, "$k.mp4", eachindex(results);
+        framerate = framerate) do t
+        ix[] = t
+    end
+
+    return fig
+end
+
 function plot_snapshot(result, k, t = k)
     x = result["_x_m"]
     z = result["z_m"]

@@ -12,7 +12,11 @@ nothing #hide
 
 ````@example sparse_b
 set_default_plot_size(30cm, 20cm) # hide
-myplot(k) = plot(results, x=:time, y=k, Geom.line, color = :groupresult); # hide
+function myplot(k; xlabel = "Time (years)", ylabel = "$k", title = "")
+    Gadfly.plot(results, x=:time, y=k, Geom.line, color = :groupresult,
+    Guide.xlabel(xlabel), Guide.ylabel(ylabel), Guide.title(title)
+    )
+end; # hide
 nothing #hide
 ````
 
@@ -21,14 +25,14 @@ nothing #hide
 We can say something nice about this point.
 
 ````@example sparse_b
-myplot(:P1) # hide
+myplot(:P1, ylabel = "Pascal", title = "Pressure at P1") # hide
 ````
 
 ### Pressure observation point 2
 We can say something nice about this point, too.
 
 ````@example sparse_b
-myplot(:P2) # hide
+myplot(:P2, ylabel = "Pascal", title = "Pressure at P2") # hide
 ````
 
 ## Mobile CO₂
@@ -36,13 +40,13 @@ myplot(:P2) # hide
 ### Mobile CO₂ in region A
 
 ````@example sparse_b
-myplot(:mobA) # hide
+myplot(:mobA, ylabel = "kg", title = "Mobile CO2 in region A") # hide
 ````
 
 ### Mobile CO₂ in region B
 
 ````@example sparse_b
-myplot(:mobB) # hide
+myplot(:mobB, ylabel = "kg", title = "Mobile CO2 in region A") # hide
 ````
 
 ## Dissolved CO₂

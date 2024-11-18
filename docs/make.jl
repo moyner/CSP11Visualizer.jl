@@ -14,7 +14,10 @@ out_dir = joinpath(@__DIR__, "src", "pages")
 do_build = true
 
 
-pages = ["Sparse B" => "sparse_b"]
+pages = [
+    "Sparse B" => "sparse_b",
+    "Dense B snapshot example" => "dense_b_example"
+]
 
 for (ex, pth) in pages
     in_pth = example_path(pth)
