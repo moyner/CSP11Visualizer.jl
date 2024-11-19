@@ -1,3 +1,6 @@
 # SPE11 plots
 
-Attempt at making SPE11 data accessible. Check sidebar for examples.
+Experiment in making SPE11 data accessible using a Documenter.jl + Gadfly.jl + Makie.jl workflow. Check sidebar for examples.
+
+!!! danger "Just a test"
+    This are not official or final results.

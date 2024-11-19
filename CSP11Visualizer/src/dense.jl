@@ -26,7 +26,6 @@ function make_movie(results, k, t = k; filename = "sg.mp4")
     plt = heatmap!(ax, vec(x), vec(z), values, colormap = default_colormap())
     Colorbar(fig[1, 2], plt)
     framerate = 24
-    filename = "$k.mp4"
     record(fig, filename, eachindex(results);
         framerate = framerate) do t
         ix[] = t
