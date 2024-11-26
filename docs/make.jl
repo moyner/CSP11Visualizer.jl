@@ -2,7 +2,7 @@ using Documenter
 using CSP11Visualizer, Literate
 
 do_build = true
-build_all_dense = false
+build_all_dense = true
 
 caseb = [
     # "Animation example" => "animation_b_example.md",
@@ -32,7 +32,7 @@ end
 if build_all_dense
     cases_b = CSP11Visualizer.available_dense_data("b")
 else
-    cases_b = Dict("SINTEF" => [1])
+    cases_b = Dict("sintef" => [1])
     # cases_b = Dict("kiel" => [1])
 end
 
@@ -47,6 +47,8 @@ end
 in_pth = example_path("dense_b_template")
 out_dir_b = joinpath(@__DIR__, "src", "pages", "dense_b")
 mkpath(out_dir_b)
+# Delete old files
+foreach(rm, filter(endswith(".md"), readdir(out_dir_b , join=true)))
 if do_build
     for (group, results) in cases_b
         case_paths = []
@@ -56,7 +58,7 @@ if do_build
             Literate.markdown(in_pth, out_dir_b, name = fn, preprocess = replacer)
             push!(case_paths, "Result $result" => joinpath("pages", "dense_b", "$fn.md"))
         end
-        push!(caseb, "$group" => case_paths)
+        push!(caseb, "$group dense results" => case_paths)
     end
 end
 

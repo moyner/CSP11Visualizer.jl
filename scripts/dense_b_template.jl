@@ -6,10 +6,12 @@ steps = 0:5:1000
 steps = [0, 10, 30, 50, 100, 200, 500, 1000]
 steps = [50, 1000]
 results = CSP11Visualizer.parse_dense_timesteps(groupname, resultid, steps = steps); # hide
-end_of_injection = findfirst(isequal(50), steps)
-@assert !isnothing(end_of_injection)
-end_of_migration = findfirst(isequal(1000), steps)
-@assert !isnothing(end_of_migration)
+end_of_injection = findfirst(isequal(50), steps) # hide
+@assert !isnothing(end_of_injection) # hide
+end_of_migration = findfirst(isequal(1000), steps) # hide
+@assert !isnothing(end_of_migration) # hide
+#
+println("$groupname result $resultid") # hide
 # ## Pressure
 
 # ### End of injection

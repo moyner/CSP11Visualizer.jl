@@ -51,7 +51,13 @@ function read_file(pth, group, result, case; resample = false)
         )
 end
 
-function parse_all_sparse(pth = default_data_path("sparse"); case = "b", merge = true)
+function parse_all_sparse(pth = default_data_path("sparse"); case = "b", verbose = false, merge = true)
+    function maybe_print(x)
+        if verbose
+            println(x)
+        end
+    end
+
     groups = readdir(pth)
     results = Dict{String, Any}()
     for group in groups
@@ -66,10 +72,10 @@ function parse_all_sparse(pth = default_data_path("sparse"); case = "b", merge =
                 result_id = 1
                 spth = joinpath(casepath, csv_name)
             else
-                println("Skipping $dir...")
+                maybe_print("Skipping $dir...")
                 continue
             end
-            println("$group: Reading $spth")
+            maybe_print("$group: Reading $spth")
             try
                 gdata[result_id] = read_file(spth, group, result_id, case)
             catch excpt

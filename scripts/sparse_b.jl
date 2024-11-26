@@ -1,5 +1,5 @@
 using CSP11Visualizer, Gadfly # hide
-results = CSP11Visualizer.parse_all_sparse(); # hide
+results = CSP11Visualizer.parse_all_sparse(verbose=false); # hide
 
 # ![image](../assets/caseb.png)
 
