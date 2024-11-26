@@ -51,7 +51,7 @@ function read_file(pth, group, result, case; resample = false)
         )
 end
 
-function parse_all_sparse(pth = default_data_path(); case = "b", merge = true)
+function parse_all_sparse(pth = default_data_path("sparse"); case = "b", merge = true)
     groups = readdir(pth)
     results = Dict{String, Any}()
     for group in groups
@@ -59,8 +59,17 @@ function parse_all_sparse(pth = default_data_path(); case = "b", merge = true)
         casepath = joinpath(pth, group, "spe11$case")
         for dir in readdir(casepath)
             println("$group: Reading $dir")
-            result_id = parse(Int64, dir[end])
-            spth = joinpath(casepath, dir, "spe11$(case)_time_series.csv")
+            csv_name = "spe11$(case)_time_series.csv"
+            if startswith(dir, "result")
+                result_id = parse(Int64, dir[end])
+                spth = joinpath(casepath, dir, csv_name)
+            elseif dir == csv_name
+                result_id = 1
+                spth = joinpath(casepath, csv_name)
+            else
+                println("Skipping $dir...")
+                continue
+            end
             gdata[result_id] = read_file(spth, group, result_id, case)
         end
         if length(keys(gdata)) > 0
