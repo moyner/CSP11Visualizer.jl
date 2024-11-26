@@ -3,7 +3,7 @@ using CSP11Visualizer, Literate
 
 
 caseb = [
-    "Animation example" => "animation_b_example.md",
+    # "Animation example" => "animation_b_example.md",
 ]
 pagetree = [
         "Home" => "index.md",

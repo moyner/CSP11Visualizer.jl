@@ -58,7 +58,6 @@ function parse_all_sparse(pth = default_data_path("sparse"); case = "b", merge =
         gdata = Dict{Int, Any}()
         casepath = joinpath(pth, group, "spe11$case")
         for dir in readdir(casepath)
-            println("$group: Reading $dir")
             csv_name = "spe11$(case)_time_series.csv"
             if startswith(dir, "result")
                 result_id = parse(Int64, dir[end])
@@ -70,7 +69,12 @@ function parse_all_sparse(pth = default_data_path("sparse"); case = "b", merge =
                 println("Skipping $dir...")
                 continue
             end
-            gdata[result_id] = read_file(spth, group, result_id, case)
+            println("$group: Reading $spth")
+            try
+                gdata[result_id] = read_file(spth, group, result_id, case)
+            catch excpt
+                @error "$group $result_id failed to parse." excpt
+            end
         end
         if length(keys(gdata)) > 0
             results[group] = gdata
