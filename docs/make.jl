@@ -1,4 +1,4 @@
-using Documenter, DocumenterVitepress
+using Documenter
 using CSP11Visualizer, Literate
 
 
@@ -45,24 +45,20 @@ function replace_template(content, group_name, result_id)
 end
 
 in_pth = example_path("dense_b_template")
+out_dir_b = joinpath(@__DIR__, "src", "pages", "dense_b")
+mkpath(out_dir_b)
 if do_build
     for (group, results) in cases_b
         case_paths = []
         for result in results
             fn = "$(group)_$result"
-            push!(case_paths, "Result $result" => joinpath("pages", "$fn.md"))
             replacer = (c) -> replace_template(c, group, result)
-            Literate.markdown(in_pth, out_dir, name = fn, preprocess = replacer)
+            Literate.markdown(in_pth, out_dir_b, name = fn, preprocess = replacer)
+            push!(case_paths, "Result $result" => joinpath("pages", "dense_b", "$fn.md"))
         end
         push!(caseb, "$group" => case_paths)
     end
 end
-
-vitepress_fmt = DocumenterVitepress.MarkdownVitepress(
-    repo = "https://github.com/moyner/spe11-plot-test",
-    devurl = "dev",
-    deploy_url = "moyner.github.io/spe11-plot-test"
-)
 
 documenter_fmt = Documenter.HTML(
     size_threshold = typemax(Int),
@@ -72,7 +68,6 @@ documenter_fmt = Documenter.HTML(
 )
 
 fmt = documenter_fmt
-# fmt = vitepress_fmt
 
 makedocs(;
     modules=[CSP11Visualizer],
