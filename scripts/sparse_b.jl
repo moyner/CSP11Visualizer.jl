@@ -6,7 +6,7 @@ results = CSP11Visualizer.parse_all_sparse(); # hide
 # ## Pressure in observation points
 set_default_plot_size(30cm, 20cm) # hide
 function myplot(k; xlabel = "Time (years)", ylabel = "$k", title = "")
-    Gadfly.with_theme(:dark) do
+    Gadfly.with_theme(:default) do
         Gadfly.plot(results, x=:time, y=k, Geom.line,
             color = :group,
             linestyle = :result,

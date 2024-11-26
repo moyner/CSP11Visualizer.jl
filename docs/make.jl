@@ -39,8 +39,9 @@ vitepress_fmt = DocumenterVitepress.MarkdownVitepress(
 documenter_fmt = Documenter.HTML(
     size_threshold = typemax(Int),
     prettyurls = false,
-    example_size_threshold = typemax(Int)
-    )
+    example_size_threshold = typemax(Int),
+    footer = "[11th SPE Comparative Solution Project](https://www.spe.org/en/csp/)",
+)
 
 fmt = documenter_fmt
 # fmt = vitepress_fmt

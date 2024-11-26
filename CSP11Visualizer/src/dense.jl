@@ -13,7 +13,32 @@ function parse_dense_timesteps(group, result, case = "b";
         push!(results, parse_dense_data(group, result, year, case, path))
     end
     return results
-end 
+end
+
+function available_dense_data(case = "b")
+    pth = default_data_path("dense")
+    groups = readdir(pth)
+    results = Dict{String, Any}()
+    for group in groups
+        present_results = Int[]
+        casepath = joinpath(pth, group, "spe11$case")
+        subdirs = readdir(casepath)
+        if "result1" in subdirs
+            for dir in subdirs
+                if startswith(dir, "result")
+                    result_id = parse(Int64, dir[end])
+                    push!(present_results, result_id)
+                end
+            end
+        else
+            push!(present_results, 1)
+        end
+        if length(present_results) > 0
+            results[group] = present_results
+        end
+    end
+    return results
+end
 
 function make_movie(results, k, t = k; filename = "sg.mp4")
     x = results[1]["_x_m"]
