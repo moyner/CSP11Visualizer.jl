@@ -1,6 +1,8 @@
 using Documenter
 using CSP11Visualizer, Literate
 
+do_build = true
+build_all_dense = false
 
 caseb = [
     # "Animation example" => "animation_b_example.md",
@@ -13,8 +15,6 @@ pagetree = [
 base_dir = realpath(joinpath(@__DIR__, ".."))
 example_path(pth) = joinpath(base_dir, "scripts", "$pth.jl")
 out_dir = joinpath(@__DIR__, "src", "pages")
-do_build = true
-build_all_dense = false
 
 pages = [
     "Sparse measurables, all groups" => "sparse_b",
@@ -33,7 +33,7 @@ if build_all_dense
     cases_b = CSP11Visualizer.available_dense_data("b")
 else
     cases_b = Dict("SINTEF" => [1])
-    # push!(pages, "SINTEF" => ["Result 1" => "dense_b_example"])
+    # cases_b = Dict("kiel" => [1])
 end
 
 function replace_template(content, group_name, result_id)
