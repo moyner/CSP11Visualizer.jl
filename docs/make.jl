@@ -17,7 +17,7 @@ do_build = true
 build_all_dense = false
 
 pages = [
-    "Sparse results, all cases" => "sparse_b",
+    "Sparse measurables, all groups" => "sparse_b",
 ]
 
 for (ex, pth) in pages
@@ -54,7 +54,7 @@ if do_build
             replacer = (c) -> replace_template(c, group, result)
             Literate.markdown(in_pth, out_dir, name = fn, preprocess = replacer)
         end
-        push!(case_paths, "$group" => case_paths)
+        push!(caseb, "$group" => case_paths)
     end
 end
 
