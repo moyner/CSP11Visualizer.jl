@@ -1,14 +1,20 @@
 using CSP11Visualizer, Gadfly # hide
 results = CSP11Visualizer.parse_all_sparse(); # hide
+
+# ![image](../assets/caseb.png)
+
 # ## Pressure in observation points
 set_default_plot_size(30cm, 20cm) # hide
 function myplot(k; xlabel = "Time (years)", ylabel = "$k", title = "")
-    Gadfly.plot(results, x=:time, y=k, Geom.line,
-        color = :groupresult,
-        Guide.xlabel(xlabel),
-        Guide.ylabel(ylabel),
-        Guide.title(title)
-    )
+    Gadfly.with_theme(:dark) do
+        Gadfly.plot(results, x=:time, y=k, Geom.line,
+            color = :group,
+            linestyle = :result,
+            Guide.xlabel(xlabel),
+            Guide.ylabel(ylabel),
+            Guide.title(title)
+        )
+    end
 end; # hide
 # ## Pressure observation points
 # ### Pressure observation point 1
