@@ -3,7 +3,7 @@ cases_b = CSP11Visualizer.available_dense_data("b")
 for (group, v) in pairs(cases_b)
     for result in v
         println("$group result $result")
-        CSP11Visualizer.parse_dense_timesteps(groupname, resultid, steps = [50]);
+        CSP11Visualizer.parse_dense_timesteps(group, result, steps = [50]);
     end
 end
 ##

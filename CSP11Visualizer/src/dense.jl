@@ -107,7 +107,8 @@ function parse_dense_data(group, result, year, case = "b", path = default_data_p
     for commentkey in ["#", "\"", "x"]
         subdf = CSV.read(subpth, DataFrame,
             normalizenames=true,
-            comment = "#",
+            comment = commentkey,
+            missingstring = "n/a",
             header = false
         )
         if size(subdf, 1) == prod(dims)
@@ -142,8 +143,11 @@ function parse_dense_data(group, result, year, case = "b", path = default_data_p
     out = Dict{String, AbstractArray{Float64}}()
     for name in names(df)
         val = df[:, name]
+        if eltype(val) != Float64 || eltype(val) != Int64
+            val = [ifelse(ismissing(i), NaN, i) for i in val]
+        end
         val = reshape(val[ix], dims...)
-        out[rstrip(name, '_')] = val
+        out[name] = val
     end
     return out
 end
