@@ -103,7 +103,20 @@ function parse_dense_data(group, result, year, case = "b", path = default_data_p
         @assert case == "c"
         dims = [168, 100, 120]
     end
-    df = CSV.read(subpth, DataFrame, normalizenames=true)
+    function check_line(i, name)
+        tmp = lstrip(name)
+        return !isnothing(tryparse(Float64, tmp[1]))
+    end
+    df = for commentkey in ["#", "\"", "x"]
+    subdf = CSV.read(subpth, DataFrame,
+         normalizenames=true,
+         comment = "#",
+         header = false
+    )
+    size(subdf, 1) ==   prod(dims)
+    return subdf
+    end
+
     for (i, name) in enumerate(names(df))
         rename!(df, Symbol(name) => normnames[i])
     end

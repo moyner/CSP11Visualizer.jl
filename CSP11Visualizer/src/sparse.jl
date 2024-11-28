@@ -14,10 +14,18 @@ function resample_table(t, vals)
 end
 
 function read_file(pth, group, result, case; resample = false)
-    df = CSV.read(pth, DataFrame)
-
+    df = missing
+    time = missing
+    for cmt in ["#", "\"", "t"]
+        df_attempt = CSV.read(pth, DataFrame, comment = cmt, header = false)
+        T_t = eltype(df_attempt[:, 1])
+        if T_t == Float64 || T_t == Int64
+            df = df_attempt
+            break
+        end
+    end
+    @assert !ismissing(df) "Failed to parse $pth"
     time = df[:, 1]
-
     p1 = df[:, 2]
     p2 = df[:, 3]
 
@@ -80,6 +88,7 @@ function parse_all_sparse(pth = default_data_path("sparse"); case = "b", verbose
                 gdata[result_id] = read_file(spth, group, result_id, case)
             catch excpt
                 @error "$group $result_id failed to parse." excpt
+                rethrow(excpt)
             end
         end
         if length(keys(gdata)) > 0
