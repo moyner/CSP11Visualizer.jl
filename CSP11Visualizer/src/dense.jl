@@ -41,6 +41,7 @@ function available_dense_data(case = "b")
 end
 
 function make_movie(results, k, t = k; filename = "sg.mp4")
+    GLMakie.activate!()
     x = results[1]["_x_m"]
     z = results[1]["z_m"]
     fig = Figure(size = (1200, 600))
@@ -97,11 +98,23 @@ function parse_dense_data(group, result, year, case = "b", path = default_data_p
             :T
         ]
     elseif case == "c"
-        error("Not implemented yet")
+        normnames = [
+            :x,
+            :y,
+            :z,
+            :pw,
+            :sg,
+            :X_co2,
+            :Y_h2o,
+            :deng,
+            :denw,
+            :co2mass,
+            :T
+        ]
+        dims = [168, 100, 120]
     else
         error("Not finished yet")
-        @assert case == "c"
-        dims = [168, 100, 120]
+        @assert case == "a"
     end
     df = missing
     for commentkey in ["#", "\"", "x"]

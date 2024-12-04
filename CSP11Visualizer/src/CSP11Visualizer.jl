@@ -1,5 +1,5 @@
 module CSP11Visualizer
-    using CSV, DataFrames, CairoMakie, Gadfly
+    using CSV, DataFrames, GLMakie, WGLMakie, CairoMakie, Gadfly
 
     function default_data_path(type = "dense")
         basepath = realpath(joinpath(@__DIR__, "..", "..", "data"))
