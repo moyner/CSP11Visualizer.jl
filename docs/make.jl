@@ -9,7 +9,6 @@ caseb = [
 ]
 pagetree = [
         "Home" => "index.md",
-        "Visualizations tests" => "wgl_test",
         "Case B" => caseb
 ]
 
@@ -19,6 +18,7 @@ out_dir = joinpath(@__DIR__, "src", "pages")
 
 pages = [
     "Sparse measurables, all groups" => "sparse_b",
+    "Visualizations tests" => "wgl_test"
 ]
 
 for (ex, pth) in pages

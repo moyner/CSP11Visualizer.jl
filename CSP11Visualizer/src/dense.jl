@@ -60,6 +60,7 @@ function make_movie(results, k, t = k; filename = "sg.mp4")
 end
 
 function plot_snapshot(result, k, t = k)
+    GLMakie.activate!()
     x = result["x"]
     z = result["z"]
     fig = Figure(size = (1200, 600))
