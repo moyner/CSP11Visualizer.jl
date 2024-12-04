@@ -9,6 +9,7 @@ caseb = [
 ]
 pagetree = [
         "Home" => "index.md",
+        "Visualizations tests" => "wgl_test",
         "Case B" => caseb
 ]
 
