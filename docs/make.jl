@@ -2,7 +2,7 @@ using Documenter
 using CSP11Visualizer, Literate
 
 do_build = true
-build_all_dense = true
+build_all_dense = false
 
 caseb = [
     # "Animation example" => "animation_b_example.md",
@@ -14,17 +14,21 @@ pagetree = [
 
 base_dir = realpath(joinpath(@__DIR__, ".."))
 example_path(pth) = joinpath(base_dir, "scripts", "$pth.jl")
-out_dir = joinpath(@__DIR__, "src", "pages")
+out_dir = joinpath(@__DIR__, "src", "pages", "generated")
+mkpath(out_dir)
+# Clean up generated files
+foreach(rm, filter(endswith(".md"), readdir(out_dir, join=true)))
+
 
 pages = [
     "Sparse measurables, all groups" => "sparse_b",
-    "Visualizations tests" => "wgl_test"
+    # "Visualizations tests" => "wgl_test"
 ]
 
 for (ex, pth) in pages
     in_pth = example_path(pth)
     if do_build
-        push!(caseb, ex => joinpath("pages", "$pth.md"))
+        push!(caseb, ex => joinpath("pages", "generated", "$pth.md"))
         Literate.markdown(in_pth, out_dir)
     end
 end
@@ -46,10 +50,10 @@ function replace_template(content, group_name, result_id)
 end
 
 in_pth = example_path("dense_b_template")
-out_dir_b = joinpath(@__DIR__, "src", "pages", "dense_b")
+out_dir_b = joinpath(@__DIR__, "src", "pages", "generated", "dense_b")
 mkpath(out_dir_b)
 # Delete old files
-foreach(rm, filter(endswith(".md"), readdir(out_dir_b , join=true)))
+foreach(rm, filter(endswith(".md"), readdir(out_dir_b, join=true)))
 if do_build
     for (group, results) in cases_b
         case_paths = []
@@ -57,7 +61,7 @@ if do_build
             fn = "$(group)_$result"
             replacer = (c) -> replace_template(c, group, result)
             Literate.markdown(in_pth, out_dir_b, name = fn, preprocess = replacer)
-            push!(case_paths, "Result $result" => joinpath("pages", "dense_b", "$fn.md"))
+            push!(case_paths, "Result $result" => joinpath("pages", "generated", "dense_b", "$fn.md"))
         end
         push!(caseb, "$group dense results" => case_paths)
     end
