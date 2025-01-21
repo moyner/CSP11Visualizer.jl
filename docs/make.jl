@@ -1,6 +1,23 @@
 using Documenter
 using CSP11Visualizer, Literate
 
+# TODO list
+# - Match colors between dynamic and static sparse plots
+# - Make sure that we have high quality static sparse plots
+# - Some kind of video template at the top of the page that plots two quantities together
+# - Check if interactivity works for WGL - would be really cool
+# - SPE11C plots - cross sections
+# - Make colormaps consistent across all plots
+
+# Olav's notes
+# - Some results appear to have low resolution (in for example water density).
+#   This is because some results use fixed precision like in the description
+#   and others use additional digits. Not much we can do about this unless we
+#   want to truncate and make all plots equally bad.
+#
+# May need to spin up webserver to fix XSS protection in chrome for local previews:
+# SPE11-plot-test\docs\build> python3 -m http.server 9000
+
 do_build = true
 build_all_dense = false
 
@@ -21,8 +38,8 @@ foreach(rm, filter(endswith(".md"), readdir(out_dir, join=true)))
 
 
 pages = [
-    "Sparse measurables, all groups" => "sparse_b",
-    # "Visualizations tests" => "wgl_test"
+    # "Sparse measurables, all groups" => "sparse_b",
+    "Visualizations tests" => "wgl_test_2"
 ]
 
 for (ex, pth) in pages
@@ -37,7 +54,8 @@ end
 if build_all_dense
     cases_b = CSP11Visualizer.available_dense_data("b")
 else
-    cases_b = Dict("sintef" => [1])
+    cases_b = Dict()
+    # cases_b = Dict("sintef" => [1])
     # cases_b = Dict("kiel" => [1])
 end
 
