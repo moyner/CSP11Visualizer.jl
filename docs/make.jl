@@ -22,12 +22,22 @@ using CSP11Visualizer, Literate
 do_build = true
 build_all_dense = false
 
-caseb = [
+case_a = [
+
+]
+
+case_b = [
+
+]
+
+case_c = [
     # "Animation example" => "animation_b_example.md",
 ]
 pagetree = [
-        "Home" => "index.md",
-        "Case B" => caseb
+        "Starting page" => "index.md",
+        "Case A" => case_a,
+        "Case B" => case_b,
+        "Case C" => case_c
 ]
 
 base_dir = realpath(joinpath(@__DIR__, ".."))
@@ -38,25 +48,42 @@ mkpath(out_dir)
 foreach(rm, filter(endswith(".md"), readdir(out_dir, join=true)))
 
 
-pages = [
-    "Sparse measurables, all groups" => "sparse_b_static",
-    # "Visualizations tests" => "wgl_test_2"
+function publish_examples(dest, paths)
+    for (ex, pth) in paths
+        in_pth = example_path(pth)
+        if do_build
+            push!(dest, ex => joinpath("pages", "generated", "$pth.md"))
+            Literate.markdown(in_pth, out_dir)
+        end
+    end
+    return dest
+end
+
+
+pages_a = [
+    "Sparse measurables, all groups" => "sparse_a_static",
 ]
 
-for (ex, pth) in pages
-    in_pth = example_path(pth)
-    if do_build
-        push!(caseb, ex => joinpath("pages", "generated", "$pth.md"))
-        Literate.markdown(in_pth, out_dir)
-    end
-end
+publish_examples(case_a, pages_a)
+
+pages_b = [
+    "Sparse measurables, all groups" => "sparse_b_static",
+]
+
+publish_examples(case_b, pages_b)
+
+pages_c = [
+    "Sparse measurables, all groups" => "sparse_c_static",
+]
+
+publish_examples(case_c, pages_c)
 
 
 if build_all_dense
     cases_b = CSP11Visualizer.available_dense_data("b")
 else
-    # cases_b = Dict()
-    cases_b = Dict("sintef" => [1])
+    cases_b = Dict()
+    # cases_b = Dict("sintef" => [1])
     # cases_b = Dict("kiel" => [1])
 end
 

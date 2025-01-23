@@ -236,7 +236,7 @@ function plot_sparse(results, k::Symbol; ymax = nothing)
         tscale = 1.0
         xmax = 1010.0
     end
-    fig = Figure(size = (1200, 600))
+    fig = Figure(size = (1200, 600), backgroundcolor = :transparent)
     ax = Axis(fig[1, 1:3], xlabel = xlabel, ylabel = ylabel, title = title)
 
     for (gno, group) in enumerate(groups)
