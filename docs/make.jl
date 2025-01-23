@@ -20,7 +20,7 @@ using CSP11Visualizer, Literate
 # SPE11-plot-test\docs\build> python3 -m http.server 9000
 
 do_build = true
-build_all_dense = false
+build_all_dense = true
 
 case_a = [
 

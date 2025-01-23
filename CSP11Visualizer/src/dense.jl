@@ -64,9 +64,12 @@ function plot_snapshot(result, k, t = k)
     x = result["x"]
     z = result["z"]
     fig = Figure(size = (1200, 600), backgroundcolor = :transparent)
-    ax = Axis(fig[1, 1], title = t)
-    plt = heatmap!(ax, vec(x), vec(z), vec(result["$k"]), colormap = default_colormap())
-    Colorbar(fig[1, 2], plt)
+    D = vec(result["$k"])
+    if !all(isnan, D)
+        ax = Axis(fig[1, 1], title = t)
+        plt = heatmap!(ax, vec(x), vec(z), D, colormap = default_colormap())
+        Colorbar(fig[1, 2], plt)
+    end
     return fig
 end
 
