@@ -20,5 +20,5 @@ CSP11Visualizer.make_movie(results, "phase_mass_density_water_kg_m3", "Water sat
 ## Water density for one result
 
 ```@raw html
-<video autoplay loop muted playsinline controls src="./denw.mp4" />
+<video playsinline controls src="https://spe.widen.net/view/video/ie51w02dyz/speVideo.mp4?u=krg3sb" />
 ```

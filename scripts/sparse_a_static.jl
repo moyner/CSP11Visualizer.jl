@@ -2,7 +2,7 @@ using CSP11Visualizer, CairoMakie # hide
 results = CSP11Visualizer.parse_all_sparse(verbose=false, case = "a"); # hide
 
 import CSP11Visualizer: plot_sparse # hide
-# ![image](../assets/caseb.png)
+# ![image](../../assets/casea.png)
 plot_sparse(results, k) = plot_sparse(results, k) # hide
 # ## Pressure in observation points
 # ## Pressure observation points

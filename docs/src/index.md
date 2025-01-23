@@ -1,6 +1,7 @@
-# SPE11 plots
+# The 11th Society of Petroleum Engineers Comparative Solution Project
 
-Experiment in making SPE11 data accessible using a Documenter.jl + Gadfly.jl + Makie.jl workflow. Check sidebar for examples.
+Welcome to the online website for the CSP11 results.
 
-!!! danger "Just a test"
-    This are not official or final results.
+![image](assets/csp_frontart.jpg)
+
+* Image credit: Martin Fernø, Lluis Saló-Salgado and Jan Martin Nordbotten *
