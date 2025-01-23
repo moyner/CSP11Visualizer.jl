@@ -5,7 +5,7 @@ results = CSP11Visualizer.parse_all_sparse(verbose=false); # hide
 
 # ## Pressure in observation points
 set_default_plot_size(30cm, 20cm) # hide
-function myplot(k; xlabel = "Time (years)", ylabel = "$k", title = "")
+function plot_sparse(results, k; xlabel = "Time (years)", ylabel = "$k", title = "")
     Gadfly.with_theme(:default) do
         Gadfly.plot(results, x=:time, y=k, Geom.line,
             color = :group,
@@ -19,7 +19,7 @@ end; # hide
 # ## Pressure observation points
 # ### Pressure observation point 1
 # We can say something nice about this point.
-myplot(:P1, ylabel = "Pascal", title = "Pressure at P1") # hide
+plot_sparse(results, :P1, ylabel = "Pascal", title = "Pressure at P1") # hide
 # ### Pressure observation point 2
 # We can say something nice about this point, too. We can also do some unrelated math to appear fancy:
 # The Brooks-Corey model is a simple model that can be used to generate relative
@@ -38,39 +38,39 @@ myplot(:P1, ylabel = "Pascal", title = "Pressure at P1") # hide
 # 
 # ``\bar{S}_o = \frac{S_o - S_{ro}}{1 - S_{wi} - S_{ro}}``
 
-myplot(:P2, ylabel = "Pascal", title = "Pressure at P2") # hide
+plot_sparse(results, :P2, ylabel = "Pascal", title = "Pressure at P2") # hide
 # ## Mobile CO₂
 
 # ### Mobile CO₂ in region A
-myplot(:mobA, ylabel = "kg", title = "Mobile CO2 in region A") # hide
+plot_sparse(results, :mobA, ylabel = "kg", title = "Mobile CO2 in region A") # hide
 # ### Mobile CO₂ in region B
-myplot(:mobB, ylabel = "kg", title = "Mobile CO2 in region A") # hide
+plot_sparse(results, :mobB, ylabel = "kg", title = "Mobile CO2 in region A") # hide
 
 # ## Dissolved CO₂
 # ### Dissolved CO₂ in region A
-myplot(:dissA) # hide
+plot_sparse(results, :dissA) # hide
 
 # ### Dissolved CO₂ in region B
-myplot(:dissB) # hide
+plot_sparse(results, :dissB) # hide
 
 # ## Immobile CO₂
 
 # ### Immobile CO₂ in region A
-myplot(:immA) # hide
+plot_sparse(results, :immA) # hide
 # ### Immobile CO₂ in region B
-myplot(:immB) # hide
+plot_sparse(results, :immB) # hide
 
 # ## CO₂ in seal
 
 # ### CO₂ in seal in region A
-myplot(:sealA) # hide
+plot_sparse(results, :sealA) # hide
 
 # ### CO₂ in seal in region B
-myplot(:sealB) # hide
+plot_sparse(results, :sealB) # hide
 
 # ## CO₂ in bound
 # ### CO₂ in bound in total
-myplot(:boundTot) # hide
+plot_sparse(results, :boundTot) # hide
 
 # ## CO₂ in seal
-myplot(:sealTot) # hide
+plot_sparse(results, :sealTot) # hide
