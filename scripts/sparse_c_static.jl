@@ -3,7 +3,7 @@ results = CSP11Visualizer.parse_all_sparse(verbose=false, case = "c"); # hide
 
 import CSP11Visualizer: plot_sparse # hide
 # ![image](../assets/caseb.png)
-myplot(k) = plot_sparse(results, k) # hide
+myplot(k; kwarg...) = plot_sparse(results, k; kwarg...) # hide
 # ## Pressure in observation points
 # ## Pressure observation points
 # ### Pressure observation point 1
@@ -39,5 +39,11 @@ myplot(:sealA) # hide
 # ### CO₂ in seal in region B
 myplot(:sealB) # hide
 
+# ## CO₂ in bound
+# ### CO₂ in bound in total
+myplot(:boundTot, ymax = 1.6e9) # hide
+
 # ## CO₂ in seal
 myplot(:sealTot) # hide
+##
+myplot(:sealTot, ymax = 1.8e9) # hide

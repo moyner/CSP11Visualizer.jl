@@ -193,7 +193,7 @@ function get_group_color(group::String)
     return cmap[ix]
 end
 
-function plot_sparse(results, k::Symbol)
+function plot_sparse(results, k::Symbol; ymax = nothing)
     kstr = "$k"
     if k == :P1 || k == :P2
         ylabel = "Pascal"
@@ -265,6 +265,9 @@ function plot_sparse(results, k::Symbol)
         end
     end
     xlims!(ax, (0.0, xmax))
+    if !isnothing(ymax)
+        ylims!(ax, (0.0, ymax))
+    end
     Legend(fig[2, 1:2], line_labels, groups, "Group", orientation = :horizontal, nbanks = 2)
     # data = 
     # :solid (equivalent to nothing), :dot, :dash, :dashdot
