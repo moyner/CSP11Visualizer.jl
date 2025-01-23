@@ -1,3 +1,5 @@
+const YEAR = 36*3600*24
+
 function resample_table(t, vals)
     t_rep = 3.1536e6 # 0.1 year
     start = 0.0
@@ -46,8 +48,7 @@ function read_file(pth, group, result, case; resample = false)
         time, new_tab = resample_table(time, (p1, p2, mobA, immA, dissA, sealA, mobB, immB, dissB, sealB, M, sealTot, boundTot))
         p1, p2, mobA, immA, dissA, sealA, mobB, immB, dissB, sealB, M, sealTot, boundTot = new_tab
     end
-    uyear = 365.0*3600*24.0
-    return DataFrame(time = time/uyear,
+    return DataFrame(time = time/YEAR,
             P1 = p1, P2 = p2,
             mobA = mobA, immA=immA, dissA=dissA, sealA=sealA,
             mobB = mobB, immB=immB, dissB=dissB, sealB=sealB,
@@ -105,4 +106,97 @@ function parse_all_sparse(pth = default_data_path("sparse"); case = "b", verbose
         results = new_results
     end
     return results
+end
+
+function get_group_color(group::String)
+    canonical_group_order = [
+        "calgary",
+        "csiro",
+        "ctc-cne",
+        "delft-darts",
+        "geos",
+        "ifpen",
+        "kfupm",
+        "kiel",
+        "opengosim",
+        "opm",
+        "pau-inria",
+        "pnnl",
+        "rice",
+        "sintef",
+        "slb",
+        "stuttgart",
+        "tetratech-rps",
+        "ut-csee-pge"
+    ]
+    ix = findfirst(isequal(group), canonical_group_order)
+    if isnothing(ix)
+        ix = length(canonical_group_order) + 1
+    end
+    cmap = Makie.to_colormap(:tab20)
+    return cmap[ix]
+end
+
+function plot_sparse(results, k::Symbol)
+    kstr = "$k"
+    if k == :P1 || k == :P2
+        ylabel = "Pascal"
+        title = "Pressure at observation point $k"
+    elseif k == :mobA || k == :mobB
+        ylabel = "kg"
+        title = "Mobile CO2 in region $(kstr[4])"
+    elseif k == :dissA || k == :dissB
+        ylabel = "kg"
+        title = "Dissolved CO2 in region $(kstr[5])"
+    elseif k == :immA || k == :immB
+        ylabel = "kg"
+        title = "Immobile CO2 in region $(kstr[4])"
+    elseif k == :sealA || k == :sealB
+        ylabel = "kg"
+        title = "CO2 in seal in region $(kstr[5])"
+    elseif k == :sealTot
+        ylabel = "kg"
+        title = "CO2 in seal"
+    elseif k == :boundTot
+        ylabel = "kg"
+        title = "CO2 in bound"
+    else
+        ylabel = ""
+        title = "$k"
+    end
+    fig = Figure(size = (1200, 600))
+    ax = Axis(fig[1, 1:3], xlabel = "Time (years)", ylabel = ylabel, title = title)
+    linestyles = [:solid, :dot, :dash, :dashdot]
+    groups = unique(results[:, "group"])
+    ngroups = length(groups)
+    plts = []
+    @time for (gno, group) in enumerate(groups)
+        group_result = filter(row -> row.group == "$group", results)
+
+        for resultid in 1:4
+            subresult = filter(row -> row.groupresult == "$(group)$resultid", group_result)
+            x = subresult[!, :time]
+            if length(x) == 0
+                continue
+            end
+            y = subresult[!, k]
+            c = get_group_color(group)
+
+            plt = lines!(ax, x, y, color = c, label = group, linestyle = linestyles[resultid])
+            if resultid == 1
+                push!(plts, plt)
+            end
+            @info "Plotting $group $resultid" size(subresult)
+        end
+    end
+    Legend(fig[2, 1:2], plts, groups, orientation = :horizontal, nbanks = 3)
+    # data = 
+    # :solid (equivalent to nothing), :dot, :dash, :dashdot
+    styles = [LineElement(color = :black, linestyle = s) for s in linestyles]
+
+    Legend(fig[2, 3],
+    [LineElement(color = :black, linestyle = s) for s in linestyles],
+    ["Result $i" for i in 1:4],
+    nbanks = 2)
+    return fig
 end
