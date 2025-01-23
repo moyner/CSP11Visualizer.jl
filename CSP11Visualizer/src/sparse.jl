@@ -45,8 +45,10 @@ function read_file(pth, group, result, case; resample = false)
 
     if case == "a"
         boundTot = fill(NaN, length(time))
+        t_scale = 1.0
     elseif case == "b" || case == "c"
         boundTot = df[:, 14]
+        t_scale = YEAR
     else
         error("Unknown case $case")
     end
@@ -54,7 +56,7 @@ function read_file(pth, group, result, case; resample = false)
         time, new_tab = resample_table(time, (p1, p2, mobA, immA, dissA, sealA, mobB, immB, dissB, sealB, M, sealTot, boundTot))
         p1, p2, mobA, immA, dissA, sealA, mobB, immB, dissB, sealB, M, sealTot, boundTot = new_tab
     end
-    return DataFrame(time = time/YEAR,
+    return DataFrame(time = time/t_scale,
             P1 = p1, P2 = p2,
             mobA = mobA, immA=immA, dissA=dissA, sealA=sealA,
             mobB = mobB, immB=immB, dissB=dissB, sealB=sealB,
@@ -99,7 +101,7 @@ function parse_all_sparse(pth = default_data_path("sparse"); case = "b", verbose
                 gdata[result_id] = read_file(spth, group, result_id, case)
             catch excpt
                 @error "$group $result_id failed to parse." excpt
-                rethrow(excpt)
+                # rethrow(excpt)
             end
         end
         if length(keys(gdata)) > 0
@@ -218,15 +220,25 @@ function plot_sparse(results, k::Symbol)
         ylabel = ""
         title = "$k"
     end
-    fig = Figure(size = (1200, 600))
-    ax = Axis(fig[1, 1:3], xlabel = "Years since injection start", ylabel = ylabel, title = title)
     linestyles = [:solid, :dot, :dash, :dashdot]
     groups = intersect(get_canonical_order(), unique(results[:, "group"]))
-    # groups = unique(results[:, "group"])
-    # groups = sort(groups)
     ngroups = length(groups)
     plts = []
     line_labels = []
+    case = results[1, :case]
+    if case == "a"
+        xlabel = "Seconds since injection start"
+        tscale = 1.0
+        xmax = 4.34e5
+    else
+        @assert case == "b" || case == "c"
+        xlabel = "Years since injection start"
+        tscale = 1.0
+        xmax = 1010.0
+    end
+    fig = Figure(size = (1200, 600))
+    ax = Axis(fig[1, 1:3], xlabel = xlabel, ylabel = ylabel, title = title)
+
     @time for (gno, group) in enumerate(groups)
         group_result = filter(row -> row.group == "$group", results)
 
@@ -236,7 +248,7 @@ function plot_sparse(results, k::Symbol)
             if length(x) == 0
                 continue
             end
-            y = subresult[!, k]
+            y = subresult[!, k].*tscale
             c = get_group_color(group)
 
             plt = lines!(ax, x, y, color = c, label = group, linestyle = linestyles[resultid], linewidth = 1.8)
@@ -247,7 +259,7 @@ function plot_sparse(results, k::Symbol)
             @info "Plotting $group $resultid" size(subresult)
         end
     end
-    xlims!(ax, (0.0, 1010.0))
+    xlims!(ax, (0.0, xmax))
     Legend(fig[2, 1:2], line_labels, groups, "Group", orientation = :horizontal, nbanks = 2)
     # data = 
     # :solid (equivalent to nothing), :dot, :dash, :dashdot
