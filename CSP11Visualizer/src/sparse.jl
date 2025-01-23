@@ -171,6 +171,7 @@ function plot_sparse(results, k::Symbol)
     groups = sort(groups)
     ngroups = length(groups)
     plts = []
+    line_labels = []
     @time for (gno, group) in enumerate(groups)
         group_result = filter(row -> row.group == "$group", results)
 
@@ -183,15 +184,16 @@ function plot_sparse(results, k::Symbol)
             y = subresult[!, k]
             c = get_group_color(group)
 
-            plt = lines!(ax, x, y, color = c, label = group, linestyle = linestyles[resultid])
+            plt = lines!(ax, x, y, color = c, label = group, linestyle = linestyles[resultid], linewidth = 1.8)
             if resultid == 1
                 push!(plts, plt)
+                push!(line_labels, LineElement(color = c, linestyle = :solid, linewidth = 8))
             end
             @info "Plotting $group $resultid" size(subresult)
         end
     end
     xlims!(ax, (0.0, 1010.0))
-    Legend(fig[2, 1:2], plts, groups, "Group", orientation = :horizontal, nbanks = 3)
+    Legend(fig[2, 1:2], line_labels, groups, "Group", orientation = :horizontal, nbanks = 3)
     # data = 
     # :solid (equivalent to nothing), :dot, :dash, :dashdot
     styles = [LineElement(color = :black, linestyle = s) for s in linestyles]
