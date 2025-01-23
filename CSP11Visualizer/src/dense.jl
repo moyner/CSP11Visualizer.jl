@@ -117,8 +117,19 @@ function parse_dense_data(group, result, year, case = "b", path = default_data_p
         ]
         dims = [168, 100, 120]
     else
-        error("Not finished yet")
         @assert case == "a"
+        normnames = [
+            :x,
+            :z,
+            :pw,
+            :sg,
+            :X_co2,
+            :Y_h2o,
+            :deng,
+            :denw,
+            :co2mass
+        ]
+        dims = [280, 120]
     end
     df = missing
     for commentkey in ["#", "\"", "x"]
