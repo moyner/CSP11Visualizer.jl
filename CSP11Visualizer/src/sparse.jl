@@ -42,8 +42,14 @@ function read_file(pth, group, result, case; resample = false)
     sealB = df[:, 11]
     M = df[:, 12]
     sealTot = df[:, 13]
-    boundTot = df[:, 14]
 
+    if case == "a"
+        boundTot = fill(NaN, length(time))
+    elseif case == "b" || case == "c"
+        boundTot = df[:, 14]
+    else
+        error("Unknown case $case")
+    end
     if resample
         time, new_tab = resample_table(time, (p1, p2, mobA, immA, dissA, sealA, mobB, immB, dissB, sealB, M, sealTot, boundTot))
         p1, p2, mobA, immA, dissA, sealA, mobB, immB, dissB, sealB, M, sealTot, boundTot = new_tab
