@@ -73,14 +73,19 @@ function plot_snapshot(result, k, t = k)
     return fig
 end
 
-function parse_dense_data(group, result, year, case = "b", path = default_data_path())
-    raw_pth = joinpath(path, group, "spe11$case", "spe11$(case)_spatial_map_$(year)y.csv")
+function parse_dense_data(group, result, year_or_h, case = "b", path = default_data_path())
+    if case == "b" || case == "c"
+        fname = "spe11$(case)_spatial_map_$(year_or_h)y.csv"
+    else
+        fname = "spe11$(case)_spatial_map_$(year_or_h)h.csv"
+    end
+    raw_pth = joinpath(path, group, "spe11$case", fname)
     if result == 1 && isfile(raw_pth)
         # Flat structure with a single result
         subpth = raw_pth
     else
         # Nested folders with results
-        subpth = joinpath(path, group, "spe11$case", "result$result", "spe11$(case)_spatial_map_$(year)y.csv")
+        subpth = joinpath(path, group, "spe11$case", "result$result", fname)
     end
     if case == "b"
         dims = [840, 120]
