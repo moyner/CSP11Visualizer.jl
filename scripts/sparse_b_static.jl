@@ -1,11 +1,11 @@
-using CSP11Visualizer, CairoMakie # hide
-results = CSP11Visualizer.parse_all_sparse(verbose=false, case = "b"); # hide
-
-import CSP11Visualizer: plot_sparse # hide
+# # Case B - sparse measurables
+# Two-dimensional model at reservoir conditions.
 # ![image](../../assets/caseb.png)
-# ## Pressure in observation points
 # ## Pressure observation points
 # ### Pressure observation point 1
+using CSP11Visualizer, CairoMakie # hide
+CairoMakie.activate!() # hide
+results = CSP11Visualizer.parse_all_sparse(verbose=false, case = "b"); # hide
 plot_sparse(results, :P1) # hide
 # ### Pressure observation point 2
 plot_sparse(results, :P2) # hide

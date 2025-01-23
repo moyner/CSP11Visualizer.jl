@@ -1,6 +1,7 @@
 groupname = "sintef"
 resultid = 1
-using CSP11Visualizer, GLMakie # hide
+using CSP11Visualizer, GLMakie, CairoMakie # hide
+CairoMakie.activate!() # hide
 steps = 0:5:50
 steps = 0:5:1000
 steps = [0, 10, 30, 50, 100, 200, 500, 1000]

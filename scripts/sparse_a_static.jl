@@ -1,12 +1,12 @@
-using CSP11Visualizer, CairoMakie # hide
-results = CSP11Visualizer.parse_all_sparse(verbose=false, case = "a"); # hide
-
-import CSP11Visualizer: plot_sparse # hide
+# # Case A - sparse measurables
+# Two-dimensional model at lab conditions
 # ![image](../../assets/casea.png)
-plot_sparse(results, k) = plot_sparse(results, k) # hide
 # ## Pressure in observation points
 # ## Pressure observation points
 # ### Pressure observation point 1
+using CSP11Visualizer, CairoMakie # hide
+CairoMakie.activate!() # hide
+results = CSP11Visualizer.parse_all_sparse(verbose=false, case = "a"); # hide
 plot_sparse(results, :P1) # hide
 # ### Pressure observation point 2
 plot_sparse(results, :P2) # hide
@@ -39,9 +39,5 @@ plot_sparse(results, :sealA) # hide
 # ### CO₂ in seal in region B
 plot_sparse(results, :sealB) # hide
 
-# ## CO₂ in bound
-# ### CO₂ in bound in total
-plot_sparse(results, :boundTot) # hide
-
-# ## CO₂ in seal
+# ### Total CO₂ in seal
 plot_sparse(results, :sealTot) # hide

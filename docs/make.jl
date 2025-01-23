@@ -34,7 +34,7 @@ case_c = [
     # "Animation example" => "animation_b_example.md",
 ]
 pagetree = [
-        "Starting page" => "index.md",
+        "CSP11" => "index.md",
         "Case A" => case_a,
         "Case B" => case_b,
         "Case C" => case_c
@@ -82,8 +82,8 @@ publish_examples(case_c, pages_c)
 if build_all_dense
     cases_b = CSP11Visualizer.available_dense_data("b")
 else
-    cases_b = Dict()
-    # cases_b = Dict("sintef" => [1])
+    # cases_b = Dict()
+    cases_b = Dict("sintef" => [1])
     # cases_b = Dict("kiel" => [1])
 end
 
@@ -101,6 +101,8 @@ mkpath(out_dir_b)
 # Delete old files
 foreach(rm, filter(endswith(".md"), readdir(out_dir_b, join=true)))
 if do_build
+    caseb_dense = []
+    push!(case_b, "Dense results" => caseb_dense)
     for (group, results) in cases_b
         case_paths = []
         for result in results
@@ -109,7 +111,7 @@ if do_build
             Literate.markdown(in_pth, out_dir_b, name = fn, preprocess = replacer)
             push!(case_paths, "Result $result" => joinpath("pages", "generated", "dense_b", "$fn.md"))
         end
-        push!(caseb, "$group dense results" => case_paths)
+        push!(caseb_dense, "$group" => case_paths)
     end
 end
 

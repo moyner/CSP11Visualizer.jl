@@ -1,5 +1,6 @@
 module CSP11Visualizer
     using CSV, DataFrames, GLMakie, WGLMakie, CairoMakie, Gadfly
+    export plot_sparse
 
     function default_data_path(type = "dense")
         basepath = realpath(joinpath(@__DIR__, "..", "..", "data"))
