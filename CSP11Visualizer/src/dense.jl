@@ -161,6 +161,11 @@ function parse_dense_data(group, result, year, case = "b", path = default_data_p
             val = [ifelse(ismissing(i), NaN, i) for i in val]
         end
         val = reshape(val[ix], dims...)
+        if eltype(val) == Float64
+            # Round to 4 significant digits per the specification of the
+            # benchmark.
+            val = round.(val, sigdigits = 4)
+        end
         out[name] = val
     end
     return out
