@@ -72,6 +72,10 @@ function parse_all_sparse(pth = default_data_path("sparse"); case = "b", verbose
     for group in groups
         gdata = Dict{Int, Any}()
         casepath = joinpath(pth, group, "spe11$case")
+        if !isdir(casepath)
+            maybe_print("Skipping $group...")
+            continue
+        end
         for dir in readdir(casepath)
             csv_name = "spe11$(case)_time_series.csv"
             if startswith(dir, "result")
@@ -108,18 +112,18 @@ function parse_all_sparse(pth = default_data_path("sparse"); case = "b", verbose
     return results
 end
 
-function get_group_color(group::String)
-    canonical_group_order = [
+function get_canonical_order()
+    names = [
+        "ifpen",
         "calgary",
         "csiro",
         "ctc-cne",
         "delft-darts",
         "geos",
-        "ifpen",
+        "opm",
         "kfupm",
         "kiel",
         "opengosim",
-        "opm",
         "pau-inria",
         "pnnl",
         "rice",
@@ -129,11 +133,55 @@ function get_group_color(group::String)
         "tetratech-rps",
         "ut-csee-pge"
     ]
+    sort!(names)
+    return names
+end
+
+function get_canonical_colormap()
+    # F(x) = clamp(x*d, 0, 1)
+    # F(x) = clamp(x*0.8 + 0.1, 0, 1)
+    # F(x) = x
+    F(x) = clamp(x^1.5, 0, 1)
+
+    canonical_group_order = get_canonical_order()
+    cmap = Makie.to_colormap(:tab20)
+    keep = [1:16..., 17, 19]
+    cmap = cmap[keep]
+    for i in 1:2:length(cmap)-1
+        # Put light on top
+        cmap[i], cmap[i+1] = cmap[i+1], cmap[i]
+    end
+    # Then make sure that IFPEN and GEOS get the grey/dark set since we want to
+    # make IFPEN stand out as the "median" case.
+    for i in 1:2
+        old = 2*2+i
+        new = 2*7+i
+        cmap[old], cmap[new] = cmap[new], cmap[old]
+    end
+    new_cmap = similar(cmap, 0)
+    for (i, group) in enumerate(canonical_group_order)
+        c = cmap[i]
+        d = 0.9
+        if group == "ifpen"
+            new_color = RGBf(0.0, 0.0, 0.0)
+        else
+            # F(x) = clamp(x + (1-x)*d, 0, 1)
+
+            new_color = RGBf(F(c.r), F(c.g), F(c.b))
+            # new_color = RGBf(max(c.r*d, 0.0), max(c.g*d, 0.0), max(c.b*d, 0.0))
+        end
+        push!(new_cmap, new_color)
+    end
+    return new_cmap
+end
+
+function get_group_color(group::String)
+    canonical_group_order = get_canonical_order()
     ix = findfirst(isequal(group), canonical_group_order)
     if isnothing(ix)
         ix = length(canonical_group_order) + 1
     end
-    cmap = Makie.to_colormap(:tab20)
+    cmap = get_canonical_colormap()
     return cmap[ix]
 end
 
@@ -167,8 +215,9 @@ function plot_sparse(results, k::Symbol)
     fig = Figure(size = (1200, 600))
     ax = Axis(fig[1, 1:3], xlabel = "Years since injection start", ylabel = ylabel, title = title)
     linestyles = [:solid, :dot, :dash, :dashdot]
-    groups = unique(results[:, "group"])
-    groups = sort(groups)
+    groups = intersect(get_canonical_order(), unique(results[:, "group"]))
+    # groups = unique(results[:, "group"])
+    # groups = sort(groups)
     ngroups = length(groups)
     plts = []
     line_labels = []
@@ -193,7 +242,7 @@ function plot_sparse(results, k::Symbol)
         end
     end
     xlims!(ax, (0.0, 1010.0))
-    Legend(fig[2, 1:2], line_labels, groups, "Group", orientation = :horizontal, nbanks = 3)
+    Legend(fig[2, 1:2], line_labels, groups, "Group", orientation = :horizontal, nbanks = 2)
     # data = 
     # :solid (equivalent to nothing), :dot, :dash, :dashdot
     styles = [LineElement(color = :black, linestyle = s) for s in linestyles]

@@ -7,4 +7,8 @@ for (group, v) in pairs(cases_b)
     end
 end
 ##
-CSP11Visualizer.parse_all_sparse(verbose=true); # hide
+CSP11Visualizer.parse_all_sparse(verbose=true, case = "a"); # hide
+##
+CSP11Visualizer.parse_all_sparse(verbose=true, case = "b"); # hide
+##
+CSP11Visualizer.parse_all_sparse(verbose=true, case = "c");

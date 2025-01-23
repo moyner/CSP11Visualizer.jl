@@ -14,6 +14,7 @@ using CSP11Visualizer, Literate
 #   This is because some results use fixed precision like in the description
 #   and others use additional digits. Not much we can do about this unless we
 #   want to truncate and make all plots equally bad.
+# - ctc-cne doesn't plot correctly - check.
 #
 # May need to spin up webserver to fix XSS protection in chrome for local previews:
 # SPE11-plot-test\docs\build> python3 -m http.server 9000
@@ -38,8 +39,8 @@ foreach(rm, filter(endswith(".md"), readdir(out_dir, join=true)))
 
 
 pages = [
-    # "Sparse measurables, all groups" => "sparse_b",
-    "Visualizations tests" => "wgl_test_2"
+    "Sparse measurables, all groups" => "sparse_b_static",
+    # "Visualizations tests" => "wgl_test_2"
 ]
 
 for (ex, pth) in pages
@@ -54,8 +55,8 @@ end
 if build_all_dense
     cases_b = CSP11Visualizer.available_dense_data("b")
 else
-    cases_b = Dict()
-    # cases_b = Dict("sintef" => [1])
+    # cases_b = Dict()
+    cases_b = Dict("sintef" => [1])
     # cases_b = Dict("kiel" => [1])
 end
 

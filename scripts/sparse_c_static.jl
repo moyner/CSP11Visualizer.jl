@@ -1,5 +1,5 @@
 using CSP11Visualizer, CairoMakie # hide
-results = CSP11Visualizer.parse_all_sparse(verbose=false, case = "b"); # hide
+results = CSP11Visualizer.parse_all_sparse(verbose=false, case = "c"); # hide
 
 import CSP11Visualizer: plot_sparse # hide
 # ![image](../assets/caseb.png)
