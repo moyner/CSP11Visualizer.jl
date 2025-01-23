@@ -39,9 +39,5 @@ myplot(:sealA) # hide
 # ### CO₂ in seal in region B
 myplot(:sealB) # hide
 
-# ## CO₂ in bound
-# ### CO₂ in bound in total
-myplot(:boundTot) # hide
-
 # ## CO₂ in seal
 myplot(:sealTot) # hide

@@ -239,7 +239,7 @@ function plot_sparse(results, k::Symbol)
     fig = Figure(size = (1200, 600))
     ax = Axis(fig[1, 1:3], xlabel = xlabel, ylabel = ylabel, title = title)
 
-    @time for (gno, group) in enumerate(groups)
+    for (gno, group) in enumerate(groups)
         group_result = filter(row -> row.group == "$group", results)
 
         for resultid in 1:4
@@ -248,7 +248,13 @@ function plot_sparse(results, k::Symbol)
             if length(x) == 0
                 continue
             end
+            # @info "Plotting $group $resultid" size(subresult)
             y = subresult[!, k].*tscale
+            if eltype(y) == Missing
+                y = fill(NaN, length(x))
+            else
+                replace!(y, missing => NaN)
+            end
             c = get_group_color(group)
 
             plt = lines!(ax, x, y, color = c, label = group, linestyle = linestyles[resultid], linewidth = 1.8)
@@ -256,7 +262,6 @@ function plot_sparse(results, k::Symbol)
                 push!(plts, plt)
                 push!(line_labels, LineElement(color = c, linestyle = :solid, linewidth = 8))
             end
-            @info "Plotting $group $resultid" size(subresult)
         end
     end
     xlims!(ax, (0.0, xmax))
