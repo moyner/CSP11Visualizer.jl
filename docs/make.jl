@@ -60,19 +60,19 @@ function publish_examples(dest, paths)
 end
 
 
-pages_a = [
+pages_a = Any[
     "Sparse measurables, all groups" => "sparse_a_static",
 ]
 
 publish_examples(case_a, pages_a)
 
-pages_b = [
+pages_b = Any[
     "Sparse measurables, all groups" => "sparse_b_static",
 ]
 
 publish_examples(case_b, pages_b)
 
-pages_c = [
+pages_c = Any[
     "Sparse measurables, all groups" => "sparse_c_static",
 ]
 
@@ -80,40 +80,48 @@ publish_examples(case_c, pages_c)
 
 
 if build_all_dense
+    cases_a = CSP11Visualizer.available_dense_data("a")
     cases_b = CSP11Visualizer.available_dense_data("b")
 else
-    # cases_b = Dict()
-    cases_b = Dict("sintef" => [1])
+    cases_a = Dict()
+    cases_a = Dict("opm" => [1])
+    cases_b = Dict()
+    # cases_b = Dict("sintef" => [1])
     # cases_b = Dict("kiel" => [1])
 end
-
-function replace_template(content, group_name, result_id)
+##
+function replace_template(content, group_name, result_id, s)
     content = replace(content,
-        "groupname = \"sintef\"" => "groupname = \"$group_name\"",
+        "groupname = \"$s\"" => "groupname = \"$group_name\"",
         "resultid = 1" => "resultid = $result_id"
     )
     return content
 end
 
-in_pth = example_path("dense_b_template")
-out_dir_b = joinpath(@__DIR__, "src", "pages", "generated", "dense_b")
-mkpath(out_dir_b)
-# Delete old files
-foreach(rm, filter(endswith(".md"), readdir(out_dir_b, join=true)))
-if do_build
-    caseb_dense = []
-    push!(case_b, "Dense results" => caseb_dense)
-    for (group, results) in cases_b
-        case_paths = []
-        for result in results
-            fn = "$(group)_$result"
-            replacer = (c) -> replace_template(c, group, result)
-            Literate.markdown(in_pth, out_dir_b, name = fn, preprocess = replacer)
-            push!(case_paths, "Result $result" => joinpath("pages", "generated", "dense_b", "$fn.md"))
+function copy_template(dest, case, cases_to_plot, default)
+    in_pth = example_path("dense_$(case)_template")
+    outdir_case = joinpath(@__DIR__, "src", "pages", "generated", "dense_$case")
+    mkpath(outdir_case)
+    # Delete old files
+    foreach(rm, filter(endswith(".md"), readdir(outdir_case, join=true)))
+    if do_build
+        case_dense = []
+        push!(dest, "Dense results" => case_dense)
+        for (group, results) in cases_to_plot
+            case_paths = []
+            for result in results
+                fn = "$(group)_$result"
+                replacer = (c) -> replace_template(c, group, result, default)
+                Literate.markdown(in_pth, outdir_case, name = fn, preprocess = replacer)
+                push!(case_paths, "Result $result" => joinpath("pages", "generated", "dense_$case", "$fn.md"))
+            end
+            push!(case_dense, "$group" => case_paths)
         end
-        push!(caseb_dense, "$group" => case_paths)
     end
 end
+
+copy_template(case_a, "a", cases_a, "opm")
+copy_template(case_b, "b", cases_b, "sintef")
 
 documenter_fmt = Documenter.HTML(
     size_threshold = typemax(Int),

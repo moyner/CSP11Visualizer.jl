@@ -22,6 +22,9 @@ function available_dense_data(case = "b")
     for group in groups
         present_results = Int[]
         casepath = joinpath(pth, group, "spe11$case")
+        if !isdir(casepath)
+            continue
+        end
         subdirs = readdir(casepath)
         if "result1" in subdirs
             for dir in subdirs
