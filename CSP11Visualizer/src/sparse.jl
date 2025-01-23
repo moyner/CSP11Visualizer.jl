@@ -1,4 +1,4 @@
-const YEAR = 36*3600*24
+const YEAR = 365*3600*24
 
 function resample_table(t, vals)
     t_rep = 3.1536e6 # 0.1 year
@@ -165,9 +165,10 @@ function plot_sparse(results, k::Symbol)
         title = "$k"
     end
     fig = Figure(size = (1200, 600))
-    ax = Axis(fig[1, 1:3], xlabel = "Time (years)", ylabel = ylabel, title = title)
+    ax = Axis(fig[1, 1:3], xlabel = "Years since injection start", ylabel = ylabel, title = title)
     linestyles = [:solid, :dot, :dash, :dashdot]
     groups = unique(results[:, "group"])
+    groups = sort(groups)
     ngroups = length(groups)
     plts = []
     @time for (gno, group) in enumerate(groups)
@@ -189,14 +190,16 @@ function plot_sparse(results, k::Symbol)
             @info "Plotting $group $resultid" size(subresult)
         end
     end
-    Legend(fig[2, 1:2], plts, groups, orientation = :horizontal, nbanks = 3)
+    xlims!(ax, (0.0, 1010.0))
+    Legend(fig[2, 1:2], plts, groups, "Group", orientation = :horizontal, nbanks = 3)
     # data = 
     # :solid (equivalent to nothing), :dot, :dash, :dashdot
     styles = [LineElement(color = :black, linestyle = s) for s in linestyles]
 
     Legend(fig[2, 3],
     [LineElement(color = :black, linestyle = s) for s in linestyles],
-    ["Result $i" for i in 1:4],
+    ["$i" for i in 1:4],
+    "Result ID",
     nbanks = 2)
     return fig
 end
