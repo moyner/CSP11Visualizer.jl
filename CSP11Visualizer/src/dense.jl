@@ -203,7 +203,7 @@ function parse_dense_data(group, result, year_or_h, case = "b", path = default_d
         return zi*(Lx*Ly) + yi*Lx + xi
     end
     ix = sort(eachindex(z), by = sortfunction)
-    out = Dict{String, Union{AbstractArray{Float64}, String}}()
+    out = Dict{String, Any}()
     for name in names(df)
         val = df[:, name]
         if eltype(val) != Float64 || eltype(val) != Int64
@@ -238,7 +238,7 @@ function key_info(var::String, case::String)
             label = "Total mass of CO₂ (kg)"
             zero_to_nan = true
         elseif var == "X_co2"
-            yscale = (0.0, 0.1)
+            yscale = (0.0, 0.06)
             label = "CO₂ mass fraction in liquid"
         elseif var == "Y_h2o"
             yscale = (0.0, 0.005)
