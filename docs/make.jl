@@ -20,7 +20,7 @@ using CSP11Visualizer, Literate
 # SPE11-plot-test\docs\build> python3 -m http.server 9000
 
 do_build = true
-build_all_dense = true
+build_all_dense = false
 
 case_a = [
 
@@ -84,15 +84,16 @@ if build_all_dense
     cases_b = CSP11Visualizer.available_dense_data("b")
 else
     cases_a = Dict()
-    cases_a = Dict("opm" => [1])
-    cases_b = Dict()
-    # cases_b = Dict("sintef" => [1])
+    # cases_a = Dict("opm" => [1])
+    # cases_b = Dict()
+    cases_b = Dict("sintef" => [1])
     # cases_b = Dict("kiel" => [1])
 end
 ##
 function replace_template(content, group_name, result_id, s)
     content = replace(content,
         "groupname = \"$s\"" => "groupname = \"$group_name\"",
+        "HEADER" => "$group_name result $result_id",
         "resultid = 1" => "resultid = $result_id"
     )
     return content
