@@ -193,6 +193,14 @@ function get_group_color(group::String)
     return cmap[ix]
 end
 
+function print_canonical_colors()
+    groups = get_canonical_order()
+    for group in groups
+        c = get_group_color(group)
+        println("$group => #$(Makie.Colors.hex(c))")
+    end
+end
+
 function plot_sparse(results, k::Symbol; ymax = nothing)
     kstr = "$k"
     if k == :P1 || k == :P2

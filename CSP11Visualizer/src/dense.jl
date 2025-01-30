@@ -1,4 +1,8 @@
-default_colormap() = :seaborn_icefire_gradient
+function default_colormap()
+    cmap = to_colormap(:seaborn_icefire_gradient)
+    pushfirst!(cmap, RGBf(0.0, 0.0, 0.0))
+    return cmap
+end
 
 function parse_dense_timesteps(group, result, case = "b";
         path = default_data_path(),
@@ -64,14 +68,25 @@ end
 
 function plot_snapshot(result, k, t = k)
     # GLMakie.activate!()
+    r = result["$k"]
     x = result["x"]
     z = result["z"]
     fig = Figure(size = (1200, 600), backgroundcolor = :transparent)
-    D = vec(result["$k"])
-    if !all(isnan, D)
-        ax = Axis(fig[1, 1], title = t)
-        plt = heatmap!(ax, vec(x), vec(z), D, colormap = default_colormap())
-        Colorbar(fig[1, 2], plt)
+    D = vec(r)
+    failure = all(isnan, D)
+    ax = Axis(fig[1, 1], title = t)
+    if !failure
+        try
+            plt = heatmap!(ax, vec(x), vec(z), D, colormap = default_colormap())
+            Colorbar(fig[1, 2], plt)
+        catch excpt
+            @error "Failed to plot $k" excpt
+            failure = true
+        end
+    end
+    if failure
+        hidedecorations!(ax)
+        text!(ax, 0.5, 0.5, text = "Data missing / plot failure.", fontsize = 50, align = (:center, :baseline))
     end
     return fig
 end
@@ -183,7 +198,7 @@ function parse_dense_data(group, result, year_or_h, case = "b", path = default_d
             val = [ifelse(ismissing(i), NaN, i) for i in val]
         end
         val = reshape(val[ix], dims...)
-        if eltype(val) == Float64
+        if eltype(val) == Float64 && !(name in ["x", "y", "z"])
             # Round to 4 significant digits per the specification of the
             # benchmark.
             val = round.(val, sigdigits = 4)
