@@ -66,7 +66,7 @@ function make_movie(results, k, t = k; filename = "sg.mp4")
     return filename
 end
 
-function plot_snapshot(result, k)
+function plot_snapshot(result, k; use_clims = true)
     name = "$k"
     clims, t, zero_to_nan = key_info(name, result["case"])
     # GLMakie.activate!()
@@ -78,10 +78,10 @@ function plot_snapshot(result, k)
     if zero_to_nan
         D[D .== 0] .= NaN
     end
-    failure = all(isnan, D)
+    failure = eltype(D) != Float64 || all(isnan, D)
     ax = Axis(fig[1, 1], title = t, ygridvisible = false, xgridvisible = false)
     if !failure
-        if isnothing(clims)
+        if isnothing(clims) || !use_clims
             arg = NamedTuple()
         else
             arg = (colorrange = clims, )
