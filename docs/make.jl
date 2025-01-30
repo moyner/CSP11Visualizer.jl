@@ -20,7 +20,7 @@ using CSP11Visualizer, Literate
 # SPE11-plot-test\docs\build> python3 -m http.server 9000
 
 do_build = true
-build_all_dense = false
+build_all_dense = true
 
 case_a = [
 
@@ -114,7 +114,7 @@ function copy_template(dest, case, cases_to_plot, default)
                 fn = "$(group)_$result"
                 replacer = (c) -> replace_template(c, group, result, default)
                 Literate.markdown(in_pth, outdir_case, name = fn, preprocess = replacer)
-                push!(case_paths, "Result $result" => joinpath("pages", "generated", "dense_$case", "$fn.md"))
+                push!(case_paths, "$group: Result $result" => joinpath("pages", "generated", "dense_$case", "$fn.md"))
             end
             push!(case_dense, "$group" => case_paths)
         end

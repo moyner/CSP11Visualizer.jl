@@ -21,10 +21,10 @@ end_of_migration = findfirst(isequal(1000), steps) # hide
 # ### Total mass of CO₂
 # The total mass of CO₂ in kilograms per cell is shown below. This is the
 # absolute mass of CO₂ and indicates where the CO₂ is located in the domain.
-# #### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :co2mass) # hide
 # ### 30 years:
 CSP11Visualizer.plot_snapshot(results[after_period], :co2mass) # hide
+# #### End of injection
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :co2mass) # hide
 # #### 100 years:
 CSP11Visualizer.plot_snapshot(results[after_century], :co2mass) # hide
 # #### 1000 years: End of migration
@@ -33,21 +33,21 @@ CSP11Visualizer.plot_snapshot(results[end_of_migration], :co2mass) # hide
 # ### Pressure
 # The reported pressure in Pascal is shown below. This is the pressure of the
 # water phase.
-# #### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :pw,) # hide
 # #### 30 years:
 CSP11Visualizer.plot_snapshot(results[after_period], :pw) # hide
+# #### End of injection
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :pw,) # hide
 # #### 100 years:
 CSP11Visualizer.plot_snapshot(results[after_century], :pw) # hide
 # #### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :pw) # hide
 
 # ### Temperature
-
-# #### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :T) # hide
+# The reported temperature in degrees Celsius is shown below.
 # #### 30 years:
 CSP11Visualizer.plot_snapshot(results[after_period], :T) # hide
+# #### End of injection
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :T) # hide
 # #### 100 years:
 CSP11Visualizer.plot_snapshot(results[after_century], :T) # hide
 # #### End of migration
@@ -56,55 +56,50 @@ CSP11Visualizer.plot_snapshot(results[end_of_migration], :T) # hide
 # ## Additional reporting variables
 
 # ## Gas saturation
-
-# ### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :sg) # hide
 # ### 30 years:
 CSP11Visualizer.plot_snapshot(results[after_period], :sg) # hide
+# ### End of injection
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :sg) # hide
 # ### 100 years:
 CSP11Visualizer.plot_snapshot(results[after_century], :sg) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :sg) # hide
 
 # ## CO₂ mass fraction in liquid
-
-# ### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :X_co2) # hide
 # ### 30 years:
 CSP11Visualizer.plot_snapshot(results[after_period], :X_co2) # hide
+# ### End of injection
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :X_co2) # hide
 # ### 100 years:
 CSP11Visualizer.plot_snapshot(results[after_century], :X_co2) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :X_co2) # hide
 
 # ## H₂O mass fraction in vapor
-
-# ### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :Y_h2o) # hide
 # ### 30 years:
 CSP11Visualizer.plot_snapshot(results[after_period], :Y_h2o) # hide
+# ### End of injection
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :Y_h2o) # hide
 # ### 100 years:
 CSP11Visualizer.plot_snapshot(results[after_century], :Y_h2o) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :Y_h2o) # hide
 
 # ## Gas density
-
-# ### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :deng) # hide
 # ### 30 years:
 CSP11Visualizer.plot_snapshot(results[after_period], :deng) # hide
+# ### End of injection
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :deng) # hide
 # ### 100 years:
 CSP11Visualizer.plot_snapshot(results[after_century], :deng) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :deng) # hide
 
 # ## Water density
-
-# ### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :denw) # hide
 # ### 30 years:
 CSP11Visualizer.plot_snapshot(results[after_period], :denw) # hide
+# ### End of injection
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :denw) # hide
 # ### 100 years:
 CSP11Visualizer.plot_snapshot(results[after_century], :denw) # hide
 # ### End of migration

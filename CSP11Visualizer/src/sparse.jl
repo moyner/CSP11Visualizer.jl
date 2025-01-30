@@ -201,7 +201,7 @@ function print_canonical_colors()
     end
 end
 
-function plot_sparse(results, k::Symbol; ymax = nothing)
+function plot_sparse(results, k::Symbol; ymax = nothing, yscale = identity, xscale = identity)
     kstr = "$k"
     if k == :P1 || k == :P2
         ylabel = "Pascal"
@@ -245,7 +245,7 @@ function plot_sparse(results, k::Symbol; ymax = nothing)
         xmax = 1010.0
     end
     fig = Figure(size = (1200, 600), backgroundcolor = :transparent)
-    ax = Axis(fig[1, 1:3], xlabel = xlabel, ylabel = ylabel, title = title)
+    ax = Axis(fig[1, 1:3], xlabel = xlabel, ylabel = ylabel, title = title, yscale = yscale, xscale = xscale)
 
     for (gno, group) in enumerate(groups)
         group_result = filter(row -> row.group == "$group", results)
