@@ -1,6 +1,6 @@
 function default_colormap()
     cmap = to_colormap(:seaborn_icefire_gradient)
-    pushfirst!(cmap, RGBf(0.0, 0.0, 0.0))
+    pushfirst!(cmap, RGBf(1.0, 1.0, 1.0))
     return cmap
 end
 
