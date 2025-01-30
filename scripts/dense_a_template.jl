@@ -1,3 +1,4 @@
+# # Case B: HEADER
 groupname = "opm"
 resultid = 1
 using CSP11Visualizer, GLMakie, CairoMakie # hide
@@ -14,48 +15,48 @@ end_of_migration = findfirst(isequal(120), steps) # hide
 # ## Pressure
 
 # ### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :pw, "Pressure (Pascal)") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :pw) # hide
 # ### End of migration
-CSP11Visualizer.plot_snapshot(results[end_of_migration], :pw, "Pressure (Pascal)") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_migration], :pw) # hide
 
 # ## Gas saturation
 
 # ### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :deng, "Gas saturation") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :deng) # hide
 # ### End of migration
-CSP11Visualizer.plot_snapshot(results[end_of_migration], :deng, "Gas saturation") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_migration], :deng) # hide
 
 # ## CO₂ mass fraction in liquid
 
 # ### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :X_co2, "CO₂ mass fraction in liquid") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :X_co2) # hide
 # ### End of migration
-CSP11Visualizer.plot_snapshot(results[end_of_migration], :X_co2, "CO₂ mass fraction in liquid") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_migration], :X_co2) # hide
 
 # ## H₂O mass fraction in vapor
 
 # ### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :Y_h2o, "H₂O mass fraction in vapor") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :Y_h2o) # hide
 # ### End of migration
-CSP11Visualizer.plot_snapshot(results[end_of_migration], :Y_h2o, "H₂O mass fraction in vapor") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_migration], :Y_h2o) # hide
 
 # ## Gas density
 
 # ### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :deng, "Gas density (kg/m³)") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :deng) # hide
 # ### End of migration
-CSP11Visualizer.plot_snapshot(results[end_of_migration], :deng, "Gas density (kg/m³)") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_migration], :deng) # hide
 
 # ## Water density
 
 # ### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :denw, "Water density (kg/m³)") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :denw) # hide
 # ### End of migration
-CSP11Visualizer.plot_snapshot(results[end_of_migration], :denw, "Water density (kg/m³)") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_migration], :denw) # hide
 
 # ## Total mass of CO₂
 
 # ### End of injection
-CSP11Visualizer.plot_snapshot(results[end_of_injection], :co2mass, "Total mass of CO₂ (kg)") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_injection], :co2mass) # hide
 # ### End of migration
-CSP11Visualizer.plot_snapshot(results[end_of_migration], :co2mass, "Total mass of CO₂ (kg)") # hide
+CSP11Visualizer.plot_snapshot(results[end_of_migration], :co2mass) # hide

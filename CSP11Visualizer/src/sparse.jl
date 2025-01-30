@@ -208,22 +208,22 @@ function plot_sparse(results, k::Symbol; ymax = nothing)
         title = "Pressure at observation point $k"
     elseif k == :mobA || k == :mobB
         ylabel = "kg"
-        title = "Mobile CO2 in region $(kstr[4])"
+        title = "Mobile CO₂ within region $(kstr[4])"
     elseif k == :dissA || k == :dissB
         ylabel = "kg"
-        title = "Dissolved CO2 in region $(kstr[5])"
+        title = "Dissolved CO₂ within region $(kstr[5])"
     elseif k == :immA || k == :immB
         ylabel = "kg"
-        title = "Immobile CO2 in region $(kstr[4])"
+        title = "Immobile CO₂ within region $(kstr[4])"
     elseif k == :sealA || k == :sealB
         ylabel = "kg"
-        title = "CO2 in seal in region $(kstr[5])"
+        title = "CO₂ in seal within region $(kstr[5])"
     elseif k == :sealTot
         ylabel = "kg"
-        title = "CO2 in seal"
+        title = "CO₂ in seal"
     elseif k == :boundTot
         ylabel = "kg"
-        title = "CO2 in bound"
+        title = "CO₂ in boundary cells"
     else
         ylabel = ""
         title = "$k"

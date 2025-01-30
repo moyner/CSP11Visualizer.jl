@@ -255,7 +255,7 @@ function key_info(var::String, case::String)
             label = "Gas density (kg/m³)"
             zero_to_nan = true
         end
-    else
+    elseif case == "a"
 
     end
     if isnothing(yscale)
