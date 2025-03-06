@@ -11,4 +11,4 @@ CSP11Visualizer.parse_all_sparse(verbose=true, case = "a"); # hide
 ##
 CSP11Visualizer.parse_all_sparse(verbose=true, case = "b"); # hide
 ##
-CSP11Visualizer.parse_all_sparse(verbose=true, case = "c");
+CSP11Visualizer.parse_all_sparse(verbose=true, case = "c" );

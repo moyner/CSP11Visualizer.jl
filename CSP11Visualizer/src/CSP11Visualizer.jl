@@ -18,4 +18,5 @@ module CSP11Visualizer
     end
     include("sparse.jl")
     include("dense.jl")
+    include("mesh.jl")
 end # module CSP11Visualizer

@@ -1,6 +1,20 @@
-function default_colormap()
+function default_colormap(; alpha = false, k = 1, arange = (0.0, 1.0), alpha_cutoff = Inf)
     cmap = to_colormap(:seaborn_icefire_gradient)
     pushfirst!(cmap, RGBf(1.0, 1.0, 1.0))
+    function to_alpha(t)
+        amin, amax = arange
+        A = amin + (amax - amin)*((t[1]-1)/length(cmap))^k
+        if A > alpha_cutoff
+            A = 1.0
+        end
+        return RGBAf(t[2].r, t[2].g, t[2].b, A)
+    end
+    if alpha
+        cmap = map(
+            to_alpha,
+            enumerate(cmap)
+        )
+    end
     return cmap
 end
 

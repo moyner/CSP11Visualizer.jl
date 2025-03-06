@@ -28,3 +28,5 @@ docs/src/pages/*
 *.json
 *.bin
 *.js
+
+*.png
