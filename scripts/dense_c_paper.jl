@@ -47,8 +47,17 @@ using CSP11Visualizer.Jutul
 #     transparency = true
 # )
 ##
+cname = :default
+cname = :oxy
+cname = :phase
+cname = :thermal
+cname = :berlin
+cname = :brg
+cname = :seaborn_flare_gradient
+cname = :seaborn_mako_gradient
+cname = :seaborn_crest_gradient
 d = vec(r["X_co2"])
-cmap = CSP11Visualizer.default_colormap(alpha = true, arange = (0, 0.5))
+cmap = CSP11Visualizer.default_colormap(cname, alpha = true, arange = (0, 0.5))
 fig = Figure(size = (1200, 800))
 ax = Axis3(fig[1, 1], aspect = (8.4, 5, 3*1.2))
 cr = (0, 0.075)
@@ -58,13 +67,13 @@ plt = plot_cell_data!(ax, mesh, d,
     transparency = true,
     colorrange = cr
 )
-Colorbar(fig[1, 2], colorrange = cr, colormap = CSP11Visualizer.default_colormap())
+Colorbar(fig[1, 2], colorrange = cr, colormap = CSP11Visualizer.default_colormap(cname, ))
 ax.azimuth[] = 4.25
 ax.elevation[] = 0.153
 lines!(ax, w1, color = :red)
 lines!(ax, w2, color = :blue)
 fig
-save("csp11_co2_$(group)_$result.png", fig)
+save("csp11_co2_$(group)_$(result)_$cname.png", fig)
 fig
 ##
 d = copy(vec(r["X_co2"]))
@@ -83,3 +92,54 @@ ax.elevation[] = 0.153
 lines!(ax, w1, color = :red)
 lines!(ax, w2, color = :blue)
 fig
+
+##
+for cname in [
+        :default,
+        :oxy,
+        :phase,
+        :thermal,
+        :berlin,
+        :brg,
+        :curl,
+        :managua,
+        :matter,
+        :vik,
+        :algae,
+        :roma,
+        :linear_kryw_0_100_c71_n256,
+        :oslo,
+        :linear_bgy_10_95_c74_n256,
+        :deep,
+        :inferno,
+        :gnuplot,
+        :ocean,
+        :seismic,
+        :rainbow1,
+        :turbo,
+        :cyclic_mrybm_35_75_c68_n256,
+        :linear_bmy_10_95_c71_n256,
+        :seaborn_flare_gradient,
+        :seaborn_mako_gradient,
+        :seaborn_crest_gradient,
+        :rainbow_bgyrm_35_85_c71_n256
+    ]
+    d = vec(r["X_co2"])
+    cmap = CSP11Visualizer.default_colormap(cname, alpha = true, arange = (0, 0.5))
+    fig = Figure(size = (1200, 800))
+    ax = Axis3(fig[1, 1], aspect = (8.4, 5, 3*1.2))
+    cr = (0, 0.075)
+    plt = plot_cell_data!(ax, mesh, d,
+        colormap = cmap,
+        shading = NoShading,
+        transparency = true,
+        colorrange = cr
+    )
+    Colorbar(fig[1, 2], colorrange = cr, colormap = CSP11Visualizer.default_colormap(cname, ))
+    ax.azimuth[] = 4.25
+    ax.elevation[] = 0.153
+    lines!(ax, w1, color = :red)
+    lines!(ax, w2, color = :blue)
+    fig
+    save("csp11_co2_$(group)_$(result)_$cname.png", fig)
+end
