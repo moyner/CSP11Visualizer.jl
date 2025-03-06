@@ -1,18 +1,20 @@
 module CSP11Visualizer
-    using CSV, DataFrames, GLMakie, WGLMakie, CairoMakie, Gadfly
+    using CSV, DataFrames, GLMakie, WGLMakie, CairoMakie, Gadfly, Jutul
     export plot_sparse
 
     function default_data_path(type = "dense")
         basepath = realpath(joinpath(@__DIR__, "..", "..", "data"))
-        if type == "dense"
-            pth = joinpath(basepath, "dense")
-        elseif type == "sparse"
-            pth = joinpath(basepath, "sparse")
-        else
-            @assert pth == "base"
-            pth = basepth
+        overridepath = joinpath(basepath, "path.txt")
+        if isfile(overridepath)
+            f = open(overridepath)
+            basepth = strip(readline(f))
+            close(f)
+            @assert ispath(basepth)
         end
-        return pth
+        if ispath(joinpath(basepath, type))
+            basepth = joinpath(basepath, type)
+        end
+        return basepth
     end
     include("sparse.jl")
     include("dense.jl")
