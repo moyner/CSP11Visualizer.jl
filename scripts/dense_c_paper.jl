@@ -17,8 +17,8 @@ result = 3
 group = "opm"
 result = 1
 
-group = "opm"
-result = 4
+# group = "opm"
+# result = 4
 
 
 data = CSP11Visualizer.parse_dense_timesteps(group, result, "c", steps = [1000]);
@@ -48,19 +48,20 @@ using CSP11Visualizer.Jutul
 # )
 ##
 cname = :default
-cname = :oxy
-cname = :phase
-cname = :thermal
-cname = :berlin
-cname = :brg
-cname = :seaborn_flare_gradient
-cname = :seaborn_mako_gradient
-cname = :seaborn_crest_gradient
+# cname = :oxy
+# cname = :phase
+# cname = :thermal
+# cname = :berlin
+# cname = :brg
+# cname = :seaborn_flare_gradient
+# cname = :seaborn_mako_gradient
+# cname = :seaborn_crest_gradient
 d = vec(r["X_co2"])
-cmap = CSP11Visualizer.default_colormap(cname, alpha = true, arange = (0, 0.5))
+cmap = CSP11Visualizer.default_colormap(cname, alpha = true, arange = (0, 1.0), k = 3)
 fig = Figure(size = (1200, 800))
 ax = Axis3(fig[1, 1], aspect = (8.4, 5, 3*1.2))
 cr = (0, 0.075)
+cr = (0, 0.06)
 plt = plot_cell_data!(ax, mesh, d,
     colormap = cmap,
     shading = NoShading,
