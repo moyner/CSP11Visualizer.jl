@@ -85,9 +85,9 @@ if build_all_dense
     cases_b = CSP11Visualizer.available_dense_data("b")
 else
     cases_a = Dict()
-    # cases_a = Dict("opm" => [1])
-    # cases_b = Dict()
-    cases_b = Dict("opm" => [1])
+    cases_b = Dict()
+    cases_a = Dict("opm" => [1])
+    # cases_b = Dict("opm" => [1])
     # cases_b = Dict("kiel" => [1])
 end
 ##
@@ -102,8 +102,9 @@ end
 
 function replace_post(content, case, group_name, result_id)
     if case == "b"
-        replace(content, "INSERT_MOVIE_B" => "````@raw html\n"*"<video autoplay loop muted playsinline controls>\n<source src=\"./movieb_$(group_name)_$result_id.mp4\" type=\"video/mp4\"/>\n</video>\n"*"````\n")
+        content = replace(content, "INSERT_MOVIE_B" => "````@raw html\n"*"<video autoplay loop muted playsinline controls>\n<source src=\"./movieb_$(group_name)_$result_id.mp4\" type=\"video/mp4\"/>\n</video>\n"*"````\n")
     end
+    return content
 end
 
 function copy_template(dest, case, cases_to_plot, default)
