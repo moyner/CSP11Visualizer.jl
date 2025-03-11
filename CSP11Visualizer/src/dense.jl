@@ -1,4 +1,4 @@
-function default_colormap(cmap_name = :seaborn_icefire_gradient_white; alpha = false, k = 1, arange = (0.0, 1.0), alpha_cutoff = Inf)
+function default_colormap(cmap_name = :default; alpha = false, k = 1, arange = (0.0, 1.0), alpha_cutoff = Inf)
     if cmap_name == :default
         cmap = to_colormap(:seaborn_icefire_gradient)
         pushfirst!(cmap, RGBf(1.0, 1.0, 1.0))

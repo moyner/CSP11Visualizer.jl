@@ -1,5 +1,5 @@
 # # Case B: HEADER
-groupname = "sintef" # hide
+groupname = "opm" # hide
 resultid = 1 # hide
 using CSP11Visualizer, GLMakie, CairoMakie # hide
 CairoMakie.activate!() # hide

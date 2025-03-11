@@ -122,7 +122,7 @@ function copy_template(dest, case, cases_to_plot, default)
 end
 
 copy_template(case_a, "a", cases_a, "opm")
-copy_template(case_b, "b", cases_b, "sintef")
+copy_template(case_b, "b", cases_b, "opm")
 
 documenter_fmt = Documenter.HTML(
     size_threshold = typemax(Int),
