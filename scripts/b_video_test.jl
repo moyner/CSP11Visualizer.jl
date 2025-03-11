@@ -9,6 +9,7 @@ sparse_results = CSP11Visualizer.parse_all_sparse(case = "b", active_result = re
 @assert only(unique(sparse_results[:, "group"])) == groupname
 @assert only(unique(sparse_results[:, "result"])) == resultid
 ##
+# using CSP11Visualizer.Jutul
 function make_movie_caseb(steps, results, sparse_results, k, t = k; filename = "sg.mp4")
     GLMakie.activate!()
     x = results[1]["x"]
@@ -44,10 +45,22 @@ function make_movie_caseb(steps, results, sparse_results, k, t = k; filename = "
 
     lines!(ax_plt, t_sparse, mob_b, color = :black)
 
+    # I = get_1d_interpolator(t_sparse, mob_b)
+    sparse_ix = Observable(1)
+    t_dot = @lift t_sparse[$sparse_ix]
+    mob_b_dot = @lift mob_b[$sparse_ix]
+
+    scatter!(t_dot, mob_b_dot)
+
     framerate = 24
     record(fig, filename, indices;
         framerate = framerate) do t
         ix[] = t
+        t_step = steps[t]
+        mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
+        @info "??" t_step minix
+
+        sparse_ix[] = minix
     end
     return filename
 end
