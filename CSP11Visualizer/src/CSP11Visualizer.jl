@@ -7,14 +7,14 @@ module CSP11Visualizer
         overridepath = joinpath(basepath, "path.txt")
         if isfile(overridepath)
             f = open(overridepath)
-            basepth = strip(readline(f))
+            basepath = strip(readline(f))
             close(f)
-            @assert ispath(basepth)
+            @assert ispath(basepath)
         end
         if ispath(joinpath(basepath, type))
-            basepth = joinpath(basepath, type)
+            basepath = joinpath(basepath, type)
         end
-        return basepth
+        return basepath
     end
     include("sparse.jl")
     include("dense.jl")

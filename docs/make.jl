@@ -91,7 +91,7 @@ else
     # cases_b = Dict("kiel" => [1])
 end
 ##
-function replace_template(content, group_name, result_id, s)
+function replace_template(content, case, group_name, result_id, s)
     content = replace(content,
         "groupname = \"$s\"" => "groupname = \"$group_name\"",
         "HEADER" => "$group_name result $result_id",
@@ -100,8 +100,10 @@ function replace_template(content, group_name, result_id, s)
     return content
 end
 
-function replace_post(content, group_name, result_id)
-    replace(content, "INSERT_MOVIE_B" => "````@raw html\n"*"<video autoplay loop muted playsinline controls>\n<source src=\"./movieb_$(group_name)_$result_id.mp4\" type=\"video/mp4\"/>\n</video>\n"*"````\n")
+function replace_post(content, case, group_name, result_id)
+    if case == "b"
+        replace(content, "INSERT_MOVIE_B" => "````@raw html\n"*"<video autoplay loop muted playsinline controls>\n<source src=\"./movieb_$(group_name)_$result_id.mp4\" type=\"video/mp4\"/>\n</video>\n"*"````\n")
+    end
 end
 
 function copy_template(dest, case, cases_to_plot, default)
@@ -117,8 +119,8 @@ function copy_template(dest, case, cases_to_plot, default)
             case_paths = []
             for result in results
                 fn = "$(group)_$result"
-                replacer = (c) -> replace_template(c, group, result, default)
-                post_replacer = c -> replace_post(c, group, result)
+                replacer = (c) -> replace_template(c, case, group, result, default)
+                post_replacer = c -> replace_post(c, case, group, result)
                 Literate.markdown(in_pth, outdir_case, name = fn, preprocess = replacer, postprocess = post_replacer)
                 push!(case_paths, "$group: Result $result" => joinpath("pages", "generated", "dense_$case", "$fn.md"))
             end
