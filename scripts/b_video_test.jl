@@ -66,14 +66,15 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
     # Sort
     sortix = sortperm(t_sparse)
     t_sparse = t_sparse[sortix]
-    mob_a = mob_a[sortix]
-    mob_b = mob_b[sortix]
-    diss_a = diss_a[sortix]
-    diss_b = diss_b[sortix]
+    mfactor = 1.0
+    mob_a = mob_a[sortix]./mfactor
+    mob_b = mob_b[sortix]./mfactor
+    diss_a = diss_a[sortix]./mfactor
+    diss_b = diss_b[sortix]./mfactor
 
     # Sparse plot
     # Group 1
-    ax_plt = Axis(fig[4, 1])
+    ax_plt = Axis(fig[4, 1], title = "Mobile CO₂", ylabel = "kg")
     lines!(ax_plt, t_sparse, mob_a, color = color_A)
     lines!(ax_plt, t_sparse, mob_b, color = color_B)
 
@@ -84,23 +85,25 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
 
     mz = 12
     mz_big = mz + 2
-    scatter!(t_dot, mob_a_dot, markersize = mz_big, color = :black)
-    scatter!(t_dot, mob_a_dot, markersize = mz, color = color_A)
-    scatter!(t_dot, mob_b_dot, markersize = mz_big, color = :black)
-    scatter!(t_dot, mob_b_dot, markersize = mz)
+    scatter!(ax_plt, t_dot, mob_a_dot, markersize = mz_big, color = :black)
+    scatter!(ax_plt, t_dot, mob_a_dot, markersize = mz, color = color_A)
+    scatter!(ax_plt, t_dot, mob_b_dot, markersize = mz_big, color = :black)
+    scatter!(ax_plt, t_dot, mob_b_dot, markersize = mz)
+
+    ax_plt.xticklabelsvisible = false
 
     # Group 2
-    ax_plt = Axis(fig[5, 1])
+    ax_plt = Axis(fig[5, 1], title = "Dissolved CO₂", xlabel = "Time (years)", ylabel = "kg")
     lines!(ax_plt, t_sparse, diss_a, color = color_A)
     lines!(ax_plt, t_sparse, diss_b, color = color_B)
 
     diss_a_dot = @lift diss_a[$sparse_ix]
     diss_b_dot = @lift diss_b[$sparse_ix]
 
-    scatter!(t_dot, diss_a_dot, markersize = mz_big, color = :black)
-    scatter!(t_dot, diss_a_dot, markersize = mz, color = color_A)
-    scatter!(t_dot, diss_b_dot, markersize = mz_big, color = :black)
-    scatter!(t_dot, diss_b_dot, markersize = mz)
+    scatter!(ax_plt, t_dot, diss_a_dot, markersize = mz_big, color = :black)
+    scatter!(ax_plt, t_dot, diss_a_dot, markersize = mz, color = color_A)
+    scatter!(ax_plt, t_dot, diss_b_dot, markersize = mz_big, color = :black)
+    scatter!(ax_plt, t_dot, diss_b_dot, markersize = mz)
 
     framerate = 24
     record(fig, filename, indices;
@@ -108,7 +111,7 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
         ix[] = t
         t_step = steps[t]
         mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
-        @info "??" t_step minix
+        println("$t / $(length(indices))")
 
         sparse_ix[] = minix
     end
