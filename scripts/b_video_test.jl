@@ -14,6 +14,7 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
     k = "X_co2"
     t = "CO2 in liquid phase"
     clims, t, zero_to_nan = CSP11Visualizer.key_info(k, results[1]["case"])
+    lw = 3
 
     GLMakie.activate!()
     x = results[1]["x"]
@@ -41,18 +42,23 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
 
     # Box A: Bottom left (3300, 0), top right (8300, 600)
     color_A = :red
-    lines!(ax, [(3300, 0), (8300, 0)], color = color_A)
-    lines!(ax, [(8300, 0), (8300, 600)], color = color_A)
-    lines!(ax, [(8300, 600), (3300, 600)], color = color_A)
-    lines!(ax, [(3300, 600), (3300, 0)], color = color_A)
+    color_B = :blue
+
+    mk = Makie.wong_colors()
+    color_A = mk[1]
+    color_B = mk[3]
+
+    lines!(ax, [(3300, 0), (8300, 0)], color = color_A, linewidth = lw)
+    lines!(ax, [(8300, 0), (8300, 600)], color = color_A, linewidth = lw)
+    lines!(ax, [(8300, 600), (3300, 600)], color = color_A, linewidth = lw)
+    lines!(ax, [(3300, 600), (3300, 0)], color = color_A, linewidth = lw)
     text!(ax, 3350, 500, text = "A", color = color_A, fontsize = 35)
 
     # Box B: Bottom left (100, 600), top right (3300, 1200)
-    color_B = :blue
-    lines!(ax, [(100, 600), (3300, 600)], color = color_B)
-    lines!(ax, [(3300, 600), (3300, 1200)], color = color_B)
-    lines!(ax, [(3300, 1200), (100, 1200)], color = color_B)
-    lines!(ax, [(100, 1200), (100, 600)], color = color_B)
+    lines!(ax, [(100, 600), (3300, 600)], color = color_B, linewidth = lw)
+    lines!(ax, [(3300, 600), (3300, 1200)], color = color_B, linewidth = lw)
+    lines!(ax, [(3300, 1200), (100, 1200)], color = color_B, linewidth = lw)
+    lines!(ax, [(100, 1200), (100, 600)], color = color_B, linewidth = lw)
     text!(ax, 3050, 600, text = "B", color = color_B, fontsize = 35)
     crng = map(x -> round(x, digits = 2), range(clims..., length = 8))
     Colorbar(fig[3, 1], plt, vertical = false, ticks = crng)
@@ -76,9 +82,10 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
     # Sparse plot
     # Group 1
     ax_plt = Axis(fig[4, 1], title = "Mobile CO₂", ylabel = "kg")
-    lw = 3
+    ymax = 1.2*max(maximum(mob_a), maximum(mob_b))
     lines!(ax_plt, t_sparse, mob_a, color = color_A, linewidth = lw, label = "Box A")
     lines!(ax_plt, t_sparse, mob_b, color = color_B, linewidth = lw, label = "Box B")
+    lines!(ax_plt, [100, 100], [0, ymax], color = :black)#, label = "End of injection")
 
     sparse_ix = Observable(1)
     t_dot = @lift t_sparse[$sparse_ix]
@@ -90,17 +97,19 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
     scatter!(ax_plt, t_dot, mob_a_dot, markersize = mz_big, color = :black)
     scatter!(ax_plt, t_dot, mob_a_dot, markersize = mz, color = color_A)
     scatter!(ax_plt, t_dot, mob_b_dot, markersize = mz_big, color = :black)
-    scatter!(ax_plt, t_dot, mob_b_dot, markersize = mz)
+    scatter!(ax_plt, t_dot, mob_b_dot, markersize = mz, color = color_B)
     axislegend(position = :ct, nbanks = 2)
 
     ax_plt.xticklabelsvisible = false
     xlims!(ax_plt, 0, 1000.0)
-    ylims!(ax_plt, 0, 1.2*max(maximum(mob_a), maximum(mob_b)))
+    ylims!(ax_plt, 0, ymax)
 
     # Group 2
     ax_plt = Axis(fig[5, 1], title = "Dissolved CO₂", xlabel = "Time (years)", ylabel = "kg")
+    ymax = 1.2*max(maximum(diss_b), maximum(diss_a))
     lines!(ax_plt, t_sparse, diss_a, color = color_A, linewidth = lw, label = "Box A")
     lines!(ax_plt, t_sparse, diss_b, color = color_B, linewidth = lw, label = "Box B")
+    lines!(ax_plt, [100, 100], [0, ymax], color = :black)#, label = "End of injection")
 
     diss_a_dot = @lift diss_a[$sparse_ix]
     diss_b_dot = @lift diss_b[$sparse_ix]
@@ -108,11 +117,11 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
     scatter!(ax_plt, t_dot, diss_a_dot, markersize = mz_big, color = :black)
     scatter!(ax_plt, t_dot, diss_a_dot, markersize = mz, color = color_A)
     scatter!(ax_plt, t_dot, diss_b_dot, markersize = mz_big, color = :black)
-    scatter!(ax_plt, t_dot, diss_b_dot, markersize = mz)
+    scatter!(ax_plt, t_dot, diss_b_dot, markersize = mz, color = color_B)
 
     axislegend(position = :ct, nbanks = 2)
     xlims!(ax_plt, 0, 1000.0)
-    ylims!(ax_plt, 0, 1.2*max(maximum(diss_b), maximum(diss_a)))
+    ylims!(ax_plt, 0, ymax)
 
     ax_plt.xticks[] = 0:100:1000
     framerate = 24
