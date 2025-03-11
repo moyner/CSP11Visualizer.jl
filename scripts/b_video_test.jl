@@ -54,7 +54,8 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
     lines!(ax, [(3300, 1200), (100, 1200)], color = color_B)
     lines!(ax, [(100, 1200), (100, 600)], color = color_B)
     text!(ax, 3050, 600, text = "B", color = color_B, fontsize = 35)
-    Colorbar(fig[3, 1], plt, vertical = false)
+    crng = map(x -> round(x, digits = 2), range(clims..., length = 8))
+    Colorbar(fig[3, 1], plt, vertical = false, ticks = crng)
 
     # Sparse plots
     t_sparse = sparse_results[:, "time"]
