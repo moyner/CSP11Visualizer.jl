@@ -17,8 +17,8 @@ result = 3
 group = "opm"
 result = 1
 
-# group = "opm"
-# result = 4
+group = "opm"
+result = 4
 
 
 data = CSP11Visualizer.parse_dense_timesteps(group, result, "c", steps = [1000]);
@@ -58,7 +58,7 @@ cname = :default
 # cname = :seaborn_crest_gradient
 d = vec(r["X_co2"])
 cmap = CSP11Visualizer.default_colormap(cname, alpha = true, arange = (0, 1.0), k = 3)
-fig = Figure(size = (1200, 800))
+fig = Figure(size = (1200, 800), fontsize = 18)
 ax = Axis3(fig[1, 1], aspect = (8.4, 5, 3*1.2))
 cr = (0, 0.075)
 cr = (0, 0.06)
@@ -68,11 +68,21 @@ plt = plot_cell_data!(ax, mesh, d,
     transparency = true,
     colorrange = cr
 )
-Colorbar(fig[1, 2], colorrange = cr, colormap = CSP11Visualizer.default_colormap(cname, ))
+
+cticks = map(i -> round(i, digits = 2), range(cr..., 10))
+Colorbar(fig[2, 1],
+    colorrange = cr,
+    colormap = CSP11Visualizer.default_colormap(cname, ),
+    vertical = false,
+    ticks = cticks
+)
 ax.azimuth[] = 4.25
 ax.elevation[] = 0.153
-lines!(ax, w1, color = :red)
-lines!(ax, w2, color = :blue)
+# lines!(ax, w1, color = :red)
+# lines!(ax, w2, color = :blue)
+ax.xlabel[] = ""
+ax.ylabel[] = ""
+ax.zlabel[] = ""
 fig
 save("csp11_co2_$(group)_$(result)_$cname.png", fig)
 fig
