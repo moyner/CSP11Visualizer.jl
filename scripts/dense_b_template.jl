@@ -9,7 +9,9 @@ steps = [0, 10, 30, 50, 100, 200, 500, 1000] # hide
 steps = [30, 50, 100, 1000] # hide
 steps = collect(0:5:1000)
 results = CSP11Visualizer.parse_dense_timesteps(groupname, resultid, steps = steps, verbose = true); # hide
-
+sparse_results = CSP11Visualizer.parse_all_sparse(case = "b", active_result = resultid, active_groups = groupname)
+@assert only(unique(sparse_results[:, "group"])) == groupname
+@assert only(unique(sparse_results[:, "result"])) == resultid
 after_period = findfirst(isequal(30), steps) # hide
 @assert !isnothing(after_period) # hide
 end_of_injection = findfirst(isequal(50), steps) # hide
@@ -18,6 +20,11 @@ after_century = findfirst(isequal(100), steps) # hide
 @assert !isnothing(after_century) # hide
 end_of_migration = findfirst(isequal(1000), steps) # hide
 @assert !isnothing(end_of_migration); # hide
+# ## Movie
+CSP11Visualizer.make_movie_caseb(steps, results, sparse_results, filename = "movieb_$(groupname)_$resultid.mp4");
+
+# INSERT_MOVIE_B
+
 # ## Thermodynamic state variables
 # ### Total mass of CO₂
 # The total mass of CO₂ in kilograms per cell is shown below. This is the

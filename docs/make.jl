@@ -18,9 +18,10 @@ using CSP11Visualizer, Literate
 #
 # May need to spin up webserver to fix XSS protection in chrome for local previews:
 # SPE11-plot-test\docs\build> python3 -m http.server 9000
+cd(@__DIR__)
 
 do_build = true
-build_all_dense = true
+build_all_dense = false
 
 case_a = [
 
@@ -99,6 +100,10 @@ function replace_template(content, group_name, result_id, s)
     return content
 end
 
+function replace_post(content, group_name, result_id)
+    replace(content, "INSERT_MOVIE_B" => "```@raw html\n"*"<video autoplay loop muted playsinline controls src=\"./movieb_$(groupname)_$resultid.mp4\" />\n"*"```")
+end
+
 function copy_template(dest, case, cases_to_plot, default)
     in_pth = example_path("dense_$(case)_template")
     outdir_case = joinpath(@__DIR__, "src", "pages", "generated", "dense_$case")
@@ -113,7 +118,8 @@ function copy_template(dest, case, cases_to_plot, default)
             for result in results
                 fn = "$(group)_$result"
                 replacer = (c) -> replace_template(c, group, result, default)
-                Literate.markdown(in_pth, outdir_case, name = fn, preprocess = replacer)
+                post_replacer = c -> replace_post(c, group, result)
+                Literate.markdown(in_pth, outdir_case, name = fn, preprocess = replacer, postprocess = post_replacer)
                 push!(case_paths, "$group: Result $result" => joinpath("pages", "generated", "dense_$case", "$fn.md"))
             end
             push!(case_dense, "$group" => case_paths)
