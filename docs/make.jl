@@ -101,7 +101,7 @@ function replace_template(content, group_name, result_id, s)
 end
 
 function replace_post(content, group_name, result_id)
-    replace(content, "INSERT_MOVIE_B" => "```@raw html\n"*"<video autoplay loop muted playsinline controls src=\"./movieb_$(groupname)_$resultid.mp4\" />\n"*"```")
+    replace(content, "INSERT_MOVIE_B" => "```@raw html\n"*"<video autoplay loop muted playsinline controls src=\"./movieb_$(group_name)_$result_id.mp4\" />\n"*"```")
 end
 
 function copy_template(dest, case, cases_to_plot, default)
