@@ -10,7 +10,11 @@ sparse_results = CSP11Visualizer.parse_all_sparse(case = "b", active_result = re
 @assert only(unique(sparse_results[:, "result"])) == resultid
 ##
 # using CSP11Visualizer.Jutul
-function make_movie_caseb(steps, results, sparse_results, k, t = k; filename = "sg.mp4")
+function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
+    k = "X_co2"
+    t = "CO2 in liquid phase"
+    clims, t, zero_to_nan = CSP11Visualizer.key_info(k, results[1]["case"])
+
     GLMakie.activate!()
     x = results[1]["x"]
     z = results[1]["z"]
@@ -26,38 +30,74 @@ function make_movie_caseb(steps, results, sparse_results, k, t = k; filename = "
         end
     end
     fig = Figure(size = (1200, 1200))
-    ax = Axis(fig[1, 1], title = t)
+    ax = Axis(fig[1:2, 1], title = t)
     ix = Observable(1)
     getresult(i) = vec(results[i][k])
     values = @lift getresult($ix)
     plt = heatmap!(ax, vec(x), vec(z), values,
-        colormap = CSP11Visualizer.default_colormap()
+        colormap = CSP11Visualizer.default_colormap(),
+        colorrange = clims,
     )
-    Colorbar(fig[2, 1], plt, vertical = false)
+
+    # Box A: Bottom left (3300, 0), top right (8300, 600)
+    color_A = :red
+    lines!(ax, [(3300, 0), (8300, 0)], color = color_A)
+    lines!(ax, [(8300, 0), (8300, 600)], color = color_A)
+    lines!(ax, [(8300, 600), (3300, 600)], color = color_A)
+    lines!(ax, [(3300, 600), (3300, 0)], color = color_A)
+
+    # Box B: Bottom left (100, 600), top right (3300, 1200)
+    color_B = :blue
+    lines!(ax, [(100, 600), (3300, 600)], color = color_B)
+    lines!(ax, [(3300, 600), (3300, 1200)], color = color_B)
+    lines!(ax, [(3300, 1200), (100, 1200)], color = color_B)
+    lines!(ax, [(100, 1200), (100, 600)], color = color_B)
+    Colorbar(fig[3, 1], plt, vertical = false)
 
     # Sparse plots
-    ax_plt = Axis(fig[3, 1])
     t_sparse = sparse_results[:, "time"]
     mob_a = sparse_results[:, "mobA"]
     mob_b = sparse_results[:, "mobB"]
+    diss_a = sparse_results[:, "dissA"]
+    diss_b = sparse_results[:, "dissB"]
 
     # Sort
     sortix = sortperm(t_sparse)
     t_sparse = t_sparse[sortix]
     mob_a = mob_a[sortix]
     mob_b = mob_b[sortix]
+    diss_a = diss_a[sortix]
+    diss_b = diss_b[sortix]
 
-    lines!(ax_plt, t_sparse, mob_a, color = :black)
-    lines!(ax_plt, t_sparse, mob_b, color = :black)
+    # Sparse plot
+    # Group 1
+    ax_plt = Axis(fig[4, 1])
+    lines!(ax_plt, t_sparse, mob_a, color = color_A)
+    lines!(ax_plt, t_sparse, mob_b, color = color_B)
 
-    # I = get_1d_interpolator(t_sparse, mob_b)
     sparse_ix = Observable(1)
     t_dot = @lift t_sparse[$sparse_ix]
     mob_a_dot = @lift mob_a[$sparse_ix]
     mob_b_dot = @lift mob_b[$sparse_ix]
 
-    scatter!(t_dot, mob_a_dot)
-    scatter!(t_dot, mob_b_dot)
+    mz = 18
+    scatter!(t_dot, mob_a_dot, markersize = 1.2*mz, color = :black)
+    scatter!(t_dot, mob_a_dot, markersize = mz, color = color_A)
+    scatter!(t_dot, mob_b_dot, markersize = 1.2*mz, color = :black)
+    scatter!(t_dot, mob_b_dot, markersize = mz)
+
+    # Group 2
+    ax_plt = Axis(fig[5, 1])
+    lines!(ax_plt, t_sparse, diss_a, color = :black)
+    lines!(ax_plt, t_sparse, diss_b, color = :black)
+
+    diss_a_dot = @lift diss_a[$sparse_ix]
+    diss_b_dot = @lift diss_b[$sparse_ix]
+
+    scatter!(t_dot, diss_a_dot, markersize = 1.2*mz, color = :black)
+    scatter!(t_dot, diss_a_dot, markersize = mz, color = color_A)
+    scatter!(t_dot, diss_b_dot, markersize = 1.2*mz, color = :black)
+    scatter!(t_dot, diss_b_dot, markersize = mz)
 
     framerate = 24
     record(fig, filename, indices;
@@ -72,4 +112,4 @@ function make_movie_caseb(steps, results, sparse_results, k, t = k; filename = "
     return filename
 end
 
-make_movie_caseb(steps, results, sparse_results, "sg", "Gas saturation") # hide
+make_movie_caseb(steps, results, sparse_results) # hide
