@@ -76,8 +76,9 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
     # Sparse plot
     # Group 1
     ax_plt = Axis(fig[4, 1], title = "Mobile CO₂", ylabel = "kg")
-    lines!(ax_plt, t_sparse, mob_a, color = color_A)
-    lines!(ax_plt, t_sparse, mob_b, color = color_B)
+    lw = 3
+    lines!(ax_plt, t_sparse, mob_a, color = color_A, linewidth = lw, label = "Box A")
+    lines!(ax_plt, t_sparse, mob_b, color = color_B, linewidth = lw, label = "Box B")
 
     sparse_ix = Observable(1)
     t_dot = @lift t_sparse[$sparse_ix]
@@ -90,13 +91,16 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
     scatter!(ax_plt, t_dot, mob_a_dot, markersize = mz, color = color_A)
     scatter!(ax_plt, t_dot, mob_b_dot, markersize = mz_big, color = :black)
     scatter!(ax_plt, t_dot, mob_b_dot, markersize = mz)
+    axislegend(position = :ct, nbanks = 2)
 
     ax_plt.xticklabelsvisible = false
+    xlims!(ax_plt, 0, 1000.0)
+    ylims!(ax_plt, 0, 1.2*max(maximum(mob_a), maximum(mob_b)))
 
     # Group 2
     ax_plt = Axis(fig[5, 1], title = "Dissolved CO₂", xlabel = "Time (years)", ylabel = "kg")
-    lines!(ax_plt, t_sparse, diss_a, color = color_A)
-    lines!(ax_plt, t_sparse, diss_b, color = color_B)
+    lines!(ax_plt, t_sparse, diss_a, color = color_A, linewidth = lw, label = "Box A")
+    lines!(ax_plt, t_sparse, diss_b, color = color_B, linewidth = lw, label = "Box B")
 
     diss_a_dot = @lift diss_a[$sparse_ix]
     diss_b_dot = @lift diss_b[$sparse_ix]
@@ -106,6 +110,11 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
     scatter!(ax_plt, t_dot, diss_b_dot, markersize = mz_big, color = :black)
     scatter!(ax_plt, t_dot, diss_b_dot, markersize = mz)
 
+    axislegend(position = :ct, nbanks = 2)
+    xlims!(ax_plt, 0, 1000.0)
+    ylims!(ax_plt, 0, 1.2*max(maximum(diss_b), maximum(diss_a)))
+
+    ax_plt.xticks[] = 0:100:1000
     framerate = 24
     record(fig, filename, indices;
         framerate = framerate) do t
