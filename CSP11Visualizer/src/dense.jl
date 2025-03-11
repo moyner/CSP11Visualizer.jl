@@ -281,7 +281,10 @@ function key_info(var::String, case::String)
             zero_to_nan = true
         end
     elseif case == "a"
-
+        if var == "X_co2"
+            yscale = (0.0, 0.002)
+            label = "CO₂ mass fraction in liquid"
+        end
     end
     if isnothing(yscale)
         @warn "No scaling for $var for case $case"
