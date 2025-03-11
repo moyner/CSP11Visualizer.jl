@@ -210,17 +210,7 @@ function parse_dense_data(group, result, year_or_h, case = "b", path = default_d
         y = zeros(length(x))
     end
     z  = df[:, :z]
-    Lx = maximum(x)
-    Ly = maximum(y)
-    Lz = maximum(z)
-    function sortfunction(i)
-        xi = x[i]
-        yi = y[i]
-        zi = z[i]
-        # return i
-        return zi*(Lx*Ly) + yi*Lx + xi
-    end
-    ix = sort(eachindex(z), by = sortfunction)
+    ix = sorted_indices(x, y, z)
     out = Dict{String, Any}()
     for name in names(df)
         val = df[:, name]
@@ -237,6 +227,22 @@ function parse_dense_data(group, result, year_or_h, case = "b", path = default_d
     end
     out["case"] = case
     return out
+end
+
+function sorted_indices(x, y, z)
+    Lx = maximum(x)
+    Ly = maximum(y)
+    Lz = maximum(z)
+
+    return sort(eachindex(z), by = i -> sortfunction(i, x, y, z, Lx, Ly, Lz))
+end
+
+function sortfunction(i, x, y, z, Lx, Ly, Lz)
+    xi = x[i]
+    yi = y[i]
+    zi = z[i]
+    # return i
+    return zi*(Lx*Ly) + yi*Lx + xi
 end
 
 function key_info(var::String, case::String)
