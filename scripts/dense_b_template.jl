@@ -6,8 +6,9 @@ CairoMakie.activate!() # hide
 steps = 0:5:50 # hide
 steps = 0:5:1000 # hide
 steps = [0, 10, 30, 50, 100, 200, 500, 1000] # hide
-steps = [50, 30, 100, 1000] # hide
-results = CSP11Visualizer.parse_dense_timesteps(groupname, resultid, steps = steps, verbose = false); # hide
+steps = [30, 50, 100, 1000] # hide
+steps = collect(0:5:1000)
+results = CSP11Visualizer.parse_dense_timesteps(groupname, resultid, steps = steps, verbose = true); # hide
 
 after_period = findfirst(isequal(30), steps) # hide
 @assert !isnothing(after_period) # hide
@@ -21,9 +22,9 @@ end_of_migration = findfirst(isequal(1000), steps) # hide
 # ### Total mass of CO₂
 # The total mass of CO₂ in kilograms per cell is shown below. This is the
 # absolute mass of CO₂ and indicates where the CO₂ is located in the domain.
-# ### 30 years:
+# ### 30 years
 CSP11Visualizer.plot_snapshot(results[after_period], :co2mass) # hide
-# #### End of injection
+# #### 50 years: End of injection
 CSP11Visualizer.plot_snapshot(results[end_of_injection], :co2mass) # hide
 # #### 100 years:
 CSP11Visualizer.plot_snapshot(results[after_century], :co2mass) # hide

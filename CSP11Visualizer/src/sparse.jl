@@ -68,7 +68,16 @@ function read_file(pth, group, result, case; resample = false)
         )
 end
 
-function parse_all_sparse(pth = default_data_path("sparse"); case = "b", verbose = false, merge = true)
+function parse_all_sparse(pth = default_data_path("sparse");
+        case = "b",
+        verbose = false,
+        merge = true,
+        active_groups = nothing,
+        active_result = nothing
+    )
+    if active_groups isa AbstractString
+        active_groups = [active_groups]
+    end
     function maybe_print(x)
         if verbose
             println(x)
@@ -78,6 +87,9 @@ function parse_all_sparse(pth = default_data_path("sparse"); case = "b", verbose
     groups = readdir(pth)
     results = Dict{String, Any}()
     for group in groups
+        if !isnothing(active_groups) && !(group in active_groups)
+            continue
+        end
         gdata = Dict{Int, Any}()
         casepath = joinpath(pth, group, "spe11$case")
         if !isdir(casepath)
@@ -94,6 +106,10 @@ function parse_all_sparse(pth = default_data_path("sparse"); case = "b", verbose
                 spth = joinpath(casepath, csv_name)
             else
                 maybe_print("Skipping $dir...")
+                continue
+            end
+            if !isnothing(active_result) && !(result_id == active_result)
+                active_result::Int
                 continue
             end
             maybe_print("$group: Reading $spth")
