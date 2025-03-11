@@ -85,6 +85,7 @@ function make_movie(results, k, t = k; filename = "sg.mp4")
 end
 
 function plot_snapshot(result, k; use_clims = true)
+    CairoMakie.activate!()
     name = "$k"
     clims, t, zero_to_nan = key_info(name, result["case"])
     # GLMakie.activate!()
