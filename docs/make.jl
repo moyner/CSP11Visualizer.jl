@@ -21,7 +21,7 @@ using CSP11Visualizer, Literate
 cd(@__DIR__)
 
 do_build = true
-build_all_dense = false
+build_all_dense = true
 
 case_a = [
 
@@ -101,9 +101,8 @@ function replace_template(content, case, group_name, result_id, s)
 end
 
 function replace_post(content, case, group_name, result_id)
-    if case == "b"
-        content = replace(content, "INSERT_MOVIE_B" => "````@raw html\n"*"<video autoplay loop muted playsinline controls>\n<source src=\"./movieb_$(group_name)_$result_id.mp4\" type=\"video/mp4\"/>\n</video>\n"*"````\n")
-    end
+    @assert case in ["a", "b", "c"]
+    content = replace(content, "INSERT_MOVIE_$(uppercase(case))" => "````@raw html\n"*"<video autoplay loop muted playsinline controls>\n<source src=\"./movie$(case)_$(group_name)_$result_id.mp4\" type=\"video/mp4\"/>\n</video>\n"*"````\n")
     return content
 end
 

@@ -185,7 +185,7 @@ function make_movie_casea(steps, results, sparse_results; filename)
     lines!(ax, [(B12, B22), (B11, B22)], color = color_B, linewidth = lw)
     lines!(ax, [(B11, B22), (B11, B21)], color = color_B, linewidth = lw)
     text!(ax, 0.92*B12, B21, text = "B", color = color_B, fontsize = 35)
-    crng = map(x -> round(x, digits = 2), range(clims..., length = 8))
+    crng = map(x -> round(x, digits = 4), range(clims..., length = 8))
     Colorbar(fig[3, 1], plt, vertical = false, ticks = crng)
 
     # Sparse plots

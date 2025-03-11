@@ -284,6 +284,30 @@ function key_info(var::String, case::String)
         if var == "X_co2"
             yscale = (0.0, 0.002)
             label = "CO₂ mass fraction in liquid"
+        elseif var == "pw"
+            yscale = (110000.0, 125000.0) 
+            label =  "Pressure (Pascal)"
+        elseif var == "denw"
+            yscale = (997.0, 998.0)
+            label = "Water density (kg/m³)"
+            zero_to_nan = true
+        elseif var == "deng"
+            yscale = (1.0, 2.2)
+            label = "Gas density (kg/m³)"
+            zero_to_nan = true
+        elseif var == "Y_h2o"
+            yscale = (0.0, 0.01)
+            label = "H₂O mass fraction in vapor"
+        elseif var == "X_co2"
+            yscale = (0.0, 0.002)
+            label = "CO₂ mass fraction in liquid"
+        elseif var == "sg"
+            yscale = (0.0, 1.0)
+            label = "Gas saturation"
+        elseif var == "co2mass"
+            yscale = (0.0, 10e-7) #  (0.0, 28550.0)
+            label = "Total mass of CO₂ (kg)"
+            zero_to_nan = true
         end
     end
     if isnothing(yscale)
