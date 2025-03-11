@@ -45,6 +45,7 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
     lines!(ax, [(8300, 0), (8300, 600)], color = color_A)
     lines!(ax, [(8300, 600), (3300, 600)], color = color_A)
     lines!(ax, [(3300, 600), (3300, 0)], color = color_A)
+    text!(ax, 3350, 500, text = "A", color = color_A, fontsize = 35)
 
     # Box B: Bottom left (100, 600), top right (3300, 1200)
     color_B = :blue
@@ -52,6 +53,7 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
     lines!(ax, [(3300, 600), (3300, 1200)], color = color_B)
     lines!(ax, [(3300, 1200), (100, 1200)], color = color_B)
     lines!(ax, [(100, 1200), (100, 600)], color = color_B)
+    text!(ax, 3050, 600, text = "B", color = color_B, fontsize = 35)
     Colorbar(fig[3, 1], plt, vertical = false)
 
     # Sparse plots
@@ -80,23 +82,24 @@ function make_movie_caseb(steps, results, sparse_results; filename = "sg.mp4")
     mob_a_dot = @lift mob_a[$sparse_ix]
     mob_b_dot = @lift mob_b[$sparse_ix]
 
-    mz = 18
-    scatter!(t_dot, mob_a_dot, markersize = 1.2*mz, color = :black)
+    mz = 12
+    mz_big = mz + 2
+    scatter!(t_dot, mob_a_dot, markersize = mz_big, color = :black)
     scatter!(t_dot, mob_a_dot, markersize = mz, color = color_A)
-    scatter!(t_dot, mob_b_dot, markersize = 1.2*mz, color = :black)
+    scatter!(t_dot, mob_b_dot, markersize = mz_big, color = :black)
     scatter!(t_dot, mob_b_dot, markersize = mz)
 
     # Group 2
     ax_plt = Axis(fig[5, 1])
-    lines!(ax_plt, t_sparse, diss_a, color = :black)
-    lines!(ax_plt, t_sparse, diss_b, color = :black)
+    lines!(ax_plt, t_sparse, diss_a, color = color_A)
+    lines!(ax_plt, t_sparse, diss_b, color = color_B)
 
     diss_a_dot = @lift diss_a[$sparse_ix]
     diss_b_dot = @lift diss_b[$sparse_ix]
 
-    scatter!(t_dot, diss_a_dot, markersize = 1.2*mz, color = :black)
+    scatter!(t_dot, diss_a_dot, markersize = mz_big, color = :black)
     scatter!(t_dot, diss_a_dot, markersize = mz, color = color_A)
-    scatter!(t_dot, diss_b_dot, markersize = 1.2*mz, color = :black)
+    scatter!(t_dot, diss_b_dot, markersize = mz_big, color = :black)
     scatter!(t_dot, diss_b_dot, markersize = mz)
 
     framerate = 24
