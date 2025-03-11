@@ -118,7 +118,7 @@ function make_movie_caseb(steps, results, sparse_results; filename)
         ix[] = t
         t_step = steps[t]
         mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
-        println("$t / $(length(indices))")
+        # println("$t / $(length(indices))")
 
         sparse_ix[] = minix
     end
