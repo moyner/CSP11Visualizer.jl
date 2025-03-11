@@ -104,3 +104,13 @@ CSP11Visualizer.plot_snapshot(results[end_of_injection], :denw) # hide
 CSP11Visualizer.plot_snapshot(results[after_century], :denw) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :denw) # hide
+##
+function clear_module!(M::Module)        # hide
+    for name ∈ names(M, all=true)        # hide
+        if !isconst(M, name)             # hide
+            @eval M $name = $nothing     # hide
+        end                              # hide
+    end                                  # hide
+end                                      # hide
+clear_module!(@__MODULE__)               # hide
+GC.gc();                                 # hide

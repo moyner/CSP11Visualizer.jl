@@ -44,3 +44,13 @@ plot_sparse(results, :boundTot) # hide
 
 # ## CO₂ in seal
 plot_sparse(results, :sealTot) # hide
+##
+function clear_module!(M::Module)        # hide
+    for name ∈ names(M, all=true)        # hide
+        if !isconst(M, name)             # hide
+            @eval M $name = $nothing     # hide
+        end                              # hide
+    end                                  # hide
+end                                      # hide
+clear_module!(@__MODULE__)               # hide
+GC.gc();                                 # hide
