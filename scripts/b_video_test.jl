@@ -35,21 +35,28 @@ function make_movie_caseb(steps, results, sparse_results, k, t = k; filename = "
     )
     Colorbar(fig[2, 1], plt, vertical = false)
 
+    # Sparse plots
     ax_plt = Axis(fig[3, 1])
     t_sparse = sparse_results[:, "time"]
+    mob_a = sparse_results[:, "mobA"]
     mob_b = sparse_results[:, "mobB"]
 
+    # Sort
     sortix = sortperm(t_sparse)
     t_sparse = t_sparse[sortix]
+    mob_a = mob_a[sortix]
     mob_b = mob_b[sortix]
 
+    lines!(ax_plt, t_sparse, mob_a, color = :black)
     lines!(ax_plt, t_sparse, mob_b, color = :black)
 
     # I = get_1d_interpolator(t_sparse, mob_b)
     sparse_ix = Observable(1)
     t_dot = @lift t_sparse[$sparse_ix]
+    mob_a_dot = @lift mob_a[$sparse_ix]
     mob_b_dot = @lift mob_b[$sparse_ix]
 
+    scatter!(t_dot, mob_a_dot)
     scatter!(t_dot, mob_b_dot)
 
     framerate = 24
