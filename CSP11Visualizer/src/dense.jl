@@ -122,7 +122,10 @@ function plot_snapshot(result, k; use_clims = true)
     return fig
 end
 
-function plot_snapshot_c(result, k, I = 84, J = 50; use_clims = true)
+case_c_ij_planes() = (84, 50)
+
+function plot_snapshot_c(result, k, IJ = case_c_ij_planes(); use_clims = true)
+    I, J = IJ
     CairoMakie.activate!()
     name = "$k"
     clims, t, zero_to_nan = key_info(name, result["case"])

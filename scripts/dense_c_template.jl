@@ -33,8 +33,7 @@ lines!(ax, w2, color = :blue, label = "W2")
 axislegend()
 fig
 ##
-I_cut = 84
-J_cut = 50
+I_cut, J_cut = CSP11Visualizer.case_c_ij_planes()
 fig = Figure(size = (2000, 800))
 ijk = map(i -> cell_ijk(mesh, i), 1:number_of_cells(mesh))
 I1 = findall(i -> i[1] == I_cut, ijk)
@@ -48,4 +47,108 @@ Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1)
 plot_mesh!(ax, mesh, cells = I2, color = :blue)
 fig
 ##
-CSP11Visualizer.plot_snapshot_c(results[after_period], :X_co2, I_cut, J_cut)
+# ## CO₂ mass fraction in liquid
+# The mass fraction of CO₂ in the liquid phase is shown below.
+# ### 30 years: 5 years after start of second injector
+CSP11Visualizer.plot_snapshot_c(results[after_period], :X_co2) # hide
+# ### 50 years: End of injection
+CSP11Visualizer.plot_snapshot_c(results[end_of_injection], :X_co2) # hide
+# ### 100 years
+CSP11Visualizer.plot_snapshot_c(results[after_century], :X_co2) # hide
+# ### End of migration
+CSP11Visualizer.plot_snapshot_c(results[end_of_migration], :X_co2) # hide
+# ## Gas saturation
+# The free gas volume fraction in the porous medium.
+# ### 30 years:
+CSP11Visualizer.plot_snapshot_c(results[after_period], :sg) # hide
+# ### End of injection
+CSP11Visualizer.plot_snapshot_c(results[end_of_injection], :sg) # hide
+# ### 100 years:
+CSP11Visualizer.plot_snapshot_c(results[after_century], :sg) # hide
+# ### End of migration
+CSP11Visualizer.plot_snapshot_c(results[end_of_migration], :sg) # hide
+
+# ## Water density
+# The water density depends on the pressure, temperature and the amount of CO₂
+# that has been dissolved in the water phase
+# ### 30 years:
+CSP11Visualizer.plot_snapshot_c(results[after_period], :denw) # hide
+# ### End of injection
+CSP11Visualizer.plot_snapshot_c(results[end_of_injection], :denw) # hide
+# ### 100 years:
+CSP11Visualizer.plot_snapshot_c(results[after_century], :denw) # hide
+# ### End of migration
+CSP11Visualizer.plot_snapshot_c(results[end_of_migration], :denw) # hide
+
+# ## Thermodynamic state variables
+# ### Total mass of CO₂
+# The total mass of CO₂ in kilograms per cell is shown below. This is the
+# absolute mass of CO₂ and indicates where the CO₂ is located in the domain.
+# ### 30 years
+CSP11Visualizer.plot_snapshot_c(results[after_period], :co2mass) # hide
+# #### 50 years: End of injection
+CSP11Visualizer.plot_snapshot_c(results[end_of_injection], :co2mass) # hide
+# #### 100 years
+CSP11Visualizer.plot_snapshot_c(results[after_century], :co2mass) # hide
+# #### 1000 years: End of migration
+CSP11Visualizer.plot_snapshot_c(results[end_of_migration], :co2mass) # hide
+
+# ### Pressure
+# The reported pressure in Pascal is shown below. This is the pressure of the
+# water phase.
+# #### 30 years
+CSP11Visualizer.plot_snapshot_c(results[after_period], :pw) # hide
+# #### 50 years: End of injection
+CSP11Visualizer.plot_snapshot_c(results[end_of_injection], :pw,) # hide
+# #### 100 years
+CSP11Visualizer.plot_snapshot_c(results[after_century], :pw) # hide
+# #### 1000 years: End of migration
+CSP11Visualizer.plot_snapshot_c(results[end_of_migration], :pw) # hide
+
+# ### Temperature
+# The reported temperature in degrees Celsius is shown below.
+# #### 30 years:
+CSP11Visualizer.plot_snapshot_c(results[after_period], :T) # hide
+# #### 50 years: End of injection
+CSP11Visualizer.plot_snapshot_c(results[end_of_injection], :T) # hide
+# #### 100 years:
+CSP11Visualizer.plot_snapshot_c(results[after_century], :T) # hide
+# #### 1000 years: End of migration
+CSP11Visualizer.plot_snapshot_c(results[end_of_migration], :T) # hide
+
+# ## H₂O mass fraction in vapor
+# A small amount of H₂O can vaporize into the gas phase. The mass fraction of H₂O
+# in the gas phase is shown below.
+# ### 30 years:
+CSP11Visualizer.plot_snapshot_c(results[after_period], :Y_h2o) # hide
+# ### End of injection
+CSP11Visualizer.plot_snapshot_c(results[end_of_injection], :Y_h2o) # hide
+# ### 100 years:
+CSP11Visualizer.plot_snapshot_c(results[after_century], :Y_h2o) # hide
+# ### End of migration
+CSP11Visualizer.plot_snapshot_c(results[end_of_migration], :Y_h2o) # hide
+
+# ## Gas density
+# The gas density depends only on pressure and temperature in this model.
+# ### 30 years:
+CSP11Visualizer.plot_snapshot_c(results[after_period], :deng) # hide
+# ### End of injection
+CSP11Visualizer.plot_snapshot_c(results[end_of_injection], :deng) # hide
+# ### 100 years:
+CSP11Visualizer.plot_snapshot_c(results[after_century], :deng) # hide
+# ### End of migration
+CSP11Visualizer.plot_snapshot_c(results[end_of_migration], :deng) # hide
+# #### End of page
+# This example was generated from the submitted data on the reporting grid.
+function clear_module!(M::Module)        # hide
+    if M == Main                         # hide
+        return                           # hide
+    end                                  # hide
+    for name ∈ names(M, all=true)        # hide
+        if !isconst(M, name)             # hide
+            @eval M $name = $nothing     # hide
+        end                              # hide
+    end                                  # hide
+end                                      # hide
+clear_module!(@__MODULE__)               # hide
+GC.gc();                                 # hide
