@@ -5,9 +5,7 @@ using CSP11Visualizer, GLMakie, CairoMakie # hide
 CairoMakie.activate!() # hide
 steps = CSP11Visualizer.canonical_reporting_steps("c") # hide
 results = CSP11Visualizer.parse_dense_timesteps(groupname, resultid, "c", steps = steps, verbose = false); # hide
-sparse_results = CSP11Visualizer.parse_all_sparse(case = "c", active_result = resultid, active_groups = groupname) # hide
-@assert only(unique(sparse_results[:, "group"])) == groupname # hide
-@assert only(unique(sparse_results[:, "result"])) == resultid # hide
+sparse_results = CSP11Visualizer.parse_all_sparse(case = "c") # hide
 after_period = findfirst(isequal(30), steps) # hide
 @assert !isnothing(after_period) # hide
 end_of_injection = findfirst(isequal(50), steps) # hide
@@ -16,6 +14,13 @@ after_century = findfirst(isequal(100), steps) # hide
 @assert !isnothing(after_century) # hide
 end_of_migration = findfirst(isequal(1000), steps) # hide
 @assert !isnothing(end_of_migration); # hide
+
+# ## Overview animation
+fn = "moviec_$(groupname)_$resultid.mp4" # hide
+CSP11Visualizer.make_movie_casec(steps, results, sparse_results, filename = fn, group = groupname, resultid = resultid); # hide
+
+# INSERT_MOVIE_B
+
 # ## Plot the mesh and wells
 # The mesh and the wells are shown below. The wells are shown in red and blue.
 # Note that the model is plotted in physical space after transformation.

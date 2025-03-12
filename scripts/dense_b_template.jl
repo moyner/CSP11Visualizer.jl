@@ -22,7 +22,8 @@ end_of_migration = findfirst(isequal(1000), steps) # hide
 # and B, as well as the mobile CO₂ in the gas phase. Note that the playback
 # speed is slower during injection than during migration.
 fn = "movieb_$(groupname)_$resultid.mp4" # hide
-CSP11Visualizer.make_movie_caseb(steps, results, sparse_results, filename = fn, group = group, resultid = resultid); # hide
+CSP11Visualizer.make_movie_caseb(steps, results, sparse_results,
+    filename = fn, group = groupname, resultid = resultid); # hide
 
 # INSERT_MOVIE_B
 

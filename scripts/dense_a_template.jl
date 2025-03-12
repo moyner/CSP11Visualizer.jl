@@ -19,7 +19,8 @@ end_of_migration = findfirst(isequal(120), steps) # hide
 # speed is slower during injection than during migration.
 
 fn = "moviea_$(groupname)_$resultid.mp4" # hide
-CSP11Visualizer.make_movie_casea(steps, results, sparse_results, filename = fn, group = group, resultid = resultid); # hide
+CSP11Visualizer.make_movie_casea(steps, results, sparse_results,
+    filename = fn, group = groupname, resultid = resultid); # hide
 
 # INSERT_MOVIE_A
 
