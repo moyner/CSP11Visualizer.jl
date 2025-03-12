@@ -83,11 +83,15 @@ publish_examples(case_c, pages_c)
 if build_all_dense
     cases_a = CSP11Visualizer.available_dense_data("a")
     cases_b = CSP11Visualizer.available_dense_data("b")
+    cases_c = CSP11Visualizer.available_dense_data("c")
+
 else
     cases_a = Dict()
     cases_b = Dict()
-    cases_a = Dict("opm" => [1])
+    cases_c = Dict()
+    # cases_a = Dict("opm" => [1])
     # cases_b = Dict("opm" => [1])
+    cases_c = Dict("opm" => [1])
     # cases_b = Dict("kiel" => [1])
 end
 ##
@@ -131,6 +135,7 @@ end
 
 copy_template(case_a, "a", cases_a, "opm")
 copy_template(case_b, "b", cases_b, "opm")
+copy_template(case_c, "c", cases_c, "opm")
 
 documenter_fmt = Documenter.HTML(
     size_threshold = typemax(Int),

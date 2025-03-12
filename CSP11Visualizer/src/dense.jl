@@ -122,6 +122,52 @@ function plot_snapshot(result, k; use_clims = true)
     return fig
 end
 
+function plot_snapshot_c(result, k; I = nothing, J = nothing, use_clims = true)
+    CairoMakie.activate!()
+    name = "$k"
+    clims, t, zero_to_nan = key_info(name, result["case"])
+    # GLMakie.activate!()
+    r = result[name]
+    if !isnothing(I)
+        x = result["y"][I, :, :]
+        z = result["z"][I, :, :]
+        r = r[I, :, :]
+    else
+        @assert isnothing(J)
+        x = result["x"][:, J, :]
+        z = result["z"][:, J, :]
+        r = r[:, J, :]
+    end
+    fig = Figure(size = (1200, 600), backgroundcolor = :transparent)
+    D = copy(vec(r))
+    if zero_to_nan
+        D[D .== 0] .= NaN
+    end
+    failure = eltype(D) != Float64 || all(isnan, D)
+    ax = Axis(fig[1, 1], title = t, ygridvisible = false, xgridvisible = false)
+    if !failure
+        if isnothing(clims) || !use_clims
+            arg = NamedTuple()
+        else
+            arg = (colorrange = clims, )
+        end
+        try
+            plt = heatmap!(ax, vec(x), vec(z), D;
+                colormap = default_colormap(),
+                arg...
+            )
+            Colorbar(fig[1, 2], plt)
+        catch excpt
+            @error "Failed to plot $k" excpt
+            failure = true
+        end
+    end
+    if failure
+        text!(ax, 0.5, 0.5, text = "Data missing / plot failure.", fontsize = 50, align = (:center, :baseline))
+    end
+    return fig
+end
+
 function parse_dense_data(group, result, year_or_h, case = "b", path = default_data_path())
     if case == "b" || case == "c"
         fname = "spe11$(case)_spatial_map_$(year_or_h)y.csv"
