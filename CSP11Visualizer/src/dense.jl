@@ -22,11 +22,32 @@ function default_colormap(cmap_name = :default; alpha = false, k = 1, arange = (
     return cmap
 end
 
+function canonical_reporting_steps(case)
+    if case == "b"
+        steps = collect(0:5:1000)
+    elseif case == "c"
+        steps = [
+            0, 5, 10, 15, 20, 25,
+            30, 35, 40, 45, 50, 75,
+            100, 150, 200, 300, 350,
+            400, 450, 500, 600, 700,
+            800, 900, 1000
+        ]
+    else
+        @assert case == "a"
+        steps = collect(0:1:120)
+    end
+    return steps
+end
+
 function parse_dense_timesteps(group, result, case = "b";
         path = default_data_path(),
-        steps = 0:5:1000,
+        steps = missing,
         verbose = true
     )
+    if ismissing(steps)
+        steps = canonical_reporting_steps(case)
+    end
     results = []
     for (i, year) in enumerate(steps)
         if verbose
@@ -304,7 +325,8 @@ function key_info(var::String, case::String)
     yscale = nothing
     label = ""
     zero_to_nan = false
-    if case == "b"
+    if case == "b" || case == "c"
+        # At the moment we use same scaling for b and c
         # Commented numbers are taken from OPM 1
         if var == "T"
             yscale = (0.0, 75.0)
