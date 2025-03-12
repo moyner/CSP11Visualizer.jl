@@ -24,34 +24,35 @@ CSP11Visualizer.make_movie_casec(results, sparse_results, filename = fn, group =
 # ## Plot the mesh and wells
 # The mesh and the wells are shown below. The wells are shown in red and blue.
 # Note that the model is plotted in physical space after transformation.
-using CSP11Visualizer.Jutul
-mesh = CSP11Visualizer.get_mesh("c")
-w1, w2 = CSP11Visualizer.get_wells("c")
-fig = Figure()
-ax = Axis3(fig[1, 1])
-Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1)
-lines!(ax, w1, color = :red, label = "W1")
-lines!(ax, w2, color = :blue, label = "W2")
-axislegend()
-fig
+using CSP11Visualizer.Jutul # hide
+CairoMakie.activate!() # hide
+mesh = CSP11Visualizer.get_mesh("c") # hide
+w1, w2 = CSP11Visualizer.get_wells("c") # hide
+fig = Figure() # hide
+ax = Axis3(fig[1, 1]) # hide
+Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1) # hide
+lines!(ax, w1, color = :red, label = "W1") # hide
+lines!(ax, w2, color = :blue, label = "W2") # hide
+axislegend() # hide
+fig # hide
 # ## Plot the cross sections used for plotting
 # The cross sections used for plotting are shown below. These cut the middle of
 # the model in x and y directions in the reference coordinate space (I/J). The
 # red cross section corresponds to the plane where I = 84, and the blue cross
 # section corresponds to the plane where J = 50.
-I_cut, J_cut = CSP11Visualizer.case_c_ij_planes()
-fig = Figure(size = (2000, 800))
-ijk = map(i -> cell_ijk(mesh, i), 1:number_of_cells(mesh))
-I1 = findall(i -> i[1] == I_cut, ijk)
-I2 = findall(i -> i[2] == J_cut, ijk)
-fig = Figure()
-ax = Axis3(fig[1, 1], title = "Plane 1: I = $I_cut")
-Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1)
-plot_mesh!(ax, mesh, cells = I1, color = :red)
-ax = Axis3(fig[1, 2], title = "Plane 2: J = $J_cut")
-Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1)
-plot_mesh!(ax, mesh, cells = I2, color = :blue)
-fig
+I_cut, J_cut = CSP11Visualizer.case_c_ij_planes() # hide
+fig = Figure(size = (2000, 800)) # hide
+ijk = map(i -> cell_ijk(mesh, i), 1:number_of_cells(mesh)) # hide
+I1 = findall(i -> i[1] == I_cut, ijk) # hide
+I2 = findall(i -> i[2] == J_cut, ijk) # hide
+fig = Figure() # hide
+ax = Axis3(fig[1, 1], title = "Plane 1: I = $I_cut") # hide
+Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1) # hide
+plot_mesh!(ax, mesh, cells = I1, color = :red) # hide
+ax = Axis3(fig[1, 2], title = "Plane 2: J = $J_cut") # hide
+Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1) # hide
+plot_mesh!(ax, mesh, cells = I2, color = :blue) # hide
+fig # hide
 # ## CO₂ mass fraction in liquid
 # The mass fraction of CO₂ in the liquid phase is shown below.
 # ### 30 years: 5 years after start of second injector
