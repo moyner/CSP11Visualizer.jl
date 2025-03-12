@@ -19,7 +19,7 @@ end_of_migration = findfirst(isequal(1000), steps) # hide
 fn = "moviec_$(groupname)_$resultid.mp4" # hide
 CSP11Visualizer.make_movie_casec(steps, results, sparse_results, filename = fn, group = groupname, resultid = resultid); # hide
 
-# INSERT_MOVIE_B
+# INSERT_MOVIE_C
 
 # ## Plot the mesh and wells
 # The mesh and the wells are shown below. The wells are shown in red and blue.
