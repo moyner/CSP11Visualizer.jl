@@ -29,10 +29,11 @@ function canonical_reporting_steps(case)
         steps = [
             0, 5, 10, 15, 20, 25,
             30, 35, 40, 45, 50, 75,
-            100, 150, 200, 300, 350,
+            100, 150, 200, 250, 300, 350,
             400, 450, 500, 600, 700,
             800, 900, 1000
         ]
+        @assert length(steps) == 26
     else
         @assert case == "a"
         steps = collect(0:1:120)

@@ -253,7 +253,7 @@ function make_movie_casea(steps, results, sparse_results; filename)
     framerate = 24
     record(fig, filename, indices;
         framerate = framerate) do t
-            tmp = clamp(floor(t), 1, length(steps))
+            tmp = clamp(floor(t), 1, length(indices))
             ix[] = tmp
             t_step = steps[tmp]
             mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))

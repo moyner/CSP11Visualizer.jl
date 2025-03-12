@@ -170,7 +170,8 @@ function make_movie_casec(results, sparse_results; filename)
         if step <= 100.0
             n = 5
         else
-            n = 1
+            δ = steps[i] - steps[i-1]
+            n = δ ÷ 5
         end
         for j in 1:n
             push!(indices, i)
@@ -207,6 +208,9 @@ function make_movie_casec(results, sparse_results; filename)
         transparency = true,
         colorrange = clims
     )
+    ax.azimuth[] = 4.25
+    ax.elevation[] = 0.153
+
     framerate = 24
     record(fig, filename, indices;
         framerate = framerate
@@ -216,7 +220,7 @@ function make_movie_casec(results, sparse_results; filename)
         t_step = steps[tmp]
         # mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
         # sparse_ix[] = minix
-        println("$tmp / $(length(indices)) ($t)")
+        println("$tmp / $(length(steps)) ($t with tstep = $t_step)")
     end
     fig
 end
