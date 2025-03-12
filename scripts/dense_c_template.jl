@@ -21,7 +21,9 @@ after_century = findfirst(isequal(100), steps) # hide
 @assert !isnothing(after_century) # hide
 end_of_migration = findfirst(isequal(1000), steps) # hide
 @assert !isnothing(end_of_migration); # hide
-##
+# ## Plot the mesh and wells
+# The mesh and the wells are shown below. The wells are shown in red and blue.
+# Note that the model is plotted in physical space after transformation.
 using CSP11Visualizer.Jutul
 mesh = CSP11Visualizer.get_mesh("c")
 w1, w2 = CSP11Visualizer.get_wells("c")
@@ -32,7 +34,11 @@ lines!(ax, w1, color = :red, label = "W1")
 lines!(ax, w2, color = :blue, label = "W2")
 axislegend()
 fig
-##
+# ## Plot the cross sections used for plotting
+# The cross sections used for plotting are shown below. These cut the middle of
+# the model in x and y directions in the reference coordinate space (I/J). The
+# red cross section corresponds to the plane where I = 84, and the blue cross
+# section corresponds to the plane where J = 50.
 I_cut, J_cut = CSP11Visualizer.case_c_ij_planes()
 fig = Figure(size = (2000, 800))
 ijk = map(i -> cell_ijk(mesh, i), 1:number_of_cells(mesh))
@@ -46,7 +52,6 @@ ax = Axis3(fig[1, 2], title = "Plane 2: J = $J_cut")
 Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1)
 plot_mesh!(ax, mesh, cells = I2, color = :blue)
 fig
-##
 # ## CO₂ mass fraction in liquid
 # The mass fraction of CO₂ in the liquid phase is shown below.
 # ### 30 years: 5 years after start of second injector
