@@ -3,12 +3,7 @@ groupname = "opm" # hide
 resultid = 1 # hide
 using CSP11Visualizer, GLMakie, CairoMakie # hide
 CairoMakie.activate!() # hide
-steps = collect(0:5:1000) # hide
-steps = [0, 5, 10, 15, 20, 25,
-        30, 35, 40, 45, 50, 75,
-        100, 150, 200, 300, 350,
-        400, 450, 500, 600, 700,
-        800, 900, 1000]
+steps = CSP11Visualizer.canonical_reporting_steps("c") # hide
 results = CSP11Visualizer.parse_dense_timesteps(groupname, resultid, "c", steps = steps, verbose = false); # hide
 sparse_results = CSP11Visualizer.parse_all_sparse(case = "c", active_result = resultid, active_groups = groupname) # hide
 @assert only(unique(sparse_results[:, "group"])) == groupname # hide

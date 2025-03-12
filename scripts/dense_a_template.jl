@@ -5,9 +5,7 @@ using CSP11Visualizer, GLMakie, CairoMakie # hide
 CairoMakie.activate!() # hide
 steps = collect(0:1:120) # hide
 results = CSP11Visualizer.parse_dense_timesteps(groupname, resultid, "a", steps = steps, verbose = false); # hide
-sparse_results = CSP11Visualizer.parse_all_sparse(case = "a", active_result = resultid, active_groups = groupname) # hide
-@assert only(unique(sparse_results[:, "group"])) == groupname # hide
-@assert only(unique(sparse_results[:, "result"])) == resultid # hide
+sparse_results = CSP11Visualizer.parse_all_sparse(case = "a") # hide
 end_of_injection = findfirst(isequal(5), steps) # hide
 @assert !isnothing(end_of_injection) # hide
 end_of_migration = findfirst(isequal(120), steps) # hide
@@ -21,7 +19,7 @@ end_of_migration = findfirst(isequal(120), steps) # hide
 # speed is slower during injection than during migration.
 
 fn = "moviea_$(groupname)_$resultid.mp4" # hide
-CSP11Visualizer.make_movie_casea(steps, results, sparse_results, filename = fn); # hide
+CSP11Visualizer.make_movie_casea(steps, results, sparse_results, filename = fn, group = group, resultid = resultid); # hide
 
 # INSERT_MOVIE_A
 

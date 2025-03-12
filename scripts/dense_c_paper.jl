@@ -161,7 +161,13 @@ group = "opm"
 result = 4
 data = CSP11Visualizer.parse_dense_timesteps(group, result, "c");
 ##
+sparse_results = CSP11Visualizer.parse_all_sparse(case = "c") # hide
+##
 GC.gc()
+
+
+
+##
 function make_movie_casec(results, sparse_results; filename)
     m = CSP11Visualizer.get_mesh("c")
     indices = Int[]

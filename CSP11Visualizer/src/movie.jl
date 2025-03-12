@@ -52,64 +52,7 @@ function make_movie_caseb(steps, results, sparse_results; filename)
     Colorbar(fig[3, 1], plt, vertical = false, ticks = crng)
 
     # Sparse plots
-    t_sparse = sparse_results[:, "time"]
-    mob_a = sparse_results[:, "mobA"]
-    mob_b = sparse_results[:, "mobB"]
-    diss_a = sparse_results[:, "dissA"]
-    diss_b = sparse_results[:, "dissB"]
-
-    # Sort
-    sortix = sortperm(t_sparse)
-    t_sparse = t_sparse[sortix]
-    mfactor = 1.0
-    mob_a = mob_a[sortix]./mfactor
-    mob_b = mob_b[sortix]./mfactor
-    diss_a = diss_a[sortix]./mfactor
-    diss_b = diss_b[sortix]./mfactor
-
-    # Sparse plot
-    # Group 1
-    ax_plt = Axis(fig[4, 1], title = "Mobile CO₂", ylabel = "kg")
-    ymax = 1.2*max(maximum(mob_a), maximum(mob_b))
-    lines!(ax_plt, t_sparse, mob_a, color = color_A, linewidth = lw, label = "Box A")
-    lines!(ax_plt, t_sparse, mob_b, color = color_B, linewidth = lw, label = "Box B")
-    lines!(ax_plt, [100, 100], [0, ymax], color = :black)#, label = "End of injection")
-
-    sparse_ix = Observable(1)
-    t_dot = @lift t_sparse[$sparse_ix]
-    mob_a_dot = @lift mob_a[$sparse_ix]
-    mob_b_dot = @lift mob_b[$sparse_ix]
-
-    mz = 12
-    mz_big = mz + 2
-    scatter!(ax_plt, t_dot, mob_a_dot, markersize = mz_big, color = :black)
-    scatter!(ax_plt, t_dot, mob_a_dot, markersize = mz, color = color_A)
-    scatter!(ax_plt, t_dot, mob_b_dot, markersize = mz_big, color = :black)
-    scatter!(ax_plt, t_dot, mob_b_dot, markersize = mz, color = color_B)
-    axislegend(position = :ct, nbanks = 2)
-
-    ax_plt.xticklabelsvisible = false
-    xlims!(ax_plt, 0, 1000.0)
-    ylims!(ax_plt, 0, ymax)
-
-    # Group 2
-    ax_plt = Axis(fig[5, 1], title = "Dissolved CO₂", xlabel = "Time (years)", ylabel = "kg")
-    ymax = 1.2*max(maximum(diss_b), maximum(diss_a))
-    lines!(ax_plt, t_sparse, diss_a, color = color_A, linewidth = lw, label = "Box A")
-    lines!(ax_plt, t_sparse, diss_b, color = color_B, linewidth = lw, label = "Box B")
-    lines!(ax_plt, [100, 100], [0, ymax], color = :black)#, label = "End of injection")
-
-    diss_a_dot = @lift diss_a[$sparse_ix]
-    diss_b_dot = @lift diss_b[$sparse_ix]
-
-    scatter!(ax_plt, t_dot, diss_a_dot, markersize = mz_big, color = :black)
-    scatter!(ax_plt, t_dot, diss_a_dot, markersize = mz, color = color_A)
-    scatter!(ax_plt, t_dot, diss_b_dot, markersize = mz_big, color = :black)
-    scatter!(ax_plt, t_dot, diss_b_dot, markersize = mz, color = color_B)
-
-    axislegend(position = :ct, nbanks = 2)
-    xlims!(ax_plt, 0, 1000.0)
-    ylims!(ax_plt, 0, ymax)
+    plot_sparse_for_movie!(fig)
 
     ax_plt.xticks[] = 0:100:1000
     framerate = 24
@@ -125,7 +68,7 @@ function make_movie_caseb(steps, results, sparse_results; filename)
     return filename
 end
 
-function make_movie_casea(steps, results, sparse_results; filename)
+function make_movie_casea(steps, results, sparse_results; filename, group, resultid::Int)
     k = "X_co2"
     t = "CO2 in liquid phase"
     clims, t, zero_to_nan = CSP11Visualizer.key_info(k, results[1]["case"])
@@ -189,6 +132,48 @@ function make_movie_casea(steps, results, sparse_results; filename)
     Colorbar(fig[3, 1], plt, vertical = false, ticks = crng)
 
     # Sparse plots
+    sparse_ix, t_sparse = plot_sparse_for_movie!(fig, "a", group, resultid, sparse_results)
+    framerate = 24
+    record(fig, filename, indices;
+        framerate = framerate) do t
+            tmp = clamp(floor(t), 1, length(steps))
+            ix[] = tmp
+            t_step = steps[tmp]
+            mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
+            # println("$t / $(length(indices))")
+            sparse_ix[] = minix
+    end
+    return filename
+end
+
+function sparse_for_movie(sparse_results, k, group, result)
+    # groups = intersect(get_canonical_order(), unique(results[:, "group"]))
+    ugroups = unique(sparse_results[:, "groupresult"])
+    self_index = 0
+    sparse_data = Vector{Float64}[]
+    for ugroup in ugroups
+        if ugroup == "$group$result"
+            self_index += 1
+        end
+        group_result = filter(row -> row.groupresult == ugroup, sparse_results)
+        push!(sparse_data, group_result[!, k])
+    end
+    @assert self_index > 0
+    return (self_index, sparse_data)
+end
+
+
+function plot_sparse_for_movie!(fig, case, group, resultid, sparse_results)
+    lw = 3
+    # Sparse plots
+    self_index, sparse_time = sparse_for_movie(sparse_results, "time", group, resultid)
+    if case == "a"
+        t_scale_sparse = 3600.0
+    else
+        error("Not implemented")
+    end
+    color_A, color_B = colors_for_movie()
+
     t_sparse = sparse_results[:, "time"]./3600.0
     mob_a = sparse_results[:, "mobA"]
     mob_b = sparse_results[:, "mobB"]
@@ -248,17 +233,14 @@ function make_movie_casea(steps, results, sparse_results; filename)
     axislegend(position = :ct, nbanks = 2)
     xlims!(ax_plt, 0, 120.0)
     ylims!(ax_plt, 0, ymax)
-
     ax_plt.xticks[] = 0:15:120
-    framerate = 24
-    record(fig, filename, indices;
-        framerate = framerate) do t
-            tmp = clamp(floor(t), 1, length(indices))
-            ix[] = tmp
-            t_step = steps[tmp]
-            mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
-            # println("$t / $(length(indices))")
-            sparse_ix[] = minix
-    end
-    return filename
+
+    return (sparse_ix, t_sparse)
+end
+
+function colors_for_movie()
+    mk = Makie.wong_colors()
+    color_A = mk[1]
+    color_B = mk[3]
+    return (color_A, color_B)
 end
