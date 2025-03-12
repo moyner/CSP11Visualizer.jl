@@ -151,43 +151,52 @@ function sparse_for_movie(sparse_results, k, group, result)
     ugroups = unique(sparse_results[:, "groupresult"])
     self_index = 0
     sparse_data = Vector{Float64}[]
+    sparse_time = Vector{Float64}[]
     for ugroup in ugroups
         if ugroup == "$group$result"
             self_index += 1
         end
         group_result = filter(row -> row.groupresult == ugroup, sparse_results)
-        push!(sparse_data, group_result[!, k])
+        r = group_result[!, k]
+        t = group_result[!, "time"]
+        ix = sortperm(t)
+        push!(sparse_time, t[ix])
+        push!(sparse_data, r[ix])
     end
     @assert self_index > 0
-    return (self_index, sparse_data)
+    return (sparse_data[self_index], sparse_data, sparse_time[self_index], sparse_time)
 end
-
 
 function plot_sparse_for_movie!(fig, case, group, resultid, sparse_results)
     lw = 3
     # Sparse plots
-    self_index, sparse_time = sparse_for_movie(sparse_results, "time", group, resultid)
+    mob_a, mob_a_all, t_sparse, t_sparse_all = sparse_for_movie(sparse_results, "mobA", group, resultid)
+    mob_b, mob_b_all, = sparse_for_movie(sparse_results, "mobB", group, resultid)
+    diss_a, diss_a_all, = sparse_for_movie(sparse_results, "dissA", group, resultid)
+    diss_b, diss_b_all, = sparse_for_movie(sparse_results, "dissB", group, resultid)
+
     if case == "a"
         t_scale_sparse = 3600.0
     else
         error("Not implemented")
     end
     color_A, color_B = colors_for_movie()
+    t_sparse = t_sparse./t_scale_sparse
+    t_sparse_all = map(t -> t./t_scale_sparse, t_sparse_all)
 
-    t_sparse = sparse_results[:, "time"]./3600.0
-    mob_a = sparse_results[:, "mobA"]
-    mob_b = sparse_results[:, "mobB"]
-    diss_a = sparse_results[:, "dissA"]
-    diss_b = sparse_results[:, "dissB"]
+    # mob_a = sparse_results[:, "mobA"]
+    # mob_b = sparse_results[:, "mobB"]
+    # diss_a = sparse_results[:, "dissA"]
+    # diss_b = sparse_results[:, "dissB"]
 
-    # Sort
-    sortix = sortperm(t_sparse)
-    t_sparse = t_sparse[sortix]
-    mfactor = 1.0
-    mob_a = mob_a[sortix]./mfactor
-    mob_b = mob_b[sortix]./mfactor
-    diss_a = diss_a[sortix]./mfactor
-    diss_b = diss_b[sortix]./mfactor
+    # # Sort
+    # sortix = sortperm(t_sparse)
+    # t_sparse = t_sparse[sortix]
+    # mfactor = 1.0
+    # mob_a = mob_a[sortix]./mfactor
+    # mob_b = mob_b[sortix]./mfactor
+    # diss_a = diss_a[sortix]./mfactor
+    # diss_b = diss_b[sortix]./mfactor
 
     # Sparse plot
     t_inj_stop = 10.0
