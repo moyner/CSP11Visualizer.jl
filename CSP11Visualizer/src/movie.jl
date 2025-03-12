@@ -164,19 +164,21 @@ function sparse_for_movie(sparse_results, k, group, result)
         push!(sparse_data, r[ix])
     end
     @assert self_index > 0
-    return (sparse_data[self_index], sparse_data, sparse_time[self_index], sparse_time)
+    return (sparse_data[self_index], sparse_data, sparse_time[self_index], sparse_time, self_index)
 end
 
 function plot_sparse_for_movie!(fig, case, group, resultid, sparse_results)
     lw = 3
     # Sparse plots
-    mob_a, mob_a_all, t_sparse, t_sparse_all = sparse_for_movie(sparse_results, "mobA", group, resultid)
+    mob_a, mob_a_all, t_sparse, t_sparse_all, self_ix = sparse_for_movie(sparse_results, "mobA", group, resultid)
     mob_b, mob_b_all, = sparse_for_movie(sparse_results, "mobB", group, resultid)
     diss_a, diss_a_all, = sparse_for_movie(sparse_results, "dissA", group, resultid)
     diss_b, diss_b_all, = sparse_for_movie(sparse_results, "dissB", group, resultid)
 
     if case == "a"
         t_scale_sparse = 3600.0
+        t_inj_stop = 10.0
+        x_max = 120.0
     else
         error("Not implemented")
     end
@@ -199,51 +201,47 @@ function plot_sparse_for_movie!(fig, case, group, resultid, sparse_results)
     # diss_b = diss_b[sortix]./mfactor
 
     # Sparse plot
-    t_inj_stop = 10.0
-    # Group 1
-    ax_plt = Axis(fig[4, 1], title = "Mobile CO₂", ylabel = "kg")
-    ymax = 1.2*max(maximum(mob_a), maximum(mob_b))
-    lines!(ax_plt, t_sparse, mob_a, color = color_A, linewidth = lw, label = "Box A")
-    lines!(ax_plt, t_sparse, mob_b, color = color_B, linewidth = lw, label = "Box B")
-    lines!(ax_plt, [t_inj_stop, t_inj_stop], [0, ymax], color = :black)#, label = "End of injection")
-
     sparse_ix = Observable(1)
     t_dot = @lift t_sparse[$sparse_ix]
-    mob_a_dot = @lift mob_a[$sparse_ix]
-    mob_b_dot = @lift mob_b[$sparse_ix]
 
-    mz = 12
-    mz_big = mz + 2
-    scatter!(ax_plt, t_dot, mob_a_dot, markersize = mz_big, color = :black)
-    scatter!(ax_plt, t_dot, mob_a_dot, markersize = mz, color = color_A)
-    scatter!(ax_plt, t_dot, mob_b_dot, markersize = mz_big, color = :black)
-    scatter!(ax_plt, t_dot, mob_b_dot, markersize = mz, color = color_B)
-    axislegend(position = :ct, nbanks = 2)
+    function plot_lines!(AX, t_sparse, t_sparse_all, A, B, A_all, B_all)
+        ymax = 1.2*max(maximum(A), maximum(B))
 
-    ax_plt.xticklabelsvisible = false
-    xlims!(ax_plt, 0, 120.0)
-    ylims!(ax_plt, 0, ymax)
+        bg_arg_A = (color = color_A, linewidth = lw, alpha = 0.2)
+        bg_arg_B = (color = color_B, linewidth = lw, alpha = 0.2)
+
+        bg_arg_A = (color = :black, linewidth = lw, alpha = 0.2)
+        bg_arg_B = (color = :black, linewidth = lw, alpha = 0.2)
+
+        for (i, val) in enumerate(A_all)
+            lines!(AX, t_sparse_all[i], val; bg_arg_A...)
+        end
+        for (i, val) in enumerate(B_all)
+            lines!(AX, t_sparse_all[i], val; bg_arg_B...)
+        end
+        lines!(AX, t_sparse, A, color = color_A, linewidth = lw, label = "Box A")
+        lines!(AX, t_sparse, B, color = color_B, linewidth = lw, label = "Box B")
+        lines!(AX, [t_inj_stop, t_inj_stop], [0, ymax], color = :black)#, label = "End of injection")
+        A_dot = @lift A[$sparse_ix]
+        B_dot = @lift B[$sparse_ix]
+        mz = 12
+        mz_big = mz + 2
+        scatter!(AX, t_dot, A_dot, markersize = mz_big, color = :black)
+        scatter!(AX, t_dot, A_dot, markersize = mz, color = color_A)
+        scatter!(AX, t_dot, B_dot, markersize = mz_big, color = :black)
+        scatter!(AX, t_dot, B_dot, markersize = mz, color = color_B)
+        axislegend(position = :ct, nbanks = 2)
+        AX.xticklabelsvisible = false
+        xlims!(AX, 0, x_max)
+        ylims!(AX, 0, ymax)
+    end
+    # Group 1
+    ax1 = Axis(fig[4, 1], title = "Mobile CO₂", ylabel = "kg")
+    plot_lines!(ax1, t_sparse, t_sparse_all, mob_a, mob_b, mob_a_all, mob_b_all)
 
     # Group 2
-    ax_plt = Axis(fig[5, 1], title = "Dissolved CO₂", xlabel = "Time (years)", ylabel = "kg")
-    ymax = 1.2*max(maximum(diss_b), maximum(diss_a))
-    lines!(ax_plt, t_sparse, diss_a, color = color_A, linewidth = lw, label = "Box A")
-    lines!(ax_plt, t_sparse, diss_b, color = color_B, linewidth = lw, label = "Box B")
-    lines!(ax_plt, [t_inj_stop, t_inj_stop], [0, ymax], color = :black)#, label = "End of injection")
-
-    diss_a_dot = @lift diss_a[$sparse_ix]
-    diss_b_dot = @lift diss_b[$sparse_ix]
-
-    scatter!(ax_plt, t_dot, diss_a_dot, markersize = mz_big, color = :black)
-    scatter!(ax_plt, t_dot, diss_a_dot, markersize = mz, color = color_A)
-    scatter!(ax_plt, t_dot, diss_b_dot, markersize = mz_big, color = :black)
-    scatter!(ax_plt, t_dot, diss_b_dot, markersize = mz, color = color_B)
-
-    axislegend(position = :ct, nbanks = 2)
-    xlims!(ax_plt, 0, 120.0)
-    ylims!(ax_plt, 0, ymax)
-    ax_plt.xticks[] = 0:15:120
-
+    ax2 = Axis(fig[5, 1], title = "Dissolved CO₂", xlabel = "Time (years)", ylabel = "kg")
+    plot_lines!(ax2, t_sparse, t_sparse_all, diss_a, diss_b, diss_a_all, diss_b_all)
     return (sparse_ix, t_sparse)
 end
 
