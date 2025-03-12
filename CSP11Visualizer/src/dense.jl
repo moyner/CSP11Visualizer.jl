@@ -341,10 +341,10 @@ function key_info(var::String, case::String)
             zero_to_nan = true
         elseif var == "X_co2"
             yscale = (0.0, 0.06)
-            label = "CO₂ mass fraction in liquid"
+            label = "CO₂ mass fraction in water phase"
         elseif var == "Y_h2o"
             yscale = (0.0, 0.005)
-            label = "H₂O mass fraction in vapor"
+            label = "H₂O mass fraction in gas/supercritical phase"
         elseif var == "sg"
             yscale = (0.0, 1.0)
             label = "Gas saturation"
@@ -360,7 +360,7 @@ function key_info(var::String, case::String)
     elseif case == "a"
         if var == "X_co2"
             yscale = (0.0, 0.002)
-            label = "CO₂ mass fraction in liquid"
+            label = "CO₂ mass fraction in water phase"
         elseif var == "pw"
             yscale = (110000.0, 125000.0) 
             label =  "Pressure (Pascal)"
@@ -374,7 +374,7 @@ function key_info(var::String, case::String)
             zero_to_nan = true
         elseif var == "Y_h2o"
             yscale = (0.0, 0.01)
-            label = "H₂O mass fraction in vapor"
+            label = "H₂O mass fraction in gas/supercritical phase"
         elseif var == "X_co2"
             yscale = (0.0, 0.002)
             label = "CO₂ mass fraction in liquid"

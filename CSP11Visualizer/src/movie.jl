@@ -1,6 +1,5 @@
 function make_movie_caseb(steps, results, sparse_results; filename, group, resultid)
     k = "X_co2"
-    t = "CO2 in liquid phase"
     clims, t, zero_to_nan = CSP11Visualizer.key_info(k, results[1]["case"])
     lw = 3
 
@@ -65,7 +64,6 @@ end
 
 function make_movie_casea(steps, results, sparse_results; filename, group, resultid::Int)
     k = "X_co2"
-    t = "CO2 in liquid phase"
     clims, t, zero_to_nan = CSP11Visualizer.key_info(k, results[1]["case"])
     @assert !isnothing(clims)
     lw = 3
@@ -157,7 +155,7 @@ function sparse_for_movie(sparse_results, k, group, result)
     return (sparse_data[self_index], sparse_data, sparse_time[self_index], sparse_time, self_index)
 end
 
-function make_movie_casec(results, sparse_results; filename)
+function make_movie_casec(results, sparse_results; filename, group, resultid)
     m = CSP11Visualizer.get_mesh("c")
     indices = Int[]
     steps = CSP11Visualizer.canonical_reporting_steps("c")
@@ -178,11 +176,13 @@ function make_movie_casec(results, sparse_results; filename)
     GLMakie.activate!()
 
     cmap = CSP11Visualizer.default_colormap(:default, alpha = true, arange = (0, 1.0), k = 3)
-    fig = Figure(size = (1200, 800), fontsize = 18)
+    # fig = Figure(size = (1200, 800), fontsize = 18)
+    fig = Figure(size = (1200, 1300), fontsize = 18)
+
     ix = Observable(1)
     sparse_ix = Observable(1)
 
-    ax = Axis3(fig[1, 1], aspect = (8.4, 5, 3*1.2))
+    ax = Axis3(fig[1:2, 1], aspect = (8.4, 5, 3*1.2), title = "CO₂ mass fraction in water phase")
     nc = number_of_cells(m)
     pts, tri, mapper = triangulate_mesh(m, outer = false)
 
@@ -202,6 +202,17 @@ function make_movie_casec(results, sparse_results; filename)
     ax.azimuth[] = 4.25
     ax.elevation[] = 0.153
 
+    cticks = map(i -> round(i, digits = 2), range(clims..., 10))
+
+    Colorbar(fig[3, 1],
+        colorrange = clims,
+        colormap = CSP11Visualizer.default_colormap(),
+        vertical = false,
+        ticks = cticks
+    )
+
+    sparse_ix, t_sparse = plot_sparse_for_movie!(fig, "c", group, resultid, sparse_results)
+
     framerate = 24
     record(fig, filename, indices;
         framerate = framerate
@@ -209,11 +220,11 @@ function make_movie_casec(results, sparse_results; filename)
         tmp = clamp(floor(t), 1, length(steps))
         ix[] = tmp
         t_step = steps[tmp]
-        # mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
-        # sparse_ix[] = minix
+        mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
+        sparse_ix[] = minix
         # println("$tmp / $(length(steps)) ($t with tstep = $t_step)")
     end
-    fig
+    filename
 end
 
 function plot_sparse_for_movie!(fig, case, group, resultid, sparse_results)
@@ -227,7 +238,7 @@ function plot_sparse_for_movie!(fig, case, group, resultid, sparse_results)
         t_scale_sparse = 3600.0
         t_inj_stop = 10.0
         x_max = 120.0
-    elseif case == "b"
+    elseif case == "b" || case == "c"
         t_scale_sparse = 1.0
         t_inj_stop = 100.0
         x_max = 1000.0

@@ -170,4 +170,8 @@ GC.gc()
 ##
 
 
-CSP11Visualizer.make_movie_casec(data, sparse_results, filename = "test_c.mp4")
+CSP11Visualizer.make_movie_casec(data, sparse_results,
+    filename = "test_c.mp4",
+    group = group,
+    resultid = result
+)
