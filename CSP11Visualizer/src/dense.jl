@@ -122,7 +122,7 @@ function plot_snapshot(result, k; use_clims = true)
     return fig
 end
 
-function plot_snapshot_c(result, k; I = nothing, J = nothing, use_clims = true)
+function plot_snapshot_c(result, k, I = 84, J = 50; use_clims = true)
     CairoMakie.activate!()
     name = "$k"
     clims, t, zero_to_nan = key_info(name, result["case"])
@@ -132,20 +132,19 @@ function plot_snapshot_c(result, k; I = nothing, J = nothing, use_clims = true)
         r[r .== 0] .= NaN
     end
 
-    if !isnothing(I)
-        x = result["y"][I, :, :]
-        z = result["z"][I, :, :]
-        r = r[I, :, :]
-    else
-        @assert isnothing(J)
-        x = result["x"][:, J, :]
-        z = result["z"][:, J, :]
-        r = r[:, J, :]
-    end
+    x_I = result["y"][I, :, :]
+    z_I = result["z"][I, :, :]
+    r_I = r[I, :, :]
+    x_J = result["x"][:, J, :]
+    z_J = result["z"][:, J, :]
+    r_J = r[:, J, :]
+
     D = vec(r)
-    fig = Figure(size = (1200, 600), backgroundcolor = :transparent)
-    failure = eltype(D) != Float64 || all(isnan, D)
-    ax = Axis(fig[1, 1], title = t, ygridvisible = false, xgridvisible = false)
+    fig = Figure(size = (1200, 1200), backgroundcolor = :transparent)
+    failure = eltype(r) != Float64 || all(isnan, r)
+    ax1 = Axis(fig[1, 1], title = "$t (I = $I)", ygridvisible = false, xgridvisible = false)
+    ax2 = Axis(fig[2, 1], title = "$t (J = $J)", ygridvisible = false, xgridvisible = false)
+
     if !failure
         if isnothing(clims) || !use_clims
             arg = NamedTuple()
@@ -153,18 +152,23 @@ function plot_snapshot_c(result, k; I = nothing, J = nothing, use_clims = true)
             arg = (colorrange = clims, )
         end
         try
-            plt = heatmap!(ax, vec(x), vec(z), D;
+            plt = heatmap!(ax1, vec(x_I), vec(z_I), vec(r_I);
                 colormap = default_colormap(),
                 arg...
             )
-            Colorbar(fig[1, 2], plt)
+            plt = heatmap!(ax2, vec(x_J), vec(z_J), vec(r_J);
+                colormap = default_colormap(),
+                arg...
+            )
+            Colorbar(fig[3, 1], plt, vertical = false)
         catch excpt
             @error "Failed to plot $k" excpt
             failure = true
         end
     end
     if failure
-        text!(ax, 0.5, 0.5, text = "Data missing / plot failure.", fontsize = 50, align = (:center, :baseline))
+        text!(ax1, 0.5, 0.5, text = "Data missing / plot failure.", fontsize = 50, align = (:center, :baseline))
+        text!(ax2, 0.5, 0.5, text = "Data missing / plot failure.", fontsize = 50, align = (:center, :baseline))
     end
     return fig
 end

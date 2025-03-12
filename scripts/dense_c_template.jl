@@ -48,4 +48,4 @@ Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1)
 plot_mesh!(ax, mesh, cells = I2, color = :blue)
 fig
 ##
-CSP11Visualizer.plot_snapshot_c(results[after_period], :X_co2, I = 84)
+CSP11Visualizer.plot_snapshot_c(results[after_period], :X_co2, I_cut, J_cut)
