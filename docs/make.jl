@@ -89,8 +89,8 @@ else
     cases_a = Dict()
     cases_b = Dict()
     cases_c = Dict()
-    # cases_a = Dict("opm" => [1])
-    # cases_b = Dict("opm" => [1])
+    cases_a = Dict("opm" => [1])
+    cases_b = Dict("opm" => [1])
     cases_c = Dict("opm" => [1])
     # cases_b = Dict("kiel" => [1])
 end

@@ -115,12 +115,12 @@ function make_movie_caseb(steps, results, sparse_results; filename)
     framerate = 24
     record(fig, filename, indices;
         framerate = framerate) do t
-        ix[] = t
-        t_step = steps[t]
-        mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
-        # println("$t / $(length(indices))")
-
-        sparse_ix[] = minix
+            tmp = clamp(floor(t), 1, length(steps))
+            ix[] = tmp
+            t_step = steps[tmp]
+            mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
+            # println("$t / $(length(indices))")
+            sparse_ix[] = minix
     end
     return filename
 end
@@ -253,12 +253,12 @@ function make_movie_casea(steps, results, sparse_results; filename)
     framerate = 24
     record(fig, filename, indices;
         framerate = framerate) do t
-        ix[] = t
-        t_step = steps[t]
-        mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
-        # println("$t / $(length(indices))")
-
-        sparse_ix[] = minix
+            tmp = clamp(floor(t), 1, length(steps))
+            ix[] = tmp
+            t_step = steps[tmp]
+            mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
+            # println("$t / $(length(indices))")
+            sparse_ix[] = minix
     end
     return filename
 end
