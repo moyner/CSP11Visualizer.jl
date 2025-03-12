@@ -127,7 +127,11 @@ function plot_snapshot_c(result, k; I = nothing, J = nothing, use_clims = true)
     name = "$k"
     clims, t, zero_to_nan = key_info(name, result["case"])
     # GLMakie.activate!()
-    r = result[name]
+    r = copy(result[name])
+    if zero_to_nan
+        r[r .== 0] .= NaN
+    end
+
     if !isnothing(I)
         x = result["y"][I, :, :]
         z = result["z"][I, :, :]
@@ -138,11 +142,8 @@ function plot_snapshot_c(result, k; I = nothing, J = nothing, use_clims = true)
         z = result["z"][:, J, :]
         r = r[:, J, :]
     end
+    D = vec(r)
     fig = Figure(size = (1200, 600), backgroundcolor = :transparent)
-    D = copy(vec(r))
-    if zero_to_nan
-        D[D .== 0] .= NaN
-    end
     failure = eltype(D) != Float64 || all(isnan, D)
     ax = Axis(fig[1, 1], title = t, ygridvisible = false, xgridvisible = false)
     if !failure
