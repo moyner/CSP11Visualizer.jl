@@ -168,67 +168,6 @@ GC.gc()
 
 
 ##
-function make_movie_casec(results, sparse_results; filename)
-    m = CSP11Visualizer.get_mesh("c")
-    indices = Int[]
-    steps = CSP11Visualizer.canonical_reporting_steps("c")
-    for (i, step) in enumerate(steps)
-        if step <= 100.0
-            n = 5
-        else
-            δ = steps[i] - steps[i-1]
-            n = δ ÷ 5
-        end
-        for j in 1:n
-            push!(indices, i)
-        end
-    end
-    k = "X_co2"
-    t = "CO2 in liquid phase"
-    clims, t, zero_to_nan = CSP11Visualizer.key_info(k, results[1]["case"])
-    GLMakie.activate!()
-
-    cmap = CSP11Visualizer.default_colormap(:default, alpha = true, arange = (0, 1.0), k = 3)
-    fig = Figure(size = (1200, 800), fontsize = 18)
-    # ax = Axis(fig[1:2, 1], title = t)
-    ix = Observable(1)
-    # ix = Observable(20)
-    sparse_ix = Observable(1)
 
 
-
-    ax = Axis3(fig[1, 1], aspect = (8.4, 5, 3*1.2))
-    nc = number_of_cells(m)
-    pts, tri, mapper = triangulate_mesh(m, outer = false)
-
-    cells = mapper.indices.Cells
-
-    getresult(i) = vec(results[i][k])
-    values = @lift getresult($ix)[cells]
-
-    mesh!(ax, pts, tri,
-        # color = mapper.Cells(values[]),
-        color = values,
-        colormap = cmap,
-        shading = NoShading,
-        transparency = true,
-        colorrange = clims
-    )
-    ax.azimuth[] = 4.25
-    ax.elevation[] = 0.153
-
-    framerate = 24
-    record(fig, filename, indices;
-        framerate = framerate
-    ) do t
-        tmp = clamp(floor(t), 1, length(steps))
-        ix[] = tmp
-        t_step = steps[tmp]
-        # mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
-        # sparse_ix[] = minix
-        println("$tmp / $(length(steps)) ($t with tstep = $t_step)")
-    end
-    fig
-end
-
-make_movie_casec(data, missing, filename = "test_c.mp4")
+CSP11Visualizer.make_movie_casec(data, sparse_results, filename = "test_c.mp4")
