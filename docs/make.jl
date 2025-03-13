@@ -21,7 +21,7 @@ using CSP11Visualizer, Literate
 cd(@__DIR__)
 
 do_build = true
-build_all_dense = false
+build_all_dense = true
 
 case_a = Any[
     "pages/casea.md"
@@ -34,30 +34,35 @@ case_b = Any[
 case_c = Any[
     "pages/casec.md"
 ]
+participants = []
+group_names = [
+    "calgary",
+    "kiel",
+    "csiro",
+    "ctc-cne",
+    "darts",
+    "geos",
+    "ifpen",
+    "kfupm",
+    "opengosim",
+    "opm",
+    "pau-inria",
+    "pflotran",
+    "rice",
+    "sintef",
+    "slb",
+    "stuttgart",
+    "tetratech",
+    "ut-csee"
+]
+for g in group_names
+    push!(participants, g => "pages/groups/$g.md")
+end
 pagetree = [
         "CSP11" => [
             "index.md",
             "pages/groups.md",
-            "Participants" => [
-                "pages/groups/calgary.md",
-                "pages/groups/kiel.md",
-                "pages/groups/csiro.md",
-                "pages/groups/ctc-cne.md",
-                "pages/groups/darts.md",
-                "pages/groups/geos.md",
-                "pages/groups/ifpen.md",
-                "pages/groups/kfupm.md",
-                "pages/groups/opengosim.md",
-                "pages/groups/opm.md",
-                "pages/groups/pau-inria.md",
-                "pages/groups/pflotran.md",
-                "pages/groups/rice.md",
-                "pages/groups/sintef.md",
-                "pages/groups/slb.md",
-                "pages/groups/stuttgart.md",
-                "pages/groups/tetratech.md",
-                "pages/groups/ut-csee.md"
-            ]
+            "Participants" => participants
         ],
         "Case A" => case_a,
         "Case B" => case_b,
@@ -123,7 +128,7 @@ else
     cases_a = Dict()
     cases_b = Dict()
     cases_c = Dict()
-    # cases_a = Dict("opm" => [1])
+    cases_a = Dict("opm" => [1])
     # cases_b = Dict("opm" => [1])
     # cases_c = Dict("opm" => [1])
     # cases_b = Dict("kiel" => [1])
@@ -133,6 +138,7 @@ function replace_template(content, case, group_name, result_id, s)
     content = replace(content,
         "groupname = \"$s\"" => "groupname = \"$group_name\"",
         "HEADER" => "$group_name result $result_id",
+        "INSERT_GROUPLINK" => "For more information about $group_name, see the [$group_name](@ref) group page.",
         "resultid = 1" => "resultid = $result_id"
     )
     return content

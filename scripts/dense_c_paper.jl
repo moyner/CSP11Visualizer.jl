@@ -8,11 +8,11 @@
 group = "geos"
 result = 2
 
-group = "opengosim"
-result = 2
+# group = "opengosim"
+# result = 2
 
-group = "sintef"
-result = 3
+# group = "sintef"
+# result = 3
 
 group = "opm"
 result = 1
@@ -70,12 +70,6 @@ plt = plot_cell_data!(ax, mesh, d,
 )
 
 cticks = map(i -> round(i, digits = 2), range(cr..., 10))
-Colorbar(fig[2, 1],
-    colorrange = cr,
-    colormap = CSP11Visualizer.default_colormap(cname, ),
-    vertical = false,
-    ticks = cticks
-)
 ax.azimuth[] = 4.25
 ax.elevation[] = 0.153
 # lines!(ax, w1, color = :red)
@@ -83,10 +77,23 @@ ax.elevation[] = 0.153
 ax.xlabel[] = ""
 ax.ylabel[] = ""
 ax.zlabel[] = ""
+hidedecorations!(ax)
 fig
-save("csp11_co2_$(group)_$(result)_$cname.png", fig)
+# save("csp11_co2_$(group)_$(result).png", fig)
+# fig
+##
+fig = Figure(fontsize=30)
+Colorbar(fig[1, 1],
+    colorrange = cr,
+    colormap = CSP11Visualizer.default_colormap(cname, ),
+    vertical = true,
+    ticks = cticks
+)
+# save("csp11_co2_colorbar.png", fig)
 fig
 ##
+
+error()
 d = copy(vec(r["X_co2"]))
 cmap = CSP11Visualizer.default_colormap()
 fig = Figure(size = (1200, 800))
