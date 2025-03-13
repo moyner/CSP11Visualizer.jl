@@ -3,7 +3,7 @@ groupname = "opm" # hide
 resultid = 1 # hide
 using CSP11Visualizer, GLMakie, CairoMakie # hide
 CairoMakie.activate!() # hide
-steps = [5, 120]
+steps = [5, 120] # hide
 results = CSP11Visualizer.parse_dense_timesteps(groupname, resultid, "a", steps = steps, verbose = false); # hide
 end_of_injection = findfirst(isequal(5), steps) # hide
 @assert !isnothing(end_of_injection) # hide
