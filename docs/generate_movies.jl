@@ -30,7 +30,7 @@ function build_for_case(cases, caseletter)
     for (group, results) in cases
         println("$group (group $gpos/$gnum) starting...")
         for resultid in results
-            println("Result $resultid/$(length(results)) ($pos of $num total results for $caseletter) processing")
+            println("Result $resultid/$(length(results)) ($pos of $num total results for spe11$caseletter) processing")
             try
                 t = @elapsed mpth = CSP11Visualizer.make_website_movie(group = group, resultid = resultid, case = caseletter)
                 println("Result $resultid written to $mpth in $(round(t,digits=3)) seconds")
