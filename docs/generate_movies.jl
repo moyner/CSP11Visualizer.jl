@@ -56,3 +56,5 @@ failures_b = build_for_case(cases_b, "b")
 failures_c = build_for_case(cases_c, "c")
 #
 # build_for_case(Dict("pau-inria" => cases_c["pau-inria"]), "c", throw = true)
+# build_for_case(Dict("kfupm" => cases_b["kfupm"]), "b", throw = true)
+# ctc-cne is too high up for case b?

@@ -1,25 +1,27 @@
 function make_website_movie(; case, group, resultid)
     @assert case in ["a", "b", "c"]
     steps = CSP11Visualizer.canonical_reporting_steps(case)
+    if group == "kfupm" && case == "b"
+        # Hack to skip a missing file
+        steps = setdiff(steps, 815)
+    end
     println("Reading dense data...")
     results = CSP11Visualizer.parse_dense_timesteps(group, resultid, case, steps = steps, verbose = false)
     println("Reading sparse data...")
     sparse_results = CSP11Visualizer.parse_all_sparse(case = case)
 
     if case == "a"
-        return make_movie_casea(results, sparse_results, group = group, resultid = resultid)
+        return make_movie_casea(steps, results, sparse_results, group = group, resultid = resultid)
     elseif case == "b"
-        return make_movie_caseb(results, sparse_results, group = group, resultid = resultid)
+        return make_movie_caseb(steps, results, sparse_results, group = group, resultid = resultid)
     elseif case == "c"
-        return make_movie_casec(results, sparse_results, group = group, resultid = resultid)
+        return make_movie_casec(steps, results, sparse_results, group = group, resultid = resultid)
     else
         error("Not implemented")
     end
 end
 
-function make_movie_caseb(results, sparse_results; group, resultid)
-    steps = CSP11Visualizer.canonical_reporting_steps("b")
-
+function make_movie_caseb(steps, results, sparse_results; group, resultid)
     k = "X_co2"
     clims, t, zero_to_nan = CSP11Visualizer.key_info(k, results[1]["case"])
     lw = 3
@@ -91,8 +93,7 @@ function make_movie_caseb(results, sparse_results; group, resultid)
     return filename
 end
 
-function make_movie_casea(results, sparse_results; group, resultid::Int)
-    steps = CSP11Visualizer.canonical_reporting_steps("a")
+function make_movie_casea(steps, results, sparse_results; group, resultid::Int)
 
     k = "X_co2"
     clims, t, zero_to_nan = CSP11Visualizer.key_info(k, results[1]["case"])
@@ -194,10 +195,9 @@ function sparse_for_movie(sparse_results, k, group, result)
     return (sparse_data[self_index], sparse_data, sparse_time[self_index], sparse_time, self_index)
 end
 
-function make_movie_casec(results, sparse_results; group, resultid)
+function make_movie_casec(steps, results, sparse_results; group, resultid)
     m = CSP11Visualizer.get_mesh("c")
     indices = Int[]
-    steps = CSP11Visualizer.canonical_reporting_steps("c")
     for (i, step) in enumerate(steps)
         if step <= 100.0
             n = 5
