@@ -14,7 +14,7 @@ else
     cases_c = Dict("opm" => [1])
 end
 
-function build_for_case(cases, caseletter)
+function build_for_case(cases, caseletter; throw = false)
     @assert caseletter in ["a", "b", "c"]
     println("Processing case $caseletter")
     failures = []
@@ -35,6 +35,9 @@ function build_for_case(cases, caseletter)
                 t = @elapsed mpth = CSP11Visualizer.make_website_movie(group = group, resultid = resultid, case = caseletter)
                 println("Result $resultid written to $mpth in $(round(t,digits=3)) seconds")
             catch excpt
+                if throw
+                    rethrow(excpt)
+                end
                 println("Failed to process $group $resultid: $excpt")
                 push!(failures, (group, resultid, "$excpt"))
             end
