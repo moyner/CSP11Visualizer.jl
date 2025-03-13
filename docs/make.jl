@@ -21,7 +21,7 @@ using CSP11Visualizer, Literate
 cd(@__DIR__)
 
 do_build = true
-build_all_dense = true
+build_all_dense = false
 
 case_a = [
 
@@ -45,6 +45,17 @@ base_dir = realpath(joinpath(@__DIR__, ".."))
 example_path(pth) = joinpath(base_dir, "scripts", "$pth.jl")
 out_dir = joinpath(@__DIR__, "src", "pages", "generated")
 mkpath(out_dir)
+for caseletter in ["a", "b", "c"]
+    casepth = joinpath(out_dir, "dense_$caseletter")
+    moviedir = CSP11Visualizer.movie_directory(caseletter)
+    mkpath(casepth)
+    for fn in readdir(moviedir)
+        if endswith(fn, ".mp4")
+            cp(joinpath(moviedir, fn), joinpath(casepth, fn), force = true)
+        end
+    end
+end
+
 # Clean up generated files
 foreach(rm, filter(endswith(".md"), readdir(out_dir, join=true)))
 
@@ -89,9 +100,9 @@ else
     cases_a = Dict()
     cases_b = Dict()
     cases_c = Dict()
-    cases_a = Dict("opm" => [1])
-    cases_b = Dict("opm" => [1])
-    cases_c = Dict("opm" => [1])
+    # cases_a = Dict("opm" => [1])
+    # cases_b = Dict("opm" => [1])
+    # cases_c = Dict("opm" => [1])
     # cases_b = Dict("kiel" => [1])
 end
 ##

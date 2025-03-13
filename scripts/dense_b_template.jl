@@ -3,9 +3,8 @@ groupname = "opm" # hide
 resultid = 1 # hide
 using CSP11Visualizer, GLMakie, CairoMakie # hide
 CairoMakie.activate!() # hide
-steps = CSP11Visualizer.canonical_reporting_steps("b") # hide
+steps = [30, 50, 100, 1000] # hide
 results = CSP11Visualizer.parse_dense_timesteps(groupname, resultid, steps = steps, verbose = false); # hide
-sparse_results = CSP11Visualizer.parse_all_sparse(case = "b") # hide
 after_period = findfirst(isequal(30), steps) # hide
 @assert !isnothing(after_period) # hide
 end_of_injection = findfirst(isequal(50), steps) # hide
@@ -21,9 +20,6 @@ end_of_migration = findfirst(isequal(1000), steps) # hide
 # the amount of dissolved CO₂ in the liquid phase in the two reporting boxes A
 # and B, as well as the mobile CO₂ in the gas phase. Note that the playback
 # speed is slower during injection than during migration.
-fn = "movieb_$(groupname)_$resultid.mp4" # hide
-CSP11Visualizer.make_movie_caseb(steps, results, sparse_results,
-    filename = fn, group = groupname, resultid = resultid); # hide
 
 # INSERT_MOVIE_B
 

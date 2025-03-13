@@ -1,4 +1,25 @@
-function make_movie_caseb(steps, results, sparse_results; filename, group, resultid)
+function make_website_movie(; case, group, resultid)
+    @assert case in ["a", "b", "c"]
+    steps = CSP11Visualizer.canonical_reporting_steps(case)
+    println("Reading dense data...")
+    results = CSP11Visualizer.parse_dense_timesteps(group, resultid, case, steps = steps, verbose = false)
+    println("Reading sparse data...")
+    sparse_results = CSP11Visualizer.parse_all_sparse(case = case)
+
+    if case == "a"
+        return make_movie_casea(results, sparse_results, group = group, resultid = resultid)
+    elseif case == "b"
+        return make_movie_caseb(results, sparse_results, group = group, resultid = resultid)
+    elseif case == "c"
+        return make_movie_casec(results, sparse_results, group = group, resultid = resultid)
+    else
+        error("Not implemented")
+    end
+end
+
+function make_movie_caseb(results, sparse_results; group, resultid)
+    steps = CSP11Visualizer.canonical_reporting_steps("b")
+
     k = "X_co2"
     clims, t, zero_to_nan = CSP11Visualizer.key_info(k, results[1]["case"])
     lw = 3
@@ -50,6 +71,8 @@ function make_movie_caseb(steps, results, sparse_results; filename, group, resul
 
     # ax_plt.xticks[] = 0:100:1000
     framerate = 24
+    filename = movie_filename("b", group, resultid)
+
     record(fig, filename, indices;
         framerate = framerate) do t
             tmp = clamp(floor(t), 1, length(steps))
@@ -62,7 +85,9 @@ function make_movie_caseb(steps, results, sparse_results; filename, group, resul
     return filename
 end
 
-function make_movie_casea(steps, results, sparse_results; filename, group, resultid::Int)
+function make_movie_casea(results, sparse_results; group, resultid::Int)
+    steps = CSP11Visualizer.canonical_reporting_steps("a")
+
     k = "X_co2"
     clims, t, zero_to_nan = CSP11Visualizer.key_info(k, results[1]["case"])
     @assert !isnothing(clims)
@@ -122,6 +147,8 @@ function make_movie_casea(steps, results, sparse_results; filename, group, resul
     # Sparse plots
     sparse_ix, t_sparse = plot_sparse_for_movie!(fig, "a", group, resultid, sparse_results)
     framerate = 24
+    filename = movie_filename("a", group, resultid)
+
     record(fig, filename, indices;
         framerate = framerate) do t
             tmp = clamp(floor(t), 1, length(steps))
@@ -155,7 +182,7 @@ function sparse_for_movie(sparse_results, k, group, result)
     return (sparse_data[self_index], sparse_data, sparse_time[self_index], sparse_time, self_index)
 end
 
-function make_movie_casec(results, sparse_results; filename, group, resultid)
+function make_movie_casec(results, sparse_results; group, resultid)
     m = CSP11Visualizer.get_mesh("c")
     indices = Int[]
     steps = CSP11Visualizer.canonical_reporting_steps("c")
@@ -214,6 +241,8 @@ function make_movie_casec(results, sparse_results; filename, group, resultid)
     sparse_ix, t_sparse = plot_sparse_for_movie!(fig, "c", group, resultid, sparse_results)
 
     framerate = 24
+    filename = movie_filename("c", group, resultid)
+
     record(fig, filename, indices;
         framerate = framerate
     ) do t
@@ -308,4 +337,17 @@ function plot_lines_for_movie!(AX, t_sparse, t_sparse_all, A, B, A_all, B_all, t
     axislegend(position = :ct, nbanks = 2)
     xlims!(AX, 0, xmax)
     ylims!(AX, 0, ymax)
+end
+
+function movie_directory(case)
+    vizmod_path = pathof(CSP11Visualizer) |> splitdir |> first
+    movie_dir = joinpath(vizmod_path, "..", "..", "docs", "movies", "dense_$case")
+    mkpath(movie_dir)
+    return movie_dir
+end
+
+function movie_filename(case, group, resultid)
+    @assert case in ["a", "b", "c"]
+    @assert resultid in 1:4
+    return joinpath(movie_directory(case), "movie$(case)_$(group)_$resultid.mp4")
 end

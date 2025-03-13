@@ -25,6 +25,8 @@ Manifest.toml
 data/
 
 docs/src/pages/generated/*
+docs/movies/*
+
 *.json
 *.bin
 *.js
