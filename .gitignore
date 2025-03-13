@@ -24,7 +24,7 @@ docs/site/
 Manifest.toml
 data/
 
-docs/src/pages/*
+docs/src/pages/generated/*
 *.json
 *.bin
 *.js
