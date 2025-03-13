@@ -41,7 +41,13 @@ function make_movie_caseb(results, sparse_results; group, resultid)
     fig = Figure(size = (1200, 1200))
     ax = Axis(fig[1:2, 1], title = t)
     ix = Observable(1)
-    getresult(i) = vec(results[i][k])
+    function getresult(i)
+        tmp = vec(results[i][k])
+        if eltype(tmp) != Float64
+            tmp = Float64.(tmp)
+        end
+        return tmp
+    end
     values = @lift getresult($ix)
     plt = heatmap!(ax, vec(x), vec(z), values,
         colormap = CSP11Visualizer.default_colormap(),
@@ -110,7 +116,13 @@ function make_movie_casea(results, sparse_results; group, resultid::Int)
     fig = Figure(size = (1200, 1200))
     ax = Axis(fig[1:2, 1], title = t)
     ix = Observable(1)
-    getresult(i) = vec(results[i][k])
+    function getresult(i)
+        tmp = vec(results[i][k])
+        if eltype(tmp) != Float64
+            tmp = Float64.(tmp)
+        end
+        return tmp
+    end
     values = @lift getresult($ix)
     plt = heatmap!(ax, vec(x), vec(z), values,
         colormap = CSP11Visualizer.default_colormap(),
@@ -215,7 +227,13 @@ function make_movie_casec(results, sparse_results; group, resultid)
 
     cells = mapper.indices.Cells
 
-    getresult(i) = vec(results[i][k])
+    function getresult(i)
+        tmp = vec(results[i][k])
+        if eltype(tmp) != Float64
+            tmp = Float64.(tmp)
+        end
+        return tmp
+    end
     values = @lift getresult($ix)[cells]
 
     mesh!(ax, pts, tri,

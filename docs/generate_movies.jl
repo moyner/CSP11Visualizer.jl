@@ -54,3 +54,5 @@ failures_a = build_for_case(cases_a, "a")
 failures_b = build_for_case(cases_b, "b")
 ## Case C
 failures_c = build_for_case(cases_c, "c")
+#
+# build_for_case(Dict("pau-inria" => cases_c["pau-inria"]), "c", throw = true)
