@@ -35,7 +35,30 @@ case_c = [
     # "Animation example" => "animation_b_example.md",
 ]
 pagetree = [
-        "CSP11" => "index.md",
+        "CSP11" => [
+            "index.md",
+            "pages/groups.md",
+            "Participants" => [
+                "pages/groups/calgary.md",
+                "pages/groups/kiel.md",
+                "pages/groups/csiro.md",
+                "pages/groups/ctc-cne.md",
+                "pages/groups/darts.md",
+                "pages/groups/geos.md",
+                "pages/groups/ifpen.md",
+                "pages/groups/kfupm.md",
+                "pages/groups/opengosim.md",
+                "pages/groups/opm.md",
+                "pages/groups/pau-inria.md",
+                "pages/groups/pflotran.md",
+                "pages/groups/rice.md",
+                "pages/groups/sintef.md",
+                "pages/groups/slb.md",
+                "pages/groups/stuttgart.md",
+                "pages/groups/tetratech.md",
+                "pages/groups/ut-csee.md"
+            ]
+        ],
         "Case A" => case_a,
         "Case B" => case_b,
         "Case C" => case_c
@@ -159,9 +182,9 @@ fmt = documenter_fmt
 
 makedocs(;
     modules=[CSP11Visualizer],
-    authors="SPE11 cool visualization team",
+    authors="Olav Møyner",
     repo="https://github.com/moyner/spe11-plot-test",
-    sitename="SPE11",
+    sitename="SPE CSP11 results",
     format=fmt,
     pages = pagetree,
     warnonly = true,
