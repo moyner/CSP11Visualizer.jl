@@ -1,6 +1,6 @@
 using CSP11Visualizer
 
-build_all_dense = false
+build_all_dense = true
 if build_all_dense
     cases_a = CSP11Visualizer.available_dense_data("a")
     cases_b = CSP11Visualizer.available_dense_data("b")
@@ -17,26 +17,37 @@ end
 function build_for_case(cases, caseletter)
     @assert caseletter in ["a", "b", "c"]
     println("Processing case $caseletter")
+    failures = []
     num = 0
+    gnum = 0
     for (group, results) in cases
         num += length(results)
+        gnum += 1
     end
     println("Found $num results")
     pos = 1
+    gpos = 1
     for (group, results) in cases
-        println("Processing group $group ($pos/$num)")
+        println("$group (group $gpos/$gnum) starting...")
         for resultid in results
-            println("Processing result $resultid")
-            t = @elapsed mpth = CSP11Visualizer.make_website_movie(group = group, resultid = resultid, case = caseletter)
-            println("Result $resultid written to $mpth in $(round(t,digits=3)) seconds")
+            println("Result $resultid/$(length(results)) ($pos of $num total results for $caseletter) processing")
+            try
+                t = @elapsed mpth = CSP11Visualizer.make_website_movie(group = group, resultid = resultid, case = caseletter)
+                println("Result $resultid written to $mpth in $(round(t,digits=3)) seconds")
+            catch excpt
+                println("Failed to process $group $resultid: $excpt")
+                push!(failures, (group, resultid))
+            end
             pos += 1
         end
+        gpos += 1
     end
+    return failures
 end
 
 ## Case A
-build_for_case(cases_a, "a")
+failures_a = build_for_case(cases_a, "a")
 ## Case B
-build_for_case(cases_b, "b")
+failures_b = build_for_case(cases_b, "b")
 ## Case C
-build_for_case(cases_c, "c")
+failures_c = build_for_case(cases_c, "c")
