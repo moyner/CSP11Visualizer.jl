@@ -23,16 +23,16 @@ cd(@__DIR__)
 do_build = true
 build_all_dense = false
 
-case_a = [
-
+case_a = Any[
+    "pages/casea.md"
 ]
 
-case_b = [
-
+case_b = Any[
+    "pages/caseb.md"
 ]
 
-case_c = [
-    # "Animation example" => "animation_b_example.md",
+case_c = Any[
+    "pages/casec.md"
 ]
 pagetree = [
         "CSP11" => [
