@@ -36,7 +36,7 @@ function build_for_case(cases, caseletter)
                 println("Result $resultid written to $mpth in $(round(t,digits=3)) seconds")
             catch excpt
                 println("Failed to process $group $resultid: $excpt")
-                push!(failures, (group, resultid))
+                push!(failures, (group, resultid, "$excpt"))
             end
             pos += 1
         end
