@@ -2,13 +2,10 @@
 # Two-dimensional model at lab conditions
 # ![image](../../assets/casea.png)
 # ## Pressure in observation points
-# ## Pressure observation points
-# ### Pressure observation point 1
 using CSP11Visualizer, CairoMakie # hide
 CairoMakie.activate!() # hide
 results = CSP11Visualizer.parse_all_sparse(verbose=false, case = "a"); # hide
 plot_sparse(results, :P1) # hide
-# ### Pressure observation point 2
 plot_sparse(results, :P2) # hide
 # ## Mobile CO₂
 

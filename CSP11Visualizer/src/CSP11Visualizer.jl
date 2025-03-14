@@ -16,6 +16,36 @@ module CSP11Visualizer
         end
         return basepath
     end
+
+    function canonical_shortname(name)
+        if name == "kiel"
+            return "CAU-Kiel"
+        else
+            canonical = [
+                "Calgary",
+                "CAU-Kiel",
+                "CSIRO",
+                "CTC-CNE",
+                "DARTS",
+                "GEOS",
+                "IFPEN",
+                "KFUPM",
+                "OpenGoSim",
+                "OPM",
+                "Pau-Inria",
+                "PFLOTRAN",
+                "Rice",
+                "SINTEF",
+                "SLB",
+                "Stuttgart",
+                "TetraTech",
+                "UT-CSEE",
+            ]
+            pos = findfirst(isequal(name), lowercase.(canonical))
+            @assert !isnothing(pos) "Unknown participant $name"
+            return canonical[pos]
+        end
+    end
     include("sparse.jl")
     include("dense.jl")
     include("movie.jl")

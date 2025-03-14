@@ -68,7 +68,7 @@ CSP11Visualizer.plot_snapshot(results[end_of_migration], :denw) # hide
 CSP11Visualizer.plot_snapshot(results[end_of_injection], :co2mass) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :co2mass) # hide
-# #### End of example
+#
 function clear_module!(M::Module)        # hide
     for name ∈ names(M, all=true)        # hide
         if !isconst(M, name)             # hide

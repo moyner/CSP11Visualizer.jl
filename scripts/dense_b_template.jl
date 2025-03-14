@@ -115,8 +115,7 @@ CSP11Visualizer.plot_snapshot(results[end_of_injection], :deng) # hide
 CSP11Visualizer.plot_snapshot(results[after_century], :deng) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :deng) # hide
-# #### End of page
-# This example was generated from the submitted data on the reporting grid.
+#
 function clear_module!(M::Module)        # hide
     for name ∈ names(M, all=true)        # hide
         if !isconst(M, name)             # hide

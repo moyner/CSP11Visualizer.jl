@@ -1,6 +1,6 @@
 using Documenter
 using CSP11Visualizer, Literate
-
+import CSP11Visualizer: canonical_shortname
 # TODO list
 # - Match colors between dynamic and static sparse plots
 # - Make sure that we have high quality static sparse plots
@@ -56,7 +56,7 @@ group_names = [
     "ut-csee"
 ]
 for g in group_names
-    push!(participants, g => "pages/groups/$g.md")
+    push!(participants, canonical_shortname(g) => "pages/groups/$g.md")
 end
 pagetree = [
         "CSP11" => [
