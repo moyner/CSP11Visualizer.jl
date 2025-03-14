@@ -93,7 +93,7 @@ function publish_examples(dest, paths)
         in_pth = example_path(pth)
         if do_build
             push!(dest, ex => joinpath("pages", "generated", "$pth.md"))
-            Literate.markdown(in_pth, out_dir)
+            Literate.markdown(in_pth, out_dir, credit = false)
         end
     end
     return dest
@@ -135,10 +135,11 @@ else
 end
 ##
 function replace_template(content, case, group_name, result_id, s)
+    can_group_name = canonical_shortname(group_name)
     content = replace(content,
         "groupname = \"$s\"" => "groupname = \"$group_name\"",
-        "HEADER" => "$group_name result $result_id",
-        "INSERT_GROUPLINK" => "These results were submitted by $group_name. For more information about $group_name and how the simulations were performed, see the [$group_name group page](../../groups/$group_name.html).",
+        "HEADER" => "$can_group_name result $result_id",
+        "INSERT_GROUPLINK" => "These results were submitted by $can_group_name. For more information about $can_group_name and how the simulations were performed, see the [$can_group_name group page](../../groups/$group_name.html).",
         "resultid = 1" => "resultid = $result_id"
     )
     return content
@@ -165,7 +166,7 @@ function copy_template(dest, case, cases_to_plot, default)
                 fn = "$(group)_$result"
                 replacer = (c) -> replace_template(c, case, group, result, default)
                 post_replacer = c -> replace_post(c, case, group, result)
-                Literate.markdown(in_pth, outdir_case, name = fn, preprocess = replacer, postprocess = post_replacer)
+                Literate.markdown(in_pth, outdir_case, name = fn, preprocess = replacer, postprocess = post_replacer, credit = false)
                 push!(case_paths, "$group: Result $result" => joinpath("pages", "generated", "dense_$case", "$fn.md"))
             end
             if length(case_paths) == 1
@@ -173,7 +174,7 @@ function copy_template(dest, case, cases_to_plot, default)
             else
                 case_dir = case_paths
             end
-            push!(case_dense, "$group" => case_dir)
+            push!(case_dense, canonical_shortname("$group") => case_dir)
         end
     end
 end
