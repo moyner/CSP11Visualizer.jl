@@ -168,7 +168,12 @@ function copy_template(dest, case, cases_to_plot, default)
                 Literate.markdown(in_pth, outdir_case, name = fn, preprocess = replacer, postprocess = post_replacer)
                 push!(case_paths, "$group: Result $result" => joinpath("pages", "generated", "dense_$case", "$fn.md"))
             end
-            push!(case_dense, "$group" => case_paths)
+            if length(case_paths) == 1
+                case_dir = case_paths[1][2]
+            else
+                case_dir = case_paths
+            end
+            push!(case_dense, "$group" => case_dir)
         end
     end
 end
