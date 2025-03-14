@@ -138,7 +138,7 @@ function replace_template(content, case, group_name, result_id, s)
     content = replace(content,
         "groupname = \"$s\"" => "groupname = \"$group_name\"",
         "HEADER" => "$group_name result $result_id",
-        "INSERT_GROUPLINK" => "For more information about $group_name, see the [$group_name](@ref) group page.",
+        "INSERT_GROUPLINK" => "These results were submitted by $group_name. For more information about $group_name and how the simulations were performed, see the [$group_name group page](../../groups/$group_name.html).",
         "resultid = 1" => "resultid = $result_id"
     )
     return content
