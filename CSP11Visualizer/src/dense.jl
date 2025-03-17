@@ -42,10 +42,13 @@ function canonical_reporting_steps(case)
 end
 
 function parse_dense_timesteps(group, result, case = "b";
-        path = default_data_path(),
+        path = missing,
         steps = missing,
         verbose = true
     )
+    if ismissing(path)
+        path = default_data_path(case)
+    end
     if ismissing(steps)
         steps = canonical_reporting_steps(case)
     end
@@ -59,29 +62,23 @@ function parse_dense_timesteps(group, result, case = "b";
     return results
 end
 
+function group_and_result(name::AbstractString)
+    group = name[1:end-1]
+    result = parse(Int, name[end])
+    result::Int
+    @assert result > 0
+    return (group, result)
+end
+
 function available_dense_data(case = "b")
-    pth = default_data_path("dense")
-    groups = readdir(pth)
+    pth = default_data_path(case)
     results = Dict{String, Any}()
-    for group in groups
-        present_results = Int[]
-        casepath = joinpath(pth, group, "spe11$case")
-        if !isdir(casepath)
-            continue
-        end
-        subdirs = readdir(casepath)
-        if "result1" in subdirs
-            for dir in subdirs
-                if startswith(dir, "result")
-                    result_id = parse(Int64, dir[end])
-                    push!(present_results, result_id)
-                end
-            end
+    for dirs in readdir(pth)
+        group, result = group_and_result(dirs)
+        if haskey(results, group)
+            push!(results[group], result)
         else
-            push!(present_results, 1)
-        end
-        if length(present_results) > 0
-            results[group] = present_results
+            results[group] = [result]
         end
     end
     return results
@@ -236,20 +233,16 @@ function plot_transparent_casec(result, k = "X_co2"; colormap = :default)
     fig
 end
 
-function parse_dense_data(group, result, year_or_h, case = "b", path = default_data_path())
+function parse_dense_data(group, result::Int, year_or_h, case = "b", path = missing)
+    if ismissing(path)
+        path = default_data_path(case)
+    end
     if case == "b" || case == "c"
         fname = "spe11$(case)_spatial_map_$(year_or_h)y.csv"
     else
         fname = "spe11$(case)_spatial_map_$(year_or_h)h.csv"
     end
-    raw_pth = joinpath(path, group, "spe11$case", fname)
-    if result == 1 && isfile(raw_pth)
-        # Flat structure with a single result
-        subpth = raw_pth
-    else
-        # Nested folders with results
-        subpth = joinpath(path, group, "spe11$case", "result$result", fname)
-    end
+    subpth = joinpath(path, "$group$result", fname)
     if case == "b"
         dims = [840, 120]
         # # x [m],z [m],WATER_PRESSURE

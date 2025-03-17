@@ -2,7 +2,7 @@ module CSP11Visualizer
     using CSV, DataFrames, GLMakie, WGLMakie, CairoMakie, Gadfly, Jutul
     export plot_sparse
 
-    function default_data_path(type = "dense")
+    function default_data_path(case = nothing)
         basepath = realpath(joinpath(@__DIR__, "..", "..", "data"))
         overridepath = joinpath(basepath, "path.txt")
         if isfile(overridepath)
@@ -11,8 +11,10 @@ module CSP11Visualizer
             close(f)
             @assert ispath(basepath)
         end
-        if ispath(joinpath(basepath, type))
-            basepath = joinpath(basepath, type)
+        if !isnothing(case)
+            @assert case in ["a", "b", "c"]
+            basepath = joinpath(basepath, "spe11$case")
+            @assert ispath(basepath) "Expected $basepath to be a valid directory"
         end
         return basepath
     end

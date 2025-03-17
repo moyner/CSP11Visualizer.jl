@@ -68,13 +68,16 @@ function read_file(pth, group, result, case; resample = false)
         )
 end
 
-function parse_all_sparse(pth = default_data_path("sparse");
+function parse_all_sparse(pth = missing;
         case = "b",
         verbose = false,
         merge = true,
         active_groups = nothing,
         active_result = nothing
     )
+    if ismissing(pth)
+        pth = default_data_path(case)
+    end
     if active_groups isa AbstractString
         active_groups = [active_groups]
     end
@@ -86,42 +89,26 @@ function parse_all_sparse(pth = default_data_path("sparse");
 
     groups = readdir(pth)
     results = Dict{String, Any}()
-    for group in groups
+    for casepath in readdir(pth)
+        group, result_id = group_and_result(casepath)
         if !isnothing(active_groups) && !(group in active_groups)
             continue
         end
-        gdata = Dict{Int, Any}()
-        casepath = joinpath(pth, group, "spe11$case")
-        if !isdir(casepath)
-            maybe_print("Skipping $group...")
+        if !isnothing(active_result) && !(result_id == active_result)
+            active_result::Int
             continue
         end
-        for dir in readdir(casepath)
-            csv_name = "spe11$(case)_time_series.csv"
-            if startswith(dir, "result")
-                result_id = parse(Int64, dir[end])
-                spth = joinpath(casepath, dir, csv_name)
-            elseif dir == csv_name
-                result_id = 1
-                spth = joinpath(casepath, csv_name)
-            else
-                maybe_print("Skipping $dir...")
-                continue
-            end
-            if !isnothing(active_result) && !(result_id == active_result)
-                active_result::Int
-                continue
-            end
-            maybe_print("$group: Reading $spth")
-            try
-                gdata[result_id] = read_file(spth, group, result_id, case)
-            catch excpt
-                @error "$group $result_id failed to parse." excpt
-                # rethrow(excpt)
-            end
+        if !haskey(results, group)
+            results[group] = Dict{Int, Any}()
         end
-        if length(keys(gdata)) > 0
-            results[group] = gdata
+        gdata = results[group]
+        csv_name = "spe11$(case)_time_series.csv"
+        try
+            fn = joinpath(pth, casepath, csv_name)
+            gdata[result_id] = read_file(fn, group, result_id, case)
+        catch excpt
+            @error "$group $result_id failed to parse." excpt
+            rethrow(excpt)
         end
     end
     if merge
