@@ -185,3 +185,33 @@ CSP11Visualizer.make_movie_casec(data, sparse_results,
     group = group,
     resultid = result
 )
+##
+geos_2 = only(CSP11Visualizer.parse_dense_timesteps("geos", 2, "c", steps = [1000]));
+opengosim_2 = only(CSP11Visualizer.parse_dense_timesteps("opengosim", 2, "c", steps = [1000]));
+sintef_3 = only(CSP11Visualizer.parse_dense_timesteps("sintef", 3, "c", steps = [1000]));
+# opm_1 = only(CSP11Visualizer.parse_dense_timesteps("opm", 1, "c", steps = [1000]));
+opm_4 = only(CSP11Visualizer.parse_dense_timesteps("opm", 4, "c", steps = [1000]));
+
+# SINTEF3, OPM4
+# GEOS2, OpenGoSim2
+##
+pfig = with_theme(theme_latexfonts()) do
+    fig = Figure(size = (2000, 1300), fontsize = 35)
+    CSP11Visualizer.plot_transparent_casec!(fig[1, 1], sintef_3, "X_co2", title = "SINTEF 3")
+    CSP11Visualizer.plot_transparent_casec!(fig[1, 2], opm_4, "X_co2", title = "OPM 4")
+    CSP11Visualizer.plot_transparent_casec!(fig[2, 1], geos_2, "X_co2", title = "GEOS 2")
+    CSP11Visualizer.plot_transparent_casec!(fig[2, 2], opengosim_2, "X_co2", title = "OpenGoSim 2")
+
+    cr = (0, 0.06)
+    cticks = map(i -> round(i, digits = 2), range(cr..., 10))
+
+    Colorbar(fig[1:2, 3],
+        colorrange = cr,
+        colormap = CSP11Visualizer.default_colormap(:default, ),
+        vertical = true,
+        size = 50,
+        ticks = cticks
+    )
+    fig
+end
+# save("csp11c_co2_mass_fraction_comparison.png", pfig)

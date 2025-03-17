@@ -198,12 +198,12 @@ function plot_snapshot_c(result, k, IJ = case_c_ij_planes(); use_clims = true)
     return fig
 end
 
-function plot_transparent_casec!(f, result, k = "X_co2"; colormap = :default)
+function plot_transparent_casec!(f, result, k = "X_co2"; title = "", colormap = :default)
     d = vec(result[k])
     mesh = CSP11Visualizer.get_mesh("c")
     cmap = CSP11Visualizer.default_colormap(colormap, alpha = true, arange = (0, 1.0), k = 3)
 
-    ax = Axis3(f, aspect = (8.4, 5, 3*1.2))
+    ax = Axis3(f, aspect = (8.4, 5, 3*1.2), title = title)
     cr, label, zero_to_nan = key_info(k, "c")
     plt = plot_cell_data!(ax, mesh, d,
         colormap = cmap,
