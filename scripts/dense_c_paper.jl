@@ -92,6 +92,9 @@ Colorbar(fig[1, 1],
 # save("csp11_co2_colorbar.png", fig)
 fig
 ##
+CSP11Visualizer.plot_transparent_casec(r, "X_co2")
+##
+
 
 error()
 d = copy(vec(r["X_co2"]))

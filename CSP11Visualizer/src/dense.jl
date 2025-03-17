@@ -198,6 +198,44 @@ function plot_snapshot_c(result, k, IJ = case_c_ij_planes(); use_clims = true)
     return fig
 end
 
+function plot_transparent_casec!(f, result, k = "X_co2"; colormap = :default)
+    d = vec(result[k])
+    mesh = CSP11Visualizer.get_mesh("c")
+    cmap = CSP11Visualizer.default_colormap(colormap, alpha = true, arange = (0, 1.0), k = 3)
+
+    ax = Axis3(f, aspect = (8.4, 5, 3*1.2))
+    cr, label, zero_to_nan = key_info(k, "c")
+    plt = plot_cell_data!(ax, mesh, d,
+        colormap = cmap,
+        shading = NoShading,
+        transparency = true,
+        colorrange = cr
+    )
+
+    ax.azimuth[] = 4.25
+    ax.elevation[] = 0.153
+    ax.xlabel[] = ""
+    ax.ylabel[] = ""
+    ax.zlabel[] = ""
+
+    hidedecorations!(ax)
+    return (plt, ax)
+end
+
+function plot_transparent_casec(result, k = "X_co2"; colormap = :default)
+    fig = Figure(size = (1200, 800), fontsize = 18)
+    cr, label, zero_to_nan = key_info(k, "c")
+    cticks = map(i -> round(i, digits = 2), range(cr..., 10))
+    plot_transparent_casec!(fig[1, 1], result, k; colormap = colormap)
+    Colorbar(fig[1, 2],
+        colorrange = cr,
+        colormap = CSP11Visualizer.default_colormap(colormap),
+        vertical = true,
+        ticks = cticks
+    )
+    fig
+end
+
 function parse_dense_data(group, result, year_or_h, case = "b", path = default_data_path())
     if case == "b" || case == "c"
         fname = "spe11$(case)_spatial_map_$(year_or_h)y.csv"
