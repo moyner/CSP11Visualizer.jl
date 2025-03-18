@@ -18,35 +18,30 @@ end_of_migration = findfirst(isequal(1000), steps) # hide
 
 # INSERT_MOVIE_C
 
-# ## Plot the mesh and wells
-# The mesh and the wells are shown below. The wells are shown in red and blue.
-# Note that the model is plotted in physical space after transformation.
-using CSP11Visualizer.Jutul # hide
-CairoMakie.activate!() # hide
-mesh = CSP11Visualizer.get_mesh("c") # hide
-w1, w2 = CSP11Visualizer.get_wells("c") # hide
-fig = Figure() # hide
-ax = Axis3(fig[1, 1]) # hide
-Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1) # hide
-lines!(ax, w1, color = :red, label = "W1") # hide
-lines!(ax, w2, color = :blue, label = "W2") # hide
-axislegend() # hide
-fig # hide
+# ## Plot mass fractions
+
+### CO₂ mass fraction in liquid
+CSP11Visualizer.plot_transparent_casec(results[end_of_injection], "X_co2")
+
+### CO2 migration
+CSP11Visualizer.plot_transparent_casec(results[end_of_migration], "X_co2")
+
+
 # ## Plot the cross sections used for plotting
 # The cross sections used for plotting are shown below. These cut the middle of
-# the model in x and y directions in the reference coordinate space (I/J). The
-# red cross section corresponds to the plane where I = 84, and the blue cross
-# section corresponds to the plane where J = 50.
+# the model in x and y directions. The red cross section corresponds to the
+# plane where x = 4200m, and the blue cross section corresponds to the plane
+# where y = 2500m.
 I_cut, J_cut = CSP11Visualizer.case_c_ij_planes() # hide
 fig = Figure(size = (2000, 800)) # hide
 ijk = map(i -> cell_ijk(mesh, i), 1:number_of_cells(mesh)) # hide
 I1 = findall(i -> i[1] == I_cut, ijk) # hide
 I2 = findall(i -> i[2] == J_cut, ijk) # hide
 fig = Figure() # hide
-ax = Axis3(fig[1, 1], title = "Plane 1: I = $I_cut") # hide
+ax = Axis3(fig[1, 1], title = "Plane 1: x = 4200m") # hide
 Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1) # hide
 plot_mesh!(ax, mesh, cells = I1, color = :red) # hide
-ax = Axis3(fig[1, 2], title = "Plane 2: J = $J_cut") # hide
+ax = Axis3(fig[1, 2], title = "Plane 2: y=2500m") # hide
 Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1) # hide
 plot_mesh!(ax, mesh, cells = I2, color = :blue) # hide
 fig # hide

@@ -37,7 +37,7 @@ case_c = Any[
 participants = []
 group_names = [
     "calgary",
-    "kiel",
+    "cau-kiel",
     "csiro",
     "ctc-cne",
     "darts",
