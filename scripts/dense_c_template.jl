@@ -2,7 +2,7 @@
 groupname = "opm" # hide
 resultid = 1 # hide
 using CSP11Visualizer, GLMakie, CairoMakie # hide
-CairoMakie.activate!() # hide
+using CSP11Visualizer.Jutul # hide
 steps = [30, 50, 100, 1000] # hide
 results = CSP11Visualizer.parse_dense_timesteps(groupname, resultid, "c", steps = steps, verbose = false); # hide
 after_period = findfirst(isequal(30), steps) # hide
@@ -18,20 +18,29 @@ end_of_migration = findfirst(isequal(1000), steps) # hide
 
 # INSERT_MOVIE_C
 
-# ## Plot mass fractions
-
-### CO₂ mass fraction in liquid
-CSP11Visualizer.plot_transparent_casec(results[end_of_injection], "X_co2")
-
-### CO2 migration
-CSP11Visualizer.plot_transparent_casec(results[end_of_migration], "X_co2")
-
+# ## Plot CO₂ liquid mass fractions in 3D
+# A 3D plot of the CO2 mass fraction in the liquid phase is shown below. The
+# cells in the reporting mesh have their transparency adjusted depending on the
+# mass fraction of CO₂ in the liquid phase, with cells that have no CO₂ being
+# completely transparent. This gives a good indication of the spatial
+# distribution of CO₂.
+GLMakie.activate!() # hide
+mesh = CSP11Visualizer.get_mesh("c"); # hide
+# ### 30 years: 5 years after start of second injector
+CSP11Visualizer.plot_transparent_casec(results[after_period], "X_co2", mesh = mesh) # hide
+# ### 50 years: End of injection
+CSP11Visualizer.plot_transparent_casec(results[end_of_injection], "X_co2", mesh = mesh) # hide
+# ### 100 years
+CSP11Visualizer.plot_transparent_casec(results[after_century], "X_co2", mesh = mesh) # hide
+# ### End of migration
+CSP11Visualizer.plot_transparent_casec(results[end_of_migration], "X_co2", mesh = mesh) # hide
 
 # ## Plot the cross sections used for plotting
-# The cross sections used for plotting are shown below. These cut the middle of
-# the model in x and y directions. The red cross section corresponds to the
-# plane where x = 4200m, and the blue cross section corresponds to the plane
-# where y = 2500m.
+# In the remainder of the plots, we will show cross sections of the model. The
+# cross sections used for plotting are shown below. These cut the middle of the
+# model in x and y directions. The red cross section corresponds to the plane
+# where x = 4200m, and the blue cross section corresponds to the plane where y =
+# 2500m.
 I_cut, J_cut = CSP11Visualizer.case_c_ij_planes() # hide
 fig = Figure(size = (2000, 800)) # hide
 ijk = map(i -> cell_ijk(mesh, i), 1:number_of_cells(mesh)) # hide
@@ -46,6 +55,7 @@ Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1) # hide
 plot_mesh!(ax, mesh, cells = I2, color = :blue) # hide
 fig # hide
 # ## CO₂ mass fraction in liquid
+CairoMakie.activate!() # hide
 # The mass fraction of CO₂ in the liquid phase is shown below.
 # ### 30 years: 5 years after start of second injector
 CSP11Visualizer.plot_snapshot_c(results[after_period], :X_co2) # hide

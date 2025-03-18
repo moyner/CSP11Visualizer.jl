@@ -195,9 +195,8 @@ function plot_snapshot_c(result, k, IJ = case_c_ij_planes(); use_clims = true)
     return fig
 end
 
-function plot_transparent_casec!(f, result, k = "X_co2"; title = "", colormap = :default)
+function plot_transparent_casec!(f, result, k = "X_co2"; title = "", colormap = :default, mesh = CSP11Visualizer.get_mesh("c"))
     d = vec(result[k])
-    mesh = CSP11Visualizer.get_mesh("c")
     cmap = CSP11Visualizer.default_colormap(colormap, alpha = true, arange = (0, 1.0), k = 3)
 
     ax = Axis3(f, aspect = (8.4, 5, 3*1.2), title = title)
@@ -219,11 +218,12 @@ function plot_transparent_casec!(f, result, k = "X_co2"; title = "", colormap = 
     return (plt, ax)
 end
 
-function plot_transparent_casec(result, k = "X_co2"; colormap = :default)
+function plot_transparent_casec(result, k = "X_co2"; colormap = :default, kwarg...)
+    GLMakie.activate!()
     fig = Figure(size = (1200, 800), fontsize = 18)
     cr, label, zero_to_nan = key_info(k, "c")
     cticks = map(i -> round(i, digits = 2), range(cr..., 10))
-    plot_transparent_casec!(fig[1, 1], result, k; colormap = colormap)
+    plot_transparent_casec!(fig[1, 1], result, k; colormap = colormap, kwarg...)
     Colorbar(fig[1, 2],
         colorrange = cr,
         colormap = CSP11Visualizer.default_colormap(colormap),
@@ -364,10 +364,18 @@ function key_info(var::String, case::String)
             yscale = (0.0, 75.0)
             label = "Temperature (°C)"
         elseif var == "pw"
-            yscale = (3e7, 4.5e7) # 3.23e7 -> 4.47e7
+            if case == "c"
+                yscale = (2e7, 3.5e7)
+            else
+                yscale = (3e7, 4.5e7) # 3.23e7 -> 4.47e7
+            end
             label =  "Pressure (Pascal)"
         elseif var == "co2mass"
-            yscale = (0.0, 30000.0) #  (0.0, 28550.0)
+            if case == "c"
+                yscale = (0.0, 7e6)
+            else
+                yscale = (0.0, 30000.0) #  (0.0, 28550.0)
+            end
             label = "Total mass of CO₂ (kg)"
             zero_to_nan = true
         elseif var == "X_co2"
