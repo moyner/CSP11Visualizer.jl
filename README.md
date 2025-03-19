@@ -1,3 +1,7 @@
+# CSP11Visualizer.jl
+
+This is the source code to the static site visualizer for the 11th SPE Comparative Solutions Project. For more details [see the website of the study.](https://www.spe.org/en/csp/)
+
 # First time setup
 
 Run julia from the docs folder:
