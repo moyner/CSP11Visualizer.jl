@@ -4,10 +4,12 @@ groupname = "opm" # hide
 resultid = 1 # hide
 using CSP11Visualizer, GLMakie, CairoMakie # hide
 CairoMakie.activate!() # hide
-steps = [5, 120] # hide
+steps = [5, 60, 120] # hide
 results = CSP11Visualizer.parse_dense_timesteps(groupname, resultid, "a", steps = steps, verbose = false); # hide
 end_of_injection = findfirst(isequal(5), steps) # hide
 @assert !isnothing(end_of_injection) # hide
+midway = findfirst(isequal(60), steps) # hide
+@assert !isnothing(midway) # hide
 end_of_migration = findfirst(isequal(120), steps) # hide
 @assert !isnothing(end_of_migration) # hide
 # ## Overview animation
@@ -24,6 +26,8 @@ end_of_migration = findfirst(isequal(120), steps) # hide
 
 # ### End of injection
 CSP11Visualizer.plot_snapshot(results[end_of_injection], :pw) # hide
+# ### Midway
+CSP11Visualizer.plot_snapshot(results[midway], :pw) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :pw) # hide
 
@@ -31,6 +35,8 @@ CSP11Visualizer.plot_snapshot(results[end_of_migration], :pw) # hide
 
 # ### End of injection
 CSP11Visualizer.plot_snapshot(results[end_of_injection], :deng) # hide
+# ### Midway
+CSP11Visualizer.plot_snapshot(results[midway], :deng) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :deng) # hide
 
@@ -38,6 +44,8 @@ CSP11Visualizer.plot_snapshot(results[end_of_migration], :deng) # hide
 
 # ### End of injection
 CSP11Visualizer.plot_snapshot(results[end_of_injection], :X_co2) # hide
+# ### Midway
+CSP11Visualizer.plot_snapshot(results[midway], :X_co2) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :X_co2) # hide
 
@@ -45,6 +53,8 @@ CSP11Visualizer.plot_snapshot(results[end_of_migration], :X_co2) # hide
 
 # ### End of injection
 CSP11Visualizer.plot_snapshot(results[end_of_injection], :Y_h2o) # hide
+# ### Midway
+CSP11Visualizer.plot_snapshot(results[midway], :Y_h2o) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :Y_h2o) # hide
 
@@ -52,6 +62,8 @@ CSP11Visualizer.plot_snapshot(results[end_of_migration], :Y_h2o) # hide
 
 # ### End of injection
 CSP11Visualizer.plot_snapshot(results[end_of_injection], :deng) # hide
+# ### Midway
+CSP11Visualizer.plot_snapshot(results[midway], :deng) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :deng) # hide
 
@@ -59,6 +71,8 @@ CSP11Visualizer.plot_snapshot(results[end_of_migration], :deng) # hide
 
 # ### End of injection
 CSP11Visualizer.plot_snapshot(results[end_of_injection], :denw) # hide
+# ### Midway
+CSP11Visualizer.plot_snapshot(results[midway], :denw) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :denw) # hide
 
@@ -66,6 +80,8 @@ CSP11Visualizer.plot_snapshot(results[end_of_migration], :denw) # hide
 
 # ### End of injection
 CSP11Visualizer.plot_snapshot(results[end_of_injection], :co2mass) # hide
+# ### Midway
+CSP11Visualizer.plot_snapshot(results[midway], :co2mass) # hide
 # ### End of migration
 CSP11Visualizer.plot_snapshot(results[end_of_migration], :co2mass) # hide
 #
