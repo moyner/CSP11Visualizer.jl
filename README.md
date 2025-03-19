@@ -13,7 +13,7 @@ Develop the helper package:
 ]dev ../
 ```
 
-Put the data in data/sparse and data/dense.
+Put the data in a folder under the root folder of the repository named `data`, or place the absolute path to the data folder in a textfile `data/path.txt`.
 
 ## Building
 
@@ -33,3 +33,4 @@ and then
 ```julia
 include("build.jl")
 ```
+The resulting files will be in the `docs/build` folder and can be opened in a browser.
