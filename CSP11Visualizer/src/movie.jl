@@ -42,6 +42,8 @@ function make_movie_caseb(steps, results, sparse_results; group, resultid)
     end
     fig = Figure(size = (1200, 1200))
     ax = Axis(fig[1:2, 1], title = t)
+    xlims!(ax, 0, 8400)
+    ylims!(ax, 0, 1200)
     ix = Observable(1)
     function getresult(i)
         tmp = vec(results[i][k])
@@ -116,6 +118,9 @@ function make_movie_casea(steps, results, sparse_results; group, resultid::Int)
     end
     fig = Figure(size = (1200, 1200))
     ax = Axis(fig[1:2, 1], title = t)
+    xlims!(ax, 0, 2.8)
+    ylims!(ax, 0, 1.2)
+
     ix = Observable(1)
     function getresult(i)
         tmp = vec(results[i][k])
