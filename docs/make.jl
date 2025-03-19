@@ -62,7 +62,8 @@ pagetree = [
         "CSP11" => [
             "index.md",
             "pages/groups.md",
-            "Participants" => participants
+            "Participants" => participants,
+            "pages/about.md"
         ],
         "Case A" => case_a,
         "Case B" => case_b,
