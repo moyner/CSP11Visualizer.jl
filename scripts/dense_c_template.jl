@@ -1,4 +1,5 @@
 # # Case C: HEADER
+# INSERT_GROUPLINK
 groupname = "opm" # hide
 resultid = 1 # hide
 using CSP11Visualizer, GLMakie, CairoMakie # hide
