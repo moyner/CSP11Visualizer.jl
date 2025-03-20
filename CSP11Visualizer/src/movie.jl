@@ -185,9 +185,9 @@ function sparse_for_movie(sparse_results, k, group, result)
     self_index = 0
     sparse_data = Vector{Float64}[]
     sparse_time = Vector{Float64}[]
-    for ugroup in ugroups
+    for (i, ugroup) in enumerate(ugroups)
         if ugroup == "$group$result"
-            self_index += 1
+            self_index = i
         end
         group_result = filter(row -> row.groupresult == ugroup, sparse_results)
         r = group_result[!, k]
