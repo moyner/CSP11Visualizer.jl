@@ -266,15 +266,28 @@ function make_movie_casec(steps, results, sparse_results; group, resultid)
     framerate = 24
     filename = movie_filename("c", group, resultid)
 
-    record(fig, filename, indices;
-        framerate = framerate
-    ) do t
-        tmp = clamp(floor(t), 1, length(steps))
-        ix[] = tmp
-        t_step = steps[tmp]
-        mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
-        sparse_ix[] = minix
-        # println("$tmp / $(length(steps)) ($t with tstep = $t_step)")
+    if false
+        record(fig, filename, indices;
+            framerate = framerate
+        ) do t
+            tmp = clamp(floor(t), 1, length(steps))
+            ix[] = tmp
+            t_step = steps[tmp]
+            mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
+            sparse_ix[] = minix
+            # println("$tmp / $(length(steps)) ($t with tstep = $t_step)")
+        end
+    else
+        iterator_indices = eachindex(t_sparse)
+        iterator_indices = Int64.(round.(range(1, length(t_sparse), length = 240)))
+        record(fig, filename, iterator_indices;
+            framerate = framerate
+        ) do sparse_ix_tmp
+            t_step_sparse = t_sparse[sparse_ix_tmp]
+            _, step_index = findmin(i -> abs(steps[i] - t_step_sparse), eachindex(steps))
+            ix[] = step_index
+            sparse_ix[] = sparse_ix_tmp
+        end
     end
     filename
 end
