@@ -303,10 +303,12 @@ function plot_sparse_for_movie!(fig, case, group, resultid, sparse_results)
         t_scale_sparse = 3600.0
         t_inj_stop = 10.0
         x_max = 120.0
+        t_unit = "hours"
     elseif case == "b" || case == "c"
         t_scale_sparse = 1.0
         t_inj_stop = 100.0
         x_max = 1000.0
+        t_unit = "years"
     else
         error("Not implemented")
     end
@@ -323,10 +325,10 @@ function plot_sparse_for_movie!(fig, case, group, resultid, sparse_results)
     ax1.xticklabelsvisible = false
 
     # Group 2
-    ax2 = Axis(fig[5, 1], title = "Dissolved CO₂", xlabel = "Time (years)", ylabel = "kg")
+    ax2 = Axis(fig[5, 1], title = "Dissolved CO₂", xlabel = "Time ($t_unit)", ylabel = "kg")
     plot_lines_for_movie!(ax2, t_sparse, t_sparse_all, diss_a, diss_b, diss_a_all, diss_b_all, t_inj_stop, sparse_ix, t_dot)
 
-    xt = map(x -> round(x, digits = 2), range(0, maximum(t_sparse), length = 11))
+    xt = map(x -> round(x, digits = 2), range(0, x_max, length = 11))
     ax2.xticks[] = xt
 
     return (sparse_ix, t_sparse)
