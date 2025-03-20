@@ -164,8 +164,8 @@ function plot_snapshot_c(result, k, IJ = case_c_ij_planes(); use_clims = true)
     D = vec(r)
     fig = Figure(size = (1200, 1200), backgroundcolor = :transparent)
     failure = eltype(r) != Float64 || all(isnan, r)
-    ax1 = Axis(fig[1, 1], title = "$t (I = $I)", ygridvisible = false, xgridvisible = false)
-    ax2 = Axis(fig[2, 1], title = "$t (J = $J)", ygridvisible = false, xgridvisible = false)
+    ax1 = Axis(fig[1, 1], title = "$t (x=4200m)", ygridvisible = false, xgridvisible = false)
+    ax2 = Axis(fig[2, 1], title = "$t (y=2500m)", ygridvisible = false, xgridvisible = false)
 
     if !failure
         if isnothing(clims) || !use_clims

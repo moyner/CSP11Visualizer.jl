@@ -43,12 +43,12 @@ CSP11Visualizer.plot_transparent_casec(results[end_of_migration], "X_co2", mesh 
 # where x = 4200m, and the blue cross section corresponds to the plane where y =
 # 2500m.
 I_cut, J_cut = CSP11Visualizer.case_c_ij_planes() # hide
-fig = Figure(size = (2000, 800)) # hide
+fig = Figure(size = (2000, 600)) # hide
 ijk = map(i -> cell_ijk(mesh, i), 1:number_of_cells(mesh)) # hide
 I1 = findall(i -> i[1] == I_cut, ijk) # hide
 I2 = findall(i -> i[2] == J_cut, ijk) # hide
 fig = Figure() # hide
-ax = Axis3(fig[1, 1], title = "Plane 1: x = 4200m") # hide
+ax = Axis3(fig[1, 1], title = "Plane 1: x=4200m") # hide
 Jutul.plot_mesh_edges!(ax, mesh, alpha = 0.1) # hide
 plot_mesh!(ax, mesh, cells = I1, color = :red) # hide
 ax = Axis3(fig[1, 2], title = "Plane 2: y=2500m") # hide
