@@ -312,10 +312,12 @@ function plot_lines_for_movie!(AX, t_sparse, t_sparse_all, A, B, A_all, B_all, t
     lw = 3
     color_A, color_B = colors_for_movie()
 
-    # ymax = 1.2*max(maximum(A), maximum(B))
+    ymax_local = 1.5*max(maximum(A), maximum(B))
     max_A = maximum(map(maximum, A_all))
     max_B = maximum(map(maximum, B_all))
     ymax = 1.2*max(max_A, max_B)
+    ymax = min(ymax, ymax_local)
+    ymin = -0.025*ymax
 
     xmax = maximum(t_sparse)
 
@@ -334,7 +336,7 @@ function plot_lines_for_movie!(AX, t_sparse, t_sparse_all, A, B, A_all, B_all, t
     end
     lines!(AX, t_sparse, A, color = color_A, linewidth = lw, label = "Box A")
     lines!(AX, t_sparse, B, color = color_B, linewidth = lw, label = "Box B")
-    lines!(AX, [t_inj_stop, t_inj_stop], [0, ymax], color = :black)#, label = "End of injection")
+    lines!(AX, [t_inj_stop, t_inj_stop], [ymin, ymax], color = :black)#, label = "End of injection")
     A_dot = @lift A[$sparse_ix]
     B_dot = @lift B[$sparse_ix]
     mz = 12
@@ -344,8 +346,8 @@ function plot_lines_for_movie!(AX, t_sparse, t_sparse_all, A, B, A_all, B_all, t
     scatter!(AX, t_dot, B_dot, markersize = mz_big, color = :black)
     scatter!(AX, t_dot, B_dot, markersize = mz, color = color_B)
     axislegend(position = :ct, nbanks = 2)
-    xlims!(AX, 0, xmax)
-    ylims!(AX, 0, ymax)
+    xlims!(AX, 0.0, xmax)
+    ylims!(AX, ymin, ymax)
 end
 
 function movie_directory(case)
