@@ -6,9 +6,9 @@ function make_website_movie(; case, group, resultid)
         steps = setdiff(steps, 815)
     end
     println("Reading dense data...")
-    results = CSP11Visualizer.parse_dense_timesteps(group, resultid, case, steps = steps, verbose = false)
+    @time results = CSP11Visualizer.parse_dense_timesteps(group, resultid, case, steps = steps, verbose = false)
     println("Reading sparse data...")
-    sparse_results = CSP11Visualizer.parse_all_sparse(case = case)
+    @time sparse_results = CSP11Visualizer.parse_all_sparse(case = case)
 
     if case == "a"
         return make_movie_casea(steps, results, sparse_results, group = group, resultid = resultid)
@@ -248,14 +248,20 @@ function record_movie!(filename, fig, t_sparse, steps, ix, sparse_ix, t_stop)
         range(0, t_stop, length = framerate*seconds_inj)...,
         range(t_stop, t_sparse[end], length = framerate*seconds_mig)...
     ]
-
+    println("Starting recording of movie with $(length(t_frames)) frames...")
     record(fig, filename, t_frames;
         framerate = framerate
     ) do t_for_frame
-        _, t_step_sparse = findmin(i -> abs(t_sparse[i] - t_for_frame), eachindex(t_sparse))
-        sparse_ix[] = t_step_sparse
-        _, step_index = findmin(i -> abs(steps[i] - t_for_frame), eachindex(steps))
-        ix[] = step_index
+        begin
+            _, t_step_sparse = findmin(i -> abs(t_sparse[i] - t_for_frame), eachindex(t_sparse))
+            if sparse_ix[] != t_step_sparse
+                sparse_ix[] = t_step_sparse
+            end
+            _, step_index = findmin(i -> abs(steps[i] - t_for_frame), eachindex(steps))
+            if ix[] != step_index
+                ix[] = step_index
+            end
+        end
     end
 end
 
@@ -281,6 +287,7 @@ function plot_sparse_for_movie!(fig, case, group, resultid, sparse_results)
     end
     t_sparse = t_sparse./t_scale_sparse
     t_sparse_all = map(t -> t./t_scale_sparse, t_sparse_all)
+    xt = map(x -> round(x, digits = 2), range(0, x_max, length = 11))
 
     # Sparse plot
     sparse_ix = Observable(1)
@@ -289,13 +296,13 @@ function plot_sparse_for_movie!(fig, case, group, resultid, sparse_results)
     # Group 1
     ax1 = Axis(fig[4, 1], title = "Mobile CO₂", ylabel = "kg")
     plot_lines_for_movie!(ax1, t_sparse, t_sparse_all, mob_a, mob_b, mob_a_all, mob_b_all, t_inj_stop, sparse_ix, t_dot)
+    ax1.xticks[] = xt
     ax1.xticklabelsvisible = false
 
     # Group 2
     ax2 = Axis(fig[5, 1], title = "Dissolved CO₂", xlabel = "Time ($t_unit)", ylabel = "kg")
     plot_lines_for_movie!(ax2, t_sparse, t_sparse_all, diss_a, diss_b, diss_a_all, diss_b_all, t_inj_stop, sparse_ix, t_dot)
 
-    xt = map(x -> round(x, digits = 2), range(0, x_max, length = 11))
     ax2.xticks[] = xt
 
     return (sparse_ix, t_sparse)
@@ -347,7 +354,9 @@ function plot_lines_for_movie!(AX, t_sparse, t_sparse_all, A, B, A_all, B_all, t
     scatter!(AX, t_dot, B_dot, markersize = mz, color = color_B)
     axislegend(position = :ct, nbanks = 2)
     xlims!(AX, 0.0, xmax)
-    ylims!(AX, ymin, ymax)
+    if !(ymin ≈ ymax)
+        ylims!(AX, ymin, ymax)
+    end
 end
 
 function movie_directory(case)
