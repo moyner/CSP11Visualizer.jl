@@ -82,16 +82,7 @@ function make_movie_caseb(steps, results, sparse_results; group, resultid)
     # ax_plt.xticks[] = 0:100:1000
     framerate = 24
     filename = movie_filename("b", group, resultid)
-
-    record(fig, filename, indices;
-        framerate = framerate) do t
-            tmp = clamp(floor(t), 1, length(steps))
-            ix[] = tmp
-            t_step = steps[tmp]
-            mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
-            # println("$t / $(length(indices))")
-            sparse_ix[] = minix
-    end
+    record_movie!(filename, fig, t_sparse, steps, ix, sparse_ix, 50.0)
     return filename
 end
 
@@ -164,18 +155,8 @@ function make_movie_casea(steps, results, sparse_results; group, resultid::Int)
 
     # Sparse plots
     sparse_ix, t_sparse = plot_sparse_for_movie!(fig, "a", group, resultid, sparse_results)
-    framerate = 24
     filename = movie_filename("a", group, resultid)
-
-    record(fig, filename, indices;
-        framerate = framerate) do t
-            tmp = clamp(floor(t), 1, length(steps))
-            ix[] = tmp
-            t_step = steps[tmp]
-            mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
-            # println("$t / $(length(indices))")
-            sparse_ix[] = minix
-    end
+    record_movie!(filename, fig, t_sparse, steps, ix, sparse_ix, 5.0)
     return filename
 end
 
@@ -202,18 +183,6 @@ end
 
 function make_movie_casec(steps, results, sparse_results; group, resultid)
     m = CSP11Visualizer.get_mesh("c")
-    indices = Int[]
-    for (i, step) in enumerate(steps)
-        if step <= 100.0
-            n = 5
-        else
-            δ = steps[i] - steps[i-1]
-            n = δ ÷ 5
-        end
-        for j in 1:n
-            push!(indices, i)
-        end
-    end
     k = "X_co2"
     t = "CO2 in liquid phase"
     clims, t, zero_to_nan = CSP11Visualizer.key_info(k, results[1]["case"])
@@ -263,33 +232,31 @@ function make_movie_casec(steps, results, sparse_results; group, resultid)
 
     sparse_ix, t_sparse = plot_sparse_for_movie!(fig, "c", group, resultid, sparse_results)
 
-    framerate = 24
     filename = movie_filename("c", group, resultid)
-
-    if false
-        record(fig, filename, indices;
-            framerate = framerate
-        ) do t
-            tmp = clamp(floor(t), 1, length(steps))
-            ix[] = tmp
-            t_step = steps[tmp]
-            mindist, minix = findmin(i -> abs(t_sparse[i] - t_step), eachindex(t_sparse))
-            sparse_ix[] = minix
-            # println("$tmp / $(length(steps)) ($t with tstep = $t_step)")
-        end
-    else
-        iterator_indices = eachindex(t_sparse)
-        iterator_indices = Int64.(round.(range(1, length(t_sparse), length = 240)))
-        record(fig, filename, iterator_indices;
-            framerate = framerate
-        ) do sparse_ix_tmp
-            t_step_sparse = t_sparse[sparse_ix_tmp]
-            _, step_index = findmin(i -> abs(steps[i] - t_step_sparse), eachindex(steps))
-            ix[] = step_index
-            sparse_ix[] = sparse_ix_tmp
-        end
-    end
+    record_movie!(filename, fig, t_sparse, steps, ix, sparse_ix, 50.0)
     filename
+end
+
+function record_movie!(filename, fig, t_sparse, steps, ix, sparse_ix, t_stop)
+    framerate = 24
+    # iterator_indices = eachindex(t_sparse)
+    # iterator_indices = Int64.(round.(range(1, length(t_sparse), length = 240)))
+    seconds_inj = 5
+    seconds_mig = 10
+
+    t_frames = [
+        range(0, t_stop, length = framerate*seconds_inj)...,
+        range(t_stop, t_sparse[end], length = framerate*seconds_mig)...
+    ]
+
+    record(fig, filename, t_frames;
+        framerate = framerate
+    ) do t_for_frame
+        _, t_step_sparse = findmin(i -> abs(t_sparse[i] - t_for_frame), eachindex(t_sparse))
+        sparse_ix[] = t_step_sparse
+        _, step_index = findmin(i -> abs(steps[i] - t_for_frame), eachindex(steps))
+        ix[] = step_index
+    end
 end
 
 function plot_sparse_for_movie!(fig, case, group, resultid, sparse_results)
@@ -301,12 +268,12 @@ function plot_sparse_for_movie!(fig, case, group, resultid, sparse_results)
 
     if case == "a"
         t_scale_sparse = 3600.0
-        t_inj_stop = 10.0
+        t_inj_stop = 5.0
         x_max = 120.0
         t_unit = "hours"
     elseif case == "b" || case == "c"
         t_scale_sparse = 1.0
-        t_inj_stop = 100.0
+        t_inj_stop = 50.0
         x_max = 1000.0
         t_unit = "years"
     else
@@ -345,7 +312,11 @@ function plot_lines_for_movie!(AX, t_sparse, t_sparse_all, A, B, A_all, B_all, t
     lw = 3
     color_A, color_B = colors_for_movie()
 
-    ymax = 1.2*max(maximum(A), maximum(B))
+    # ymax = 1.2*max(maximum(A), maximum(B))
+    max_A = maximum(map(maximum, A_all))
+    max_B = maximum(map(maximum, B_all))
+    ymax = 1.2*max(max_A, max_B)
+
     xmax = maximum(t_sparse)
 
     bg_arg_A = (color = color_A, linewidth = lw, alpha = 0.15)
