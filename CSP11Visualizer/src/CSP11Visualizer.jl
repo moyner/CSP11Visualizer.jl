@@ -41,8 +41,13 @@ module CSP11Visualizer
             "UT-CSEE",
         ]
         pos = findfirst(isequal(name), lowercase.(canonical))
-        @assert !isnothing(pos) "Unknown participant $name"
-        return canonical[pos]
+        if isnothing(pos)
+            println("Unknown/new participant $name... Using name as-is. If you want special formatting for this entry and get rid of this message, add your case to `canonical_shortname`")
+            out = name
+        else
+            out = canonical[pos]
+        end
+        return out
     end
     include("sparse.jl")
     include("dense.jl")
