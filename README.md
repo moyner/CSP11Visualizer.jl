@@ -6,7 +6,8 @@ The source code is useful if you want to see how the [the visualizations in the 
 
 ## Example visualization
 
-<video src="https://moyner.github.io/SPE11-plot-test-deploy/pages/generated/dense_b/movieb_opm_4.mp4"></video>
+Example from [spe11b/OPM4](https://moyner.github.io/SPE11-plot-test-deploy/pages/generated/dense_b/opm_4.html)
+<video src="https://github.com/user-attachments/assets/f11b2ba1-7859-4584-ade0-329820ae4827"></video>
 
 ## Usage
 
