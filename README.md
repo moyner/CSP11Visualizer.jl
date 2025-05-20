@@ -25,7 +25,7 @@ julia --project=.
 Develop the helper package, which should also install all other dependencies needed to build the project.
 
 ```julia
-]dev ../
+]dev ../CSP11Visualizer
 ```
 
 Put the data in a folder under the root folder of the repository named `data`, or place the absolute path to the data folder in a textfile `data/path.txt`. The complete dataset of all submissions can be [downloaded from DOI 10.18419/DARUS-4750](https://doi.org/10.18419/DARUS-4750).
